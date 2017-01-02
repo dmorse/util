@@ -19,7 +19,7 @@ public:
    void testConstructor()
    {
       printMethod(TEST_FUNC);
-      PointSymmetry a();
+      PointSymmetry a;
    } 
 
    void testCopyConstructor()

@@ -1,5 +1,5 @@
-#ifndef VECTOR_TEST_H
-#define VECTOR_TEST
+#ifndef UTIL_VECTOR_TEST_H
+#define UTIL_VECTOR_TEST_H
 
 #include <test/UnitTest.h>
 #include <test/UnitTestRunner.h>

@@ -1,5 +1,5 @@
-#ifndef GRID_TEST_H
-#define GRID_TEST
+#ifndef UTIL_GRID_TEST_H
+#define UTIL_GRID_TEST_H
 
 #include <util/space/Grid.h>
 #include <util/space/IntVector.h>
