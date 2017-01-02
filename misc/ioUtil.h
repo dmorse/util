@@ -2,9 +2,9 @@
 #define UTIL_IO_UTIL_H
 
 /*
-* Simpatico - Simulation Package for Polymeric and Molecular Liquids
+* Util Package - C++ Utilities for Scientific Computation
 *
-* Copyright 2010 - 2014, The Regents of the University of Minnesota
+* Copyright 2010 - 2017, The Regents of the University of Minnesota
 * Distributed under the terms of the GNU General Public License.
 */
 
