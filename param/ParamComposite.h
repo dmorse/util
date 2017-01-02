@@ -16,6 +16,7 @@
 #include <util/param/FArrayParam.h>        // member function template
 #include <util/param/CArray2DParam.h>      // member function template
 #include <util/param/DMatrixParam.h>       // member function template
+#include <util/param/DSymmMatrixParam.h>       // member function template
 #include <util/archives/Serializable_includes.h>
 
 #include <vector>
@@ -460,6 +461,34 @@ namespace Util
                           DMatrix<Type>& matrix, int m, int n);
 
       /**
+      * Add and read a required symmetrix DMatrix.
+      *
+      * \param in  input stream for reading
+      * \param label  Label string for new array
+      * \param matrix  DMatrix object
+      * \param n  number of rows or columns
+      * \return reference to the DMatrixParam<Type> object
+      */
+      template <typename Type>
+      DSymmMatrixParam<Type>&
+      readDSymmMatrix(std::istream &in, const char *label,
+                      DMatrix<Type>& matrix, int n);
+
+      /**
+      * Add and read an optional DMatrix matrix parameter.
+      *
+      * \param in  input stream for reading
+      * \param label  Label string for new array
+      * \param matrix  DMatrix object
+      * \param n  number of rows or columns
+      * \return reference to the DMatrixParam<Type> object
+      */
+      template <typename Type>
+      DSymmMatrixParam<Type>&
+      readOptionalDSymmMatrix(std::istream &in, const char *label,
+                              DMatrix<Type>& matrix, int n);
+
+      /**
       * Add and read a class label and opening bracket.
       *
       * \param in  input stream for reading
@@ -714,6 +743,41 @@ namespace Util
       loadDMatrix(Serializable::IArchive &ar, const char *label,
                   DMatrix<Type>& matrix, int m, int n);
 
+      /**
+      * Add and load a symmetric DMatrixParam parameter.
+      *
+      * \param ar  archive for loading
+      * \param label  Label string for new array
+      * \param matrix  DMatrix object
+      * \param n  number of rows or columns
+      * \param isRequired  Is this a required parameter?
+      * \return reference to the DMatrixParam<Type> object
+      */
+      template <typename Type>
+      DSymmMatrixParam<Type>&
+      loadDSymmMatrix(Serializable::IArchive &ar, const char *label,
+                      DMatrix<Type>& matrix, int n, bool isRequired);
+
+      /**
+      * Add and load a required DMatrixParam < Type > matrix parameter.
+      *
+      * \param ar  archive for loading
+      * \param label  Label string for new array
+      * \param matrix  DMatrix object
+      * \param m  number of rows (1st dimension)
+      * \param n  number of columns (2nd dimension)
+      * \return reference to the DMatrixParam<Type> object
+      */
+      template <typename Type>
+      DSymmMatrixParam<Type>&
+      loadDSymmMatrix(Serializable::IArchive &ar, const char *label,
+                      DMatrix<Type>& matrix, int n);
+
+      //@}
+
+      /// \name add* functions for child components
+      /// \brief These function each add a ParamComponent object to the
+      /// format array, but do not read any data from an input stream.
       //@}
 
       /// \name add* functions for child components
@@ -928,6 +992,21 @@ namespace Util
       DMatrixParam<Type>&
       readDMatrix_(std::istream &in, const char *label, 
                    DMatrix<Type>& matrix, int m, int n, bool isRequired);
+
+      /**
+      * Add and read a symmetrix DMatrix parameter.
+      *
+      * \param in  input stream for reading
+      * \param label  Label string for new array
+      * \param matrix  DMatrix object
+      * \param n  number of rows or columns 
+      * \param  isRequired  Is this a required parameter?
+      * \return reference to the DMatrixParam<Type> object
+      */
+      template <typename Type>
+      DSymmMatrixParam<Type>&
+      readDSymmMatrix_(std::istream &in, const char *label, 
+                   DMatrix<Type>& matrix, int n, bool isRequired);
 
    };
 
@@ -1314,6 +1393,79 @@ namespace Util
    ParamComposite::loadDMatrix(Serializable::IArchive &ar, const char *label,
                                DMatrix<Type>& matrix, int m, int n)
    {  return loadDMatrix<Type>(ar, label, matrix, m, n, true); }
+
+   // Templates for Symmetric DMatrix containers
+
+   /*
+   * Add and read a symmetric DMatrixParam DMatrix (private).
+   */
+   template <typename Type>
+   DSymmMatrixParam<Type>&
+   ParamComposite::readDSymmMatrix_(std::istream &in, 
+                                    const char *label,
+                                    DMatrix<Type>& matrix, 
+                                    int n,
+                                    bool isRequired)
+   {
+      DSymmMatrixParam<Type>* ptr;
+      ptr = new DSymmMatrixParam<Type>(label, matrix, n, isRequired);
+      setParent(*ptr);
+      ptr->readParam(in);
+      addComponent(*ptr);
+      return *ptr;
+   }
+
+   /*
+   * Add and read a required DMatrixParam.
+   */
+   template <typename Type>
+   inline DSymmMatrixParam<Type>&
+   ParamComposite::readDSymmMatrix(std::istream& in, 
+                                   const char *label,
+                                   DMatrix<Type>& matrix, 
+                                   int n)
+   {  return readDSymmMatrix_<Type>(in, label, matrix, n, true); }
+
+   /*
+   * Add and read an optional DMatrixParam.
+   */
+   template <typename Type>
+   inline DSymmMatrixParam<Type>&
+   ParamComposite::readOptionalDSymmMatrix(std::istream &in, 
+                                           const char *label,
+                                           DMatrix<Type>& matrix, 
+                                           int n)
+   {  return readDMatrix_<Type>(in, label, matrix, n, false); }
+
+   /*
+   * Add and load a DMatrix < Type > C two-dimensional matrix parameter.
+   */
+   template <typename Type>
+   DSymmMatrixParam<Type>&
+   ParamComposite::loadDSymmMatrix(Serializable::IArchive &ar, 
+                                   const char *label,
+                                   DMatrix<Type>& matrix, 
+                                   int n,
+                                   bool isRequired)
+   {
+      DSymmMatrixParam<Type>* ptr;
+      ptr = new DSymmMatrixParam<Type>(label, matrix, n, isRequired);
+      setParent(*ptr);
+      ptr->load(ar);
+      addComponent(*ptr);
+      return *ptr;
+   }
+
+   /*
+   * Add and load a required DMatrixParam< Type> matrix parameter.
+   */
+   template <typename Type>
+   inline DSymmMatrixParam<Type>&
+   ParamComposite::loadDSymmMatrix(Serializable::IArchive &ar, 
+                                   const char *label,
+                                   DMatrix<Type>& matrix, 
+                                   int n)
+   {  return loadDSymmMatrix<Type>(ar, label, matrix, n, true); }
 
 }
 #endif
