@@ -1,5 +1,8 @@
-The classes in subdirectories of src/util provide general utilities for 
-scientific programming in C++.
+The classes in the util/ directory tree provide general utilities for 
+scientific programming in C++. This directory was originally developed 
+as part of the simpatico molecular simulation package. It is maintained
+as a separate git repository to allow it to be used in other packages, 
+and is used as a submodule of the simpatico git repository.
 
 Subdirectories:
 ---------------
