@@ -1,0 +1,46 @@
+#!/bin/bash
+
+#------------------------------------------------------------------------
+# Setup script:
+#
+# This script should be run once before the first time the program is
+# compiled. It must be run from the root simpatico/ directory, in which
+# this script is located.
+# 
+# This script:
+#
+# 1) Copies default or repository versions of several build configuration 
+# files, named config.mk_r, to modifiable user versions, named config.mk. 
+# A separate set of build configuration files is created in the src/
+# directory (for in-source build) and in the bld/serial and bld/parallel
+# object directories. 
+#
+# 2) Sets the makefile variables $(ROOT_DIR) and $(BLD_DIR) in the main
+# config.mk file in each object directory to the absolute paths of the 
+# current working directory of the object directory, respectively. 
+#
+# 4) Creates user modifiable copies of repository versions of some C++ 
+# source files that users often need to modify to add new features. 
+# Specifically, it makes a copies of the Boundary typedef.
+#------------------------------------------------------------------------
+
+# Change directory to main project directory
+cd ../.. 
+
+# Create main config.mk file and set the value of $(ROOT_DIR) and $(BLD_DIR)
+sed -e "s|=PWD|=$PWD|" -e "s|=OWD|src|" src/util/config/src_config > src/config.mk
+
+# Copy util namespace configuration file
+cp src/util/config.mk_r src/util/config.mk
+
+# Copy typedef for the class that defines boundary conditions
+cp src/util/boundary/Boundary.h_r src/util/boundary/Boundary.h
+
+# Copy the makeDep dependency-maker script into the bin directory
+mkdir bin
+cp src/util/config/makeDep bin/
+
+# Copy python files into the scripts/python directory
+mkdir scripts
+mkdir scripts/python
+cp src/util/config/*.py scripts/python/
