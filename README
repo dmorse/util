@@ -2,25 +2,66 @@ The classes in the util/ directory tree provide general utilities for
 scientific programming in C++. This directory was originally developed 
 as part of the simpatico molecular simulation package. It is maintained
 as a separate git repository to allow it to be used in other packages, 
-and is used as a submodule of the simpatico git repository.
+and is used as a submodule of the simpatico git repository. 
 
-Subdirectories:
----------------
+A brief description of the contents of the various subdirectories of 
+util/ is given in the CONTENTS file.
 
-misc           Exception, Log, FileMaster and other utilities
-format         formatted output of primitive types in ostreams
-memory         class for managing dynamically allocated memory
-containers     container template classes and associated iterators
-mpi            utilities for MPI programming
-param          parameter file input and output
-math           mathematical constants and operations
-space          Cartesian vectors, tensors, and grids
-boundary       periodic boundary conditions
-crystal        crystallographic symmetry
-ensembles      statistical mechanical ensembles
-archives       serialization (similar to Boost serialization)
-random         random number generator
-accumulators   statistical accumulator classes
+Required Parent Directories
+---------------------------
+
+The util package may be installed either as part of larger git repository, 
+as a submodule, or as a standalone package. A standalone installation of 
+the util package is a convenient place to work on development and testing 
+of the util package itself. In either case, the util/ directory that contains
+the contents of the dmorse/util github repository must be a subdirectory of
+a directory named "src/", which should itself be a subdirectory of the root
+directory for the project. The required directory structure is thus
+
+ROOT/
+ROOT/src/
+ROOT/src/util
+
+where ROOT refers to the name of the root directory of the software project,
+and ROOT/src/util is a directory that was originally created by cloning the
+dmorse/util github repository, or by creating a submodule of an enclosing
+repository. If the util/ directory was created as a standalone directory by
+cloning the github repository, then can safely moved (using unix mv command)
+after it is created without disturbing synchronization with the server. 
+
+Standalone Installation 
+-----------------------
+
+Instructions to installation util in a directory tree that is not part of
+a larger project:
+
+1) Create the directory structure described above.
+
+2) Change directory (cd) to the ROOT/src/util directory.
+
+3) From the ROOT/src/util directory, enter the command
+
+   > .config/setup
+
+   This will create directories named ROOT/bin and ROOT/scripts and will
+   place copies of several files in these new directories as well as in 
+   the ROOT/src/ and ROOT/src/util directories.
+
+4) Your PYTHONPATH must be set to allow python to find several module
+   files that are installed in the ROOT/scripts/pytyon directory. If your 
+   PYTHONPATH is already set up to allow you to compile simpatico in a 
+   separate directory on the same computer, then the PYTHONPATH should 
+   already include the corresponding simpatico/scripts/python directory 
+   of your simpatico installation. This directory contains identical copies 
+   of the required python modules. In this case, you do not need to further 
+   modify your python path. If you have not already set your PYTHONPATH
+   to allow compilation of simpatico on the same computer, then you will 
+   need to modify your PYTHONPATH to include the ROOT/scripts/python 
+   directory of the standalone installation of the util package. 
+
+5) From the ROOT/src/util directory, invoke
+
+   > make all
 
 Makefile targets:
 -----------------
