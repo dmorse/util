@@ -3,29 +3,50 @@
 #------------------------------------------------------------------------
 # Setup script:
 #
-# This script should be run once before the first time the program is
-# compiled. It must be run from the root simpatico/ directory, in which
-# this script is located.
+# This script is used to setup installation of the util/ repository as a
+# stand-alone package, when it is not installed as a submodule of a larger
+# git repository.  It is not needed, and should not be used, when the util/
+# director is installed as a submodule of a larger project. 
+#
+# This script assumes that the util directory, which contians the contents
+# of the util repository, are installed within a directory structure 
+#
+#  ROOT/
+#  ROOT/src/
+#  ROOT/src/util
 # 
-# This script:
+# in which ROOT denotes the name of the root directory of the instalation 
+# (which is generally something other than ROOT), and in which this root 
+# repository is empty except for its src/ subdirectory, and the src/ 
+# directory is empty except for the util/ subdirectory.
 #
-# 1) Copies default or repository versions of several build configuration 
-# files, named config.mk_r, to modifiable user versions, named config.mk. 
-# A separate set of build configuration files is created in the src/
-# directory (for in-source build) and in the bld/serial and bld/parallel
-# object directories. 
+# This setup script should be run once before the first time code in 
+# the util/ directory is compiled. It must be run from the src/util/ 
+# directory, using the command:
 #
-# 2) Sets the makefile variables $(ROOT_DIR) and $(BLD_DIR) in the main
-# config.mk file in each object directory to the absolute paths of the 
-# current working directory of the object directory, respectively. 
+# >>>> .config/setup
+# 
+# What this script does:
 #
-# 4) Creates user modifiable copies of repository versions of some C++ 
-# source files that users often need to modify to add new features. 
-# Specifically, it makes a copies of the Boundary typedef.
+# 1) It copies default or repository versions of build configuration files,
+# to modifiable user versions, named config.mk, which are placed in the
+# src/ and src/util directories. 
+#
+# 2) It sets the makefile variables $(ROOT_DIR), $(SRC_DIR), and $(BLD_DIR) 
+# in the main config.mk file in the src/ directory to the correct absolute 
+# paths.
+#
+# 3) It installs copies of the python scripts and bash scripts that are used 
+# automatically generate dependency information. Python scripts are 
+# installed in root/scripts/python and the makeDep bash script is installed
+# in root/bin. 
+
+# 4) It makes a copy of the util/boundary/Boundary.h file, which contains 
+# a typedef.
 #------------------------------------------------------------------------
 
-# Change directory to main project directory
-cd ../../..
+# Change directory to ROOT directory
+cd ../..
 
 # Create main config.mk file and set the value of $(ROOT_DIR) and $(BLD_DIR)
 sed -e "s|=PWD|=$PWD|" -e "s|=OWD|src|" src/util/.config/src_config > src/config.mk

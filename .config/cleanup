@@ -1,0 +1,29 @@
+#!/bin/bash
+
+#------------------------------------------------------------------------
+# Cleanup script:
+#
+# This script is used to clean up a standalone installation of the util
+# repository, as created by the setup script in the same directory. 
+
+# DO NOT invoke this script when util is installed as a submodule of a 
+# larger git repository - in this context it will erase files that should 
+# not be erased. 
+#
+# When used, this script must be invoked from the util/ directory (i.e.,
+# the parent directory the hidden .config directory that contains the
+# script), using the command:
+#
+# >> .config/cleanup
+#
+#------------------------------------------------------------------------
+
+# Change directory to ROOT directory
+cd ../..
+
+rm -f src/config.mk
+rm -f src/util/config.mk
+rm -f src/util/boundary/Boundary.h
+rm -fr bin
+rm -fr scripts
+
