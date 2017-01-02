@@ -6,6 +6,8 @@
 
 #include <util/containers/DSArray.h>
 #include <util/containers/Array.h>
+#include <util/archives/BinaryFileIArchive.h>
+#include <util/archives/BinaryFileOArchive.h>
 
 using namespace Util;
 
