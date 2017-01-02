@@ -25,7 +25,7 @@
 #------------------------------------------------------------------------
 
 # Change directory to main project directory
-cd ../.. 
+cd ../../..
 
 # Create main config.mk file and set the value of $(ROOT_DIR) and $(BLD_DIR)
 sed -e "s|=PWD|=$PWD|" -e "s|=OWD|src|" src/util/config/src_config > src/config.mk
