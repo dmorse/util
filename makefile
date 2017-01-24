@@ -30,6 +30,9 @@ ifeq ($(BLD_DIR),$(SRC_DIR))
 	rm -f boundary/Boundary.h
 endif
 
+test:
+	cd tests; make run
+
 #-----------------------------------------------------------------------
 # Include dependency files
 

@@ -20,10 +20,13 @@ public:
    void setUp()
    {
       Label::clear();
+      ParamComponent::setEcho(false);
    }
 
    void tearDown()
-   {}
+   {
+      ParamComponent::setEcho(false);
+   }
 
    void testBeginConstructor1() {
       printMethod(TEST_FUNC);

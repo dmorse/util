@@ -16,6 +16,7 @@
 #include "format/FormatTest.h"
 #include "param/serial/ParamTestComposite.h"
 #include "random/RandomTest.h"
+#include "signal/SignalTest.h"
 #include "space/SpaceTestComposite.h"
 #include "misc/MiscTestComposite.h"
 
@@ -37,6 +38,7 @@ addChild(new CrystalTestComposite, "crystal/");
 addChild(new TEST_RUNNER(FormatTest), "format/");
 addChild(new ParamTestComposite, "param/serial/");
 addChild(new TEST_RUNNER(RandomTest), "random/");
+addChild(new TEST_RUNNER(SignalTest), "signal/");
 addChild(new SpaceTestComposite, "space/");
 addChild(new MiscTestComposite, "misc/");
 #ifdef UTIL_MPI
