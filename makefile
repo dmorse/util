@@ -31,7 +31,7 @@ ifeq ($(BLD_DIR),$(SRC_DIR))
 endif
 
 test:
-	cd tests; make run
+	@cd tests; $(MAKE) run
 
 #-----------------------------------------------------------------------
 # Include dependency files
