@@ -12,6 +12,7 @@ clean:
 	rm -f $(util_tests_accumulators_stochastic_meanSqDisp_OBJS) 
 	rm -f $(util_tests_accumulators_stochastic_meanSqDisp_OBJS:.o=.d)
 	rm -f MeanSqDispTest
+	rm -f out*
 
 clean-deps:
 	rm -f $(util_tests_accumulators_stochastic_meanSqDisp_OBJS:.o=.d)

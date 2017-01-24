@@ -18,8 +18,7 @@ class SymmTensorAverageTest
 public:
 
    SymmTensorAverageTest()
-    : randomPtr_(0),
-      verbose_(2)
+    : randomPtr_(0)
    {}
 
    void setUp(const char* functionName)
@@ -103,7 +102,6 @@ public:
 private:
 
    Random* randomPtr_;
-   int     verbose_;
 
 };
 
