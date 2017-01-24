@@ -104,9 +104,6 @@ namespace Util
       /// Archive version id.
       unsigned int  version_;
 
-      /// Did this object create the associated file?
-      bool createdFile_;
-
    };
 
    // Inline methods
