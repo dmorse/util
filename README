@@ -35,7 +35,8 @@ Standalone Installation
 Instructions to installation util in a directory tree that is not part of
 a larger project:
 
-1) Create the directory structure described above.
+1) Create the directory structure described above, in which the working copy
+of the git repository is located in directory ROOT/src/util.
 
 2) Change directory (cd) to the ROOT/src/util directory.
 
