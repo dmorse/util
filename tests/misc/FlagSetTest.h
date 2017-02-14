@@ -94,6 +94,7 @@ public:
    void testReadOrdered3() 
    {
       printMethod(TEST_FUNC);
+      printEndl();
 
       FlagSet flags;
       std::string allowed = "abcdef";
@@ -112,6 +113,7 @@ public:
    void testReadOrdered4() 
    {
       printMethod(TEST_FUNC);
+      printEndl();
 
       FlagSet flags;
       std::string allowed = "abcdef";

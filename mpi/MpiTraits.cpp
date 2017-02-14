@@ -6,7 +6,6 @@
 */
 
 #include "MpiTraits.h"
-#ifdef UTIL_MPI
 
 namespace Util 
 {
@@ -66,4 +65,3 @@ namespace Util
    const bool MpiTraits<wchar_t>::hasType = true;
    #endif
 }
-#endif

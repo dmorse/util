@@ -41,6 +41,12 @@ public:
       ParamComponent::setEcho(false);
    }
 
+   void tearDown()
+   {
+      Label::clear();
+      ParamComponent::setEcho(false);
+   }
+
    void testConstructor() 
    {}
 
@@ -118,7 +124,7 @@ public:
       openInputFile("in/ParamComposite", file_);
 
       paramComposite_.setEcho();
-      if (ParamComponent::echo()) std::cout << std::endl;
+      if (ParamComponent::echo()) printEndl();
       paramComposite_.readBegin(file_, "AComposite");
       paramComposite_.read<int>(file_, "value0", value0);
       paramComposite_.readOptional<int>(file_, "optInt", optInt); // Optional parameter
@@ -147,7 +153,7 @@ public:
       printMethod(TEST_FUNC);
 
       ParamComponent::setEcho(true);
-      if (ParamComponent::echo()) std::cout << std::endl;
+      if (ParamComponent::echo()) printEndl();
 
       BComposite bcomp;
       AComposite acomp;
@@ -388,6 +394,7 @@ public:
       printEndl();
       absentClone.writeParam(std::cout);
       clone.writeParam(std::cout);
+      ParamComponent::setEcho(false);
    }
 
    void testMemoryArchiveSerialize() 

@@ -744,7 +744,7 @@ namespace Util
                   DMatrix<Type>& matrix, int m, int n);
 
       /**
-      * Add and load a symmetric DMatrixParam parameter.
+      * Add and load a symmetric DSymmMatrixParam < Type > matrix parameter.
       *
       * \param ar  archive for loading
       * \param label  Label string for new array
@@ -759,13 +759,12 @@ namespace Util
                       DMatrix<Type>& matrix, int n, bool isRequired);
 
       /**
-      * Add and load a required DMatrixParam < Type > matrix parameter.
+      * Add and load a required DSymmMatrixParam < Type > matrix parameter.
       *
       * \param ar  archive for loading
       * \param label  Label string for new array
       * \param matrix  DMatrix object
-      * \param m  number of rows (1st dimension)
-      * \param n  number of columns (2nd dimension)
+      * \param n  number of rows or columns
       * \return reference to the DMatrixParam<Type> object
       */
       template <typename Type>
@@ -776,13 +775,8 @@ namespace Util
       //@}
 
       /// \name add* functions for child components
-      /// \brief These function each add a ParamComponent object to the
-      /// format array, but do not read any data from an input stream.
-      //@}
-
-      /// \name add* functions for child components
-      /// \brief These function each add a ParamComponent object to the
-      /// format array, but do not read any data from an input stream.
+      /// \brief These functions add a ParamComponent to the format array,
+      /// but do not read data.
       //@{
 
       /**

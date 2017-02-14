@@ -25,7 +25,6 @@ class AutoCorrelationTest
 public:
 
    AutoCorrelationTest()
-    : verbose_(2)
    {}
 
    void setUp(const char* functionName)
@@ -148,7 +147,6 @@ public:
 private:
 
    Random random_;
-   int    verbose_;
 
 };
 

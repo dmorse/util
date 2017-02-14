@@ -40,6 +40,7 @@ public:
 
       std::ifstream in;
       openInputFile("in/Random", in);
+      if (ParamComponent::echo()) printEndl();
       random->readParam(in);
 
       // Verbose output
@@ -63,6 +64,7 @@ public:
 
       std::ifstream in;
       openInputFile("in/Random", in);
+      if (ParamComponent::echo()) printEndl();
       random->readParam(in);
 
       for (i=0; i < nbin; i++) {
@@ -100,6 +102,7 @@ public:
 
       std::ifstream in;
       openInputFile("in/Random", in);
+      if (ParamComponent::echo()) printEndl();
       random->readParam(in);
 
       for (i=0; i < nSample; i++) {
@@ -128,6 +131,7 @@ public:
 
       std::ifstream in;
       openInputFile("in/Random", in);
+      if (ParamComponent::echo()) printEndl();
       random->readParam(in);
 
       max = 100;
@@ -149,6 +153,7 @@ public:
 
       std::ifstream in;
       openInputFile("in/Random", in);
+      if (ParamComponent::echo()) printEndl();
       random->readParam(in);
 
       max = 100;
@@ -167,6 +172,7 @@ public:
 
       std::ifstream in;
       openInputFile("in/Random", in);
+      if (ParamComponent::echo()) printEndl();
       random->readParam(in);
 
       // Pull random number to change state

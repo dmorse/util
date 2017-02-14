@@ -14,6 +14,7 @@ clean:
 	rm -f $(util_tests_accumulators_stochastic_autocorr_OBJS)
 	rm -f $(util_tests_accumulators_stochastic_autocorr_OBJS:.o=.d)
 	rm -f AutoCorrTest 
+	rm -f out*
 
 clean-deps:
 	rm -f $(util_tests_accumulators_stochastic_autocorr_OBJS:.o=.d)

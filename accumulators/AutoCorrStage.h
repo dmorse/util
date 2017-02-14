@@ -119,8 +119,11 @@ namespace Util
       /**
       * Output the autocorrelation function.
       *
-      * \param out output stream.
-      * \param aveSq square of average <x>^2 subtracted from <x(t)x(0)>
+      * The parameter avSq = ave(x)^2 is subtracted from the correlation
+      * function ave(x(t)x(0)). 
+      *
+      * \param out output stream
+      * \param aveSq square of ave(x)
       */
       void output(std::ostream& out, Product aveSq);
 
@@ -157,8 +160,10 @@ namespace Util
       /**
       * Return autocorrelation at a given lag time.
       *
+      * The parameter aveSq is subtracted from ave(x(t)x(0)) in output.
+      *
       * \param t the lag time, in Data samples
-      * \param aveSq square average <x>^2 subtracted from <x(t)x(0)>
+      * \param aveSq square ave(x(t))
       */
       Product autoCorrelation(int t, Product aveSq) const;
 
@@ -172,7 +177,11 @@ namespace Util
       /**
       * Numerical integration of autocorrelation function.
       *
-      * \param aveSq square average <x>^2 subtracted from <x(t)x(0)>
+      * This function returns the time integral of the autocorrelation
+      * function.  The parameter aveSq is subtracted from ave(x(t)x(0)) 
+      * in the integrand.
+      *
+      * \param aveSq square ave(x(t))
       */
       double corrTime(Product aveSq) const;
 
