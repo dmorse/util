@@ -508,7 +508,7 @@ namespace Util
    */
    template <typename Data>
    inline Data* GridArray<Data>::data() 
-   {  return *data_;}
+   {  return data_;}
 
    /*
    * Return true if the GridArray has been allocated, false otherwise.
