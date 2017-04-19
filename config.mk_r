@@ -63,6 +63,11 @@ UTIL_DEFS+= -DUTIL_MPI
 UTIL_MPI_SUFFIX:=_m
 endif
 
+# Enable FFTW Fast Fourier Transform Library
+ifdef UTIL_FFTW
+UTIL_DEFS+= -DUTIL_FFTW
+endif
+
 # Enable debugging assertions
 ifdef UTIL_DEBUG
 UTIL_DEFS+= -DUTIL_DEBUG
