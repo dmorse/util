@@ -17,8 +17,7 @@ namespace Util
    XdrFileOArchive::XdrFileOArchive()
     : xdr_(),
       filePtr_(0),
-      version_(0),
-      createdFile_(false)
+      version_(0)
    {}
 
    /*
@@ -27,8 +26,7 @@ namespace Util
    XdrFileOArchive::XdrFileOArchive(std::string filename)
     : xdr_(),
       filePtr_(0),
-      version_(0),
-      createdFile_(true)
+      version_(0)
    {
       filePtr_ = fopen(filename.c_str(), "wb+"); 
       if (filePtr_ == NULL) {

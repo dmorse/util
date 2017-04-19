@@ -187,6 +187,11 @@ namespace Util
       */
       Data& operator() (const IntVector& position);
 
+      /*
+      * Return pointer to underlying 1D C-array.
+      */
+      Data* data();
+
    private:
 
       /// Pointer to 1D C array of all elements.
@@ -497,6 +502,13 @@ namespace Util
    template <typename Data>
    inline Data& GridArray<Data>::operator() (const IntVector& position)
    {  return *(data_ + rank(position)); }
+
+   /*
+   * Return pointer to underlying 1D C-array.
+   */
+   template <typename Data>
+   inline Data* GridArray<Data>::data() 
+   {  return data_;}
 
    /*
    * Return true if the GridArray has been allocated, false otherwise.

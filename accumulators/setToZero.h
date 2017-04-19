@@ -18,12 +18,20 @@ namespace Util
 {
 
    /**
+   * Set an int variable to zero.
+   *
+   * \param value value to be zeroed.
+   */
+   inline void setToZero(int& value)
+   {  value = 0; }
+
+   /**
    * Set a float variable to zero.
    *
    * \param value value to be zeroed.
    */
    inline void setToZero(float& value)
-   { value = 0.0; }
+   {  value = 0.0; }
 
    /**
    * Set a double variable to zero.
@@ -31,7 +39,7 @@ namespace Util
    * \param value value to be zeroed.
    */
    inline void setToZero(double& value)
-   { value = 0.0; }
+   {  value = 0.0; }
 
    /**
    * Set a Vector variable to zero.
@@ -39,7 +47,7 @@ namespace Util
    * \param value value to be zeroed.
    */
    inline void setToZero(Vector& value)
-   { value.zero(); }
+   {  value.zero(); }
 
    /**
    * Set a Vector variable to zero.
@@ -47,7 +55,7 @@ namespace Util
    * \param value value to be zeroed.
    */
    inline void setToZero(Tensor& value)
-   { value.zero(); }
+   {  value.zero(); }
 
    /**
    * Set a complex<float> variable to zero.
@@ -55,7 +63,7 @@ namespace Util
    * \param value value to be zeroed.
    */
    inline void setToZero(complex<float>& value)
-   { value = complex<float>(0.0, 0.0); }
+   {  value = complex<float>(0.0, 0.0); }
 
    /**
    * Set a complex<double> variable to zero.
@@ -63,7 +71,7 @@ namespace Util
    * \param value value to be zeroed.
    */
    inline void setToZero(complex<double>& value)
-   { value = complex<double>(0.0, 0.0); }
+   {  value = complex<double>(0.0, 0.0); }
 
 }
 #endif

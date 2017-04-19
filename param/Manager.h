@@ -510,7 +510,10 @@ namespace Util
    */
    template <typename Data>
    Factory<Data>* Manager<Data>::newDefaultFactory() const
-   {  UTIL_THROW("Call of un-implemented Manager<Data>::newDefaultFactory"); }
+   {  
+      UTIL_THROW("Call of un-implemented Manager<Data>::newDefaultFactory"); 
+      return 0;
+   }
 
 }
 #endif
