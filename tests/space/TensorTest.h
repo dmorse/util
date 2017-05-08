@@ -321,7 +321,8 @@ public:
       Tensor v;
       v(1,2) = 3.0;
       v(2,2) = 4.0;
-      v(0,2) = 4.0;
+      v(0,2) = 2.0;
+      v(0,1) = 1.0;
       v.identity();
       int i, j;
       for (i=0; i < Dimension; ++i) {
@@ -333,7 +334,7 @@ public:
             }
          }
       }
-      // TEST_ASSERT(v == Tensor::Zero);
+      TEST_ASSERT(v == Tensor::Identity);
    }
 
 };

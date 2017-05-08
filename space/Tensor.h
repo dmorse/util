@@ -296,8 +296,13 @@ namespace Util
       */
       static const Tensor Zero;
 
+      /** 
+      * Constant idenity Tensor (diagonal diagonal elements all 1).
+      */
+      static const Tensor Identity;
+
       /**
-      * Call to guarantee initialization of Tensor::Zero tensor.
+      * Call to guarantee initialization of Zero and Identity tensors.
       */
       static void initStatic();
 
