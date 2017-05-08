@@ -154,6 +154,13 @@ namespace Util
       Tensor& zero();
 
       /**
+      * Set this to the identity (unity) tensor.
+      *
+      * \return reference to this tensor
+      */
+      Tensor& identity();
+
+      /**
       * Set row i of this Tensor to elements of Vector r.
       *
       * \return reference to this tensor
@@ -430,6 +437,21 @@ namespace Util
    {
       for (int i = 0; i < DimensionSq; ++i) {
          elem_[i] = 0.0;
+      }
+      return *this;
+   }
+
+   /*
+   * Set this to the identity (unity) tensor.
+   */
+   inline
+   Tensor& Tensor::identity()
+   {
+      for (int i = 0; i < DimensionSq; ++i) {
+         elem_[i] = 0.0;
+      }
+      for (int i = 0; i < Dimension; ++i) {
+         elem_[i*Dimension + i] = 1.0;
       }
       return *this;
    }
