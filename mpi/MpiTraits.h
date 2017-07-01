@@ -1,3 +1,4 @@
+#ifdef UTIL_MPI
 #ifndef UTIL_MPI_TRAITS_H
 #define UTIL_MPI_TRAITS_H
 
@@ -11,7 +12,6 @@
 #include <util/global.h>
 #include <complex>
 
-#ifdef UTIL_MPI
 
 namespace Util 
 {

@@ -19,12 +19,12 @@ all: $(util_OBJS) $(util_LIB)
 
 clean:
 	rm -f $(util_OBJS) $(util_OBJS:.o=.d) $(util_LIB)
+	rm -f */*.o */*/*.o */*/*/*.o
+	rm -f */*.d */*/*.d */*/*/*.d
 	cd tests; $(MAKE) clean
 
 veryclean:
 	$(MAKE) clean
-	rm -f */*.o */*/*.o */*/*/*.o
-	rm -f */*.d */*/*.d */*/*/*.d
 	rm -f lib*.a
 ifeq ($(BLD_DIR),$(SRC_DIR))
 	rm -f boundary/Boundary.h

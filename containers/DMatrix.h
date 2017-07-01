@@ -63,6 +63,18 @@ namespace Util
       void allocate(int capacity1, int capacity2);
 
       /**
+      * Deallocate the underlying memory block.
+      *
+      * \throw Exception if the DMatrix is not allocated.
+      */
+      void deallocate();
+
+      /**
+      * Return true if the DMatrix has been allocated, false otherwise.
+      */
+      bool isAllocated() const;
+
+      /**
       * Serialize a DMatrix to/from an Archive.
       *
       * \param ar       archive 
@@ -70,11 +82,6 @@ namespace Util
       */
       template <class Archive>
       void serialize(Archive& ar, const unsigned int version);
-
-      /**
-      * Return true if the DMatrix has been allocated, false otherwise.
-      */
-      bool isAllocated() const;
 
    };
 
@@ -143,7 +150,7 @@ namespace Util
    /*
    * Destructor.
    *
-   * Delete dynamically allocated C array.
+   * If allocated, deallocate.
    */
    template <typename Data>
    DMatrix<Data>::~DMatrix()
@@ -171,6 +178,29 @@ namespace Util
       capacity1_ = capacity1;
       capacity2_ = capacity2;
    }
+
+   /*
+   * Deallocate the underlying C array.
+   *
+   * Throw an Exception if this DMatrix is not allocated.
+   */
+   template <class Data>
+   void DMatrix<Data>::deallocate()
+   {
+      if (!isAllocated()) {
+         UTIL_THROW("Array is not allocated");
+      }
+      Memory::deallocate<Data>(data_, capacity1_*capacity2_);
+      capacity1_ = 0;
+      capacity2_ = 0;
+   }
+
+   /*
+   * Return true if the DMatrix has been allocated, false otherwise.
+   */
+   template <class Data>
+   inline bool DMatrix<Data>::isAllocated() const 
+   {  return !(data_ == 0); }
 
    /*
    * Serialize a DMatrix to/from an Archive.
@@ -209,13 +239,6 @@ namespace Util
          ar & data_[i];
       }
    }
-
-   /*
-   * Return true if the DMatrix has been allocated, false otherwise.
-   */
-   template <class Data>
-   inline bool DMatrix<Data>::isAllocated() const 
-   {  return !(data_ == 0); }
 
 }
 #endif

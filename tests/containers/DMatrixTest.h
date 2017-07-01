@@ -52,11 +52,19 @@ void DMatrixTest::testConstructor()
 void DMatrixTest::testAllocate()
 {
    printMethod(TEST_FUNC);
-   DMatrix<int> v;
-   v.allocate(2,3);
-   TEST_ASSERT(v.capacity1() == 2 );
-   TEST_ASSERT(v.capacity2() == 3 );
-   TEST_ASSERT(v.isAllocated() );
+   TEST_ASSERT(Memory::total() == 0);
+   {
+      DMatrix<int> v;
+      v.allocate(2,3);
+      TEST_ASSERT(v.capacity1() == 2);
+      TEST_ASSERT(v.capacity2() == 3);
+      TEST_ASSERT(v.isAllocated());
+      v.deallocate();
+      TEST_ASSERT(v.capacity1() == 0);
+      TEST_ASSERT(v.capacity2() == 0);
+      TEST_ASSERT(!v.isAllocated());
+   }
+   TEST_ASSERT(Memory::total() == 0);
 } 
 
 void DMatrixTest::testSubscript()

@@ -13,7 +13,7 @@
 
 using namespace Util;
 
-class DArrayTest : public UnitTest 
+class DArrayTest : public UnitTest
 {
 private:
 
@@ -27,7 +27,7 @@ private:
 
 public:
 
-   void setUp() 
+   void setUp()
    {  memory_ = Memory::total(); }
 
    void tearDown() {}
@@ -58,7 +58,7 @@ void DArrayTest::testConstructor()
       TEST_ASSERT(!v.isAllocated() );
    }
    TEST_ASSERT(Memory::total() == memory_);
-} 
+}
 
 void DArrayTest::testAllocate()
 {
@@ -66,13 +66,22 @@ void DArrayTest::testAllocate()
    TEST_ASSERT(Memory::total() == 0);
    {
       DArray<Data> v;
+
+      // Allocate array
       v.allocate(capacity);
       TEST_ASSERT(v.capacity() == capacity );
       TEST_ASSERT(v.isAllocated());
       TEST_ASSERT((int)Memory::total() == capacity*sizeof(Data));
+
+      // Deallocate array
+      v.deallocate();
+      TEST_ASSERT(v.capacity() == 0);
+      TEST_ASSERT(!v.isAllocated());
+      TEST_ASSERT((int)Memory::total() == 0);
+
    }
    TEST_ASSERT(Memory::total() == memory_);
-} 
+}
 
 void DArrayTest::testSubscript()
 {
@@ -84,13 +93,13 @@ void DArrayTest::testSubscript()
       for (int i=0; i < capacity; i++ ) {
          v[i] = (i+1)*10.0 ;
       }
-   
+
       TEST_ASSERT(v[0] == 10.0);
       TEST_ASSERT(v[2] == 30.0);
       TEST_ASSERT((int)Memory::total() == capacity*sizeof(Data));
    }
    TEST_ASSERT(Memory::total() == memory_);
-} 
+}
 
 void DArrayTest::testSubscriptCmplx()
 {
@@ -103,14 +112,14 @@ void DArrayTest::testSubscriptCmplx()
          v[i].real((i+1)*10.0);
          v[i].imag((i+1)*10.0 + 0.1);
       }
-   
+
       TEST_ASSERT(eq(v[0].real(), 10.0));
       TEST_ASSERT(eq(v[1].imag(), 20.1));
       TEST_ASSERT(eq(v[2].real(), 30.0));
       TEST_ASSERT((int)Memory::total() == capacity*sizeof(std::complex<Data>));
    }
    TEST_ASSERT(Memory::total() == memory_);
-} 
+}
 
 void DArrayTest::testIterator()
 {
@@ -122,7 +131,7 @@ void DArrayTest::testIterator()
       for (int i=0; i < capacity; i++ ) {
          v[i] = (i+1)*10.0;
       }
-   
+
       ArrayIterator<Data> it;
       v.begin(it);
       TEST_ASSERT(eq(*it, 10.0));
@@ -140,7 +149,7 @@ void DArrayTest::testIterator()
       TEST_ASSERT((int)Memory::total() == capacity*sizeof(Data));
    }
    TEST_ASSERT(Memory::total() == memory_);
-} 
+}
 
 void DArrayTest::testCopyConstructorCmplx()
 {
@@ -149,7 +158,7 @@ void DArrayTest::testCopyConstructorCmplx()
       DArray< std::complex<Data> > v;
       TEST_ASSERT(v.capacity() == 0 );
       TEST_ASSERT(!v.isAllocated() );
-   
+
       v.allocate(capacity);
       TEST_ASSERT(v.capacity() == capacity );
       TEST_ASSERT(v.isAllocated() );
@@ -157,7 +166,7 @@ void DArrayTest::testCopyConstructorCmplx()
          v[i].real((i+1)*10.0);
          v[i].imag((i+1)*10.0 + 0.1);
       }
-   
+
       DArray< std::complex<Data> > u(v);
       TEST_ASSERT(u.capacity() == capacity);
       TEST_ASSERT(u.isAllocated() );
@@ -170,7 +179,7 @@ void DArrayTest::testCopyConstructorCmplx()
       TEST_ASSERT((int)Memory::total() == 2*capacity*sizeof(std::complex<Data>));
    }
    TEST_ASSERT(Memory::total() == memory_);
-} 
+}
 
 void DArrayTest::testAssignment()
 {
@@ -181,18 +190,18 @@ void DArrayTest::testAssignment()
       v.allocate(capacity);
       TEST_ASSERT(v.capacity() == 3 );
       TEST_ASSERT(v.isAllocated() );
-   
+
       DArray<Data> u;
       u.allocate(3);
       TEST_ASSERT(u.capacity() == 3 );
       TEST_ASSERT(u.isAllocated() );
-   
+
       for (int i=0; i < capacity; i++ ) {
          v[i] = (i+1)*10;
       }
-   
+
       u  = v;
-   
+
       TEST_ASSERT(u.capacity() == 3 );
       TEST_ASSERT(u.isAllocated() );
       TEST_ASSERT(v[0] == 10.0);
@@ -201,7 +210,7 @@ void DArrayTest::testAssignment()
       TEST_ASSERT(u[2] == 30.0);
    }
    TEST_ASSERT(Memory::total() == memory_);
-} 
+}
 
 void DArrayTest::testAssignmentCmplx()
 {
@@ -212,19 +221,19 @@ void DArrayTest::testAssignmentCmplx()
       v.allocate(capacity);
       TEST_ASSERT(v.capacity() == 3);
       TEST_ASSERT(v.isAllocated());
-   
+
       DArray< std::complex<Data> > u;
       u.allocate(3);
       TEST_ASSERT(u.capacity() == 3 );
       TEST_ASSERT(u.isAllocated() );
-   
+
       for (int i=0; i < capacity; i++ ) {
          v[i].real((i+1)*10.0);
          v[i].imag((i+1)*10.0 + 0.1);
       }
-   
+
       u  = v;
-   
+
       TEST_ASSERT(u.capacity() == 3 );
       TEST_ASSERT(u.isAllocated() );
       TEST_ASSERT(real(v[0]) == 10.0);
@@ -235,7 +244,7 @@ void DArrayTest::testAssignmentCmplx()
       TEST_ASSERT(real(u[2]) == 30.0);
    }
    TEST_ASSERT(Memory::total() == memory_);
-} 
+}
 
 void DArrayTest::testBaseClassReference()
 {
@@ -246,7 +255,7 @@ void DArrayTest::testBaseClassReference()
       for (int i=0; i < capacity; i++ ) {
          v[i] = (i+1)*10.0;
       }
-      
+
       Array<Data>& u = v;
       TEST_ASSERT(u[0] == 10.0);
       TEST_ASSERT(u[2] == 30.0);
@@ -266,48 +275,48 @@ void DArrayTest::testSerialize1MemoryCmplx()
          v[i].imag((i+1)*10.0 + 0.1);
       }
       int size = memorySize(v);
-     
+
       int i1 = 13;
       int i2;
-   
+
       MemoryOArchive oArchive;
       oArchive.allocate(size + 12);
-   
+
       oArchive << v;
       TEST_ASSERT(oArchive.cursor() == oArchive.begin() + size);
       oArchive << i1;
-   
+
       // Show that v is unchanged by packing
       TEST_ASSERT(imag(v[0])==10.1);
       TEST_ASSERT(real(v[1])==20.0);
       TEST_ASSERT(imag(v[2])==30.1);
       TEST_ASSERT(v.capacity() == 3);
-   
+
       DArray< std::complex<Data> > u;
       u.allocate(3);
-   
+
       MemoryIArchive iArchive;
       iArchive = oArchive;
       TEST_ASSERT(iArchive.begin()  == oArchive.begin());
       TEST_ASSERT(iArchive.cursor() == iArchive.begin());
-   
+
       // Load into u and i2
       iArchive >> u;
       TEST_ASSERT(iArchive.begin() == oArchive.begin());
       TEST_ASSERT(iArchive.end() == oArchive.cursor());
       TEST_ASSERT(iArchive.cursor() == iArchive.begin() + size);
-   
+
       iArchive >> i2;
       TEST_ASSERT(iArchive.cursor() == iArchive.end());
       TEST_ASSERT(iArchive.begin() == oArchive.begin());
       TEST_ASSERT(iArchive.end() == oArchive.cursor());
-   
+
       TEST_ASSERT(u[0].imag() == 10.1);
       TEST_ASSERT(u[1].real() == 20.0);
       TEST_ASSERT(u[2].imag() == 30.1);
       TEST_ASSERT(i2 == 13);
       TEST_ASSERT(u.capacity() == 3);
-   
+
       // Release
       iArchive.release();
       TEST_ASSERT(!iArchive.isAllocated());
@@ -315,26 +324,26 @@ void DArrayTest::testSerialize1MemoryCmplx()
       TEST_ASSERT(iArchive.cursor() == 0);
       TEST_ASSERT(iArchive.end() == 0);
       TEST_ASSERT(oArchive.cursor() == oArchive.begin() + size + sizeof(int));
-   
+
       // Clear values of u and i2
       for (int i=0; i < capacity; i++ ) {
          u[i].real(0.0);
          u[i].imag(0.0);
       }
       i2 = 0;
-   
+
       // Reload into u and i2
       iArchive = oArchive;
       iArchive >> u;
       TEST_ASSERT(iArchive.begin() == oArchive.begin());
       TEST_ASSERT(iArchive.end() == oArchive.cursor());
       TEST_ASSERT(iArchive.cursor() == iArchive.begin() + size);
-   
+
       iArchive >> i2;
       TEST_ASSERT(iArchive.cursor() == iArchive.end());
       TEST_ASSERT(iArchive.begin() == oArchive.begin());
       TEST_ASSERT(iArchive.end() == oArchive.cursor());
-   
+
       TEST_ASSERT(imag(u[0]) == 10.1);
       TEST_ASSERT(real(u[1]) == 20.0);
       TEST_ASSERT(imag(u[2]) == 30.1);
@@ -356,33 +365,33 @@ void DArrayTest::testSerialize2MemoryCmplx()
          v[i].imag((i+1)*10.0 + 0.1);
       }
       int size = memorySize(v);
-     
+
       MemoryOArchive oArchive;
       oArchive.allocate(size);
-   
+
       oArchive << v;
       TEST_ASSERT(oArchive.cursor() == oArchive.begin() + size);
-   
+
       // Show that v is unchanged by packing
       TEST_ASSERT(v[0].imag()==10.1);
       TEST_ASSERT(v[1].real()==20.0);
       TEST_ASSERT(v[2].imag()==30.1);
       TEST_ASSERT(v.capacity() == capacity);
-   
+
       DArray< std::complex<Data> > u;
-   
+
       // Note: We do not allocate DArray<Data> u in this test.
       // This is the main difference from testSerialize1MemoryCmplx()
-   
+
       MemoryIArchive iArchive;
-   
+
       iArchive = oArchive;
-   
+
       TEST_ASSERT(iArchive.begin()  == oArchive.begin());
       TEST_ASSERT(iArchive.cursor() == iArchive.begin());
-   
+
       iArchive >> u;
-   
+
       TEST_ASSERT(iArchive.cursor() == iArchive.begin() + size);
       TEST_ASSERT(imag(u[0]) == 10.1);
       TEST_ASSERT(real(u[1]) == 20.0);
@@ -402,7 +411,7 @@ void DArrayTest::testSerialize1FileCmplx()
          v[i].real((i+1)*10.0);
          v[i].imag((i+1)*10.0 + 0.1);
       }
-     
+
       int i1 = 13;
       int i2;
 
@@ -411,40 +420,40 @@ void DArrayTest::testSerialize1FileCmplx()
       oArchive << v;
       oArchive << i1;
       oArchive.file().close();
-   
+
       // Show that v is unchanged by packing
       TEST_ASSERT(v[0].imag()==10.1);
       TEST_ASSERT(v[1].real()==20.0);
       TEST_ASSERT(v[2].imag()==30.1);
       TEST_ASSERT(v.capacity() == 3);
-   
+
       DArray< std::complex<Data> > u;
       u.allocate(3);
-   
+
       BinaryFileIArchive iArchive;
       openInputFile("binary", iArchive.file());
       iArchive >> u;
       iArchive >> i2;
       iArchive.file().close();
-   
+
       TEST_ASSERT(u[0].imag() == 10.1);
       TEST_ASSERT(u[1].real() == 20.0);
       TEST_ASSERT(u[2].imag() == 30.1);
       TEST_ASSERT(i2 == 13);
       TEST_ASSERT(u.capacity() == 3);
-   
+
       // Clear values of u and i2
       for (int i=0; i < capacity; i++ ) {
          u[i].real(0.0);
          u[i].imag(0.0);
       }
       i2 = 0;
-   
+
       // Reload into u and i2
       openInputFile("binary", iArchive.file());
       iArchive >> u;
       iArchive >> i2;
-   
+
       TEST_ASSERT(u[0].imag() == 10.1);
       TEST_ASSERT(u[1].real() == 20.0);
       TEST_ASSERT(u[2].imag() == 30.1);
@@ -464,52 +473,52 @@ void DArrayTest::testSerialize2FileCmplx()
          v[i].real((i+1)*10.0);
          v[i].imag((i+1)*10.0 + 0.1);
       }
-     
+
       int i1 = 13;
       int i2;
-  
+
       BinaryFileOArchive oArchive;
       openOutputFile("binary", oArchive.file());
       oArchive << v;
       oArchive << i1;
       oArchive.file().close();
-   
+
       // Show that v is unchanged by packing
       TEST_ASSERT(v[0].imag() == 10.1);
       TEST_ASSERT(v[1].real() == 20.0);
       TEST_ASSERT(v[2].imag() == 30.1);
       TEST_ASSERT(v.capacity() == 3);
-   
+
       DArray< std::complex<Data> > u;
-   
-      // u.allocate(3); -> 
-      // Note: We do not allocate first. This is the difference 
+
+      // u.allocate(3); ->
+      // Note: We do not allocate first. This is the difference
       // from the previous test
-   
+
       BinaryFileIArchive iArchive;
       openInputFile("binary", iArchive.file());
       iArchive >> u;
       iArchive >> i2;
       iArchive.file().close();
-   
+
       TEST_ASSERT(eq(u[0].imag(), 10.1));
       TEST_ASSERT(eq(u[1].real(), 20.0));
       TEST_ASSERT(eq(u[2].imag(), 30.1));
       TEST_ASSERT(i2 == 13);
       TEST_ASSERT(u.capacity() == 3);
-   
+
       // Clear values of u and i2
       for (int i=0; i < capacity; i++ ) {
          u[i].real(0.0);
          u[i].imag(0.0);
       }
       i2 = 0;
-   
+
       // Reload into u and i2
       openInputFile("binary", iArchive.file());
       iArchive >> u;
       iArchive >> i2;
-   
+
       TEST_ASSERT(eq(u[0].imag(), 10.1));
       TEST_ASSERT(eq(u[1].real(), 20.0));
       TEST_ASSERT(eq(u[2].imag(), 30.1));
