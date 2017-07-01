@@ -298,6 +298,45 @@ public:
       std::cout << v << std::endl ;
    }
 
+   void testZero() {
+      printMethod(TEST_FUNC);
+
+      Tensor v;
+      v(1,2) = 3.0;
+      v(2,2) = 4.0;
+      v(0,2) = 4.0;
+      v.zero();
+      int i, j;
+      for (i=0; i < Dimension; ++i) {
+         for (j=0; j < Dimension; ++j) {
+            TEST_ASSERT(eq(v(i,j), 0.0));
+         }
+      }
+      TEST_ASSERT(v == Tensor::Zero);
+   }
+
+   void testIdentity() {
+      printMethod(TEST_FUNC);
+
+      Tensor v;
+      v(1,2) = 3.0;
+      v(2,2) = 4.0;
+      v(0,2) = 2.0;
+      v(0,1) = 1.0;
+      v.identity();
+      int i, j;
+      for (i=0; i < Dimension; ++i) {
+         for (j=0; j < Dimension; ++j) {
+            if (i == j) {
+               TEST_ASSERT(eq(v(i,j), 1.0));
+            } else {
+               TEST_ASSERT(eq(v(i,j), 0.0));
+            }
+         }
+      }
+      TEST_ASSERT(v == Tensor::Identity);
+   }
+
 };
 
 TEST_BEGIN(TensorTest)
@@ -320,6 +359,8 @@ TEST_ADD(TensorTest, testSymmetrizeOther)
 TEST_ADD(TensorTest, testTransposeSelf)
 TEST_ADD(TensorTest, testTransposeOther)
 TEST_ADD(TensorTest, testReadWrite)
+TEST_ADD(TensorTest, testZero)
+TEST_ADD(TensorTest, testIdentity)
 TEST_END(TensorTest)
 
 #endif

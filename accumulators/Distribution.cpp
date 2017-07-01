@@ -211,7 +211,7 @@ namespace Util
             histogram_[i] = 0.0;
          }
       }
-      delete totHistogram;
+      delete [] totHistogram;
 
       long totSample; 
       communicator.Reduce(&nSample_, &totSample, 1, MPI::LONG, MPI::SUM, root);

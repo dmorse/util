@@ -15,8 +15,11 @@
 namespace Util
 {
 
-   // Define the Zero Tensor
+   // Define the Zero Tensor constant
    const Tensor Tensor::Zero = Tensor(0.0);
+
+   // Define the Identity Tensor constant
+   const Tensor Tensor::Identity = Tensor().identity();
 
    /**
    * Call this function once to guarantee that this file is linked.
