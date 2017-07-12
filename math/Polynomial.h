@@ -164,7 +164,7 @@ namespace Util
          for (int i = 0; i < other.size(); ++i) {
             GArray<T>::append(other[i]);
          }
-      } 
+      }
    }
 
    /*
@@ -271,16 +271,18 @@ namespace Util
    }
 
    /*
-   * Multipication assignment operator : multiply this by a polynomial.
+   * Multiplication assignment operator : multiply this by a polynomial.
    */
    template <typename T>
    inline
    Polynomial<T>& Polynomial<T>::operator *= (const Polynomial<T>& a)
    {
+      // If this polynomial is zero (size == 0), do nothing. Otherwise:
       if (size() > 0) {
-         
+
          if (a.size() == 0) {
 
+            // If other polynomial (a) is zero, clear this one.
             clear();
 
          } else {
@@ -290,14 +292,14 @@ namespace Util
             // Compute size of new array
             int n = size() + a.size() - 1;
 
-            // Make b = copy of current coefficients
+            // Make a copy of initial coefficients
             GArray<T> b(*this);
             UTIL_CHECK(b.size() == size());
 
             // Clear this array of coefficients
             clear();
-      
-            // Set all coefficients of resized array to zero
+
+            // Set all coefficients to zero
             if (n > capacity()) {
                GArray<T>::reserve(n);
             }
@@ -307,7 +309,7 @@ namespace Util
                GArray<T>::append(zero);
             }
             UTIL_ASSERT(size() == n);
-      
+
             // Double loop over coefficients
             int j, k;
             for (i = 0; i < a.size(); ++i) {
@@ -318,11 +320,21 @@ namespace Util
                }
             }
 
-         }      
+         }
       }
       return *this;
    }
 
+   /**
+   * Equality operator for polynomials.
+   *
+   * Two polynomials are equal iff they have the same order (size)
+   * and the same values for all coefficients.
+   *
+   * \param a 1st polynomial
+   * \param b 2nd polynomial
+   * \return true if a != b
+   */
    template <typename T>
    bool operator == (Polynomial<T>& a, Polynomial<T>& b)
    {
@@ -335,12 +347,22 @@ namespace Util
       return true;
    }
 
+   /**
+   * Inequality operator for polynomials.
+   *
+   * \param a 1st polynomial
+   * \param b 2nd polynomial
+   * \return true if a != b
+   */
    template <typename T>
    bool operator != (Polynomial<T>& a, Polynomial<T>& b)
    {  return !(a == b); }
 
-   /*
+   /**
    * Unary negation of polynomial.
+   *
+   * \param a input polynomial
+   * \return negated polynomial -a
    */
    template <typename T>
    inline
