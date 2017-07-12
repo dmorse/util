@@ -51,7 +51,10 @@ public:
       Rational r(49, -21);
       TEST_ASSERT(r.num() == -7);
       TEST_ASSERT(r.den() == 3);
-   } 
+      Rational s = -r;
+      TEST_ASSERT(s.num() == 7);
+      TEST_ASSERT(s.den() == 3);
+   }
 
    void testIntConstructor()
    {
@@ -107,6 +110,17 @@ public:
       TEST_ASSERT(c != -2);
       TEST_ASSERT(-2 != c);
    } 
+
+   void testUnaryNegation()
+   {
+      printMethod(TEST_FUNC);
+      Rational r(-7, 3);
+      Rational s = -r;
+      TEST_ASSERT(s.num() == 7);
+      TEST_ASSERT(s.den() == 3);
+      Rational t = -s;
+      TEST_ASSERT(t == r);
+   }
 
    void testAddSubtractAssignment()
    {
@@ -225,6 +239,7 @@ TEST_ADD(RationalTest, testCopyConstructor)
 TEST_ADD(RationalTest, testCopyAssignment)
 TEST_ADD(RationalTest, testIntAssignment)
 TEST_ADD(RationalTest, testEquality)
+TEST_ADD(RationalTest, testUnaryNegation)
 TEST_ADD(RationalTest, testAddSubtractAssignment)
 TEST_ADD(RationalTest, testAddSubtractIntAssignment)
 TEST_ADD(RationalTest, testAddSubtract)

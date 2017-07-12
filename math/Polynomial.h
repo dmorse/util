@@ -34,9 +34,9 @@ namespace Util
       //@{
 
       /**
-      * Constructor, specified capacity.
+      * Constructor.
       *
-      * \param order capacity of polynomial.
+      * \param capacity initial capacity of coefficient array.
       */
       Polynomial(int capacity = 10);
 
@@ -96,15 +96,6 @@ namespace Util
       Polynomial<T>& operator -= (const Polynomial<T>& a);
 
       /**
-      * Multiply this polynomial by another.
-      *
-      * Upon return, *this = this*a.
-      *
-      * \param a increment (input)
-      */
-      Polynomial<T>& operator *= (const Polynomial<T>& a);
-
-      /**
       * Multiply this polynomial by a scalar.
       *
       * Upon return, *this = this*a.
@@ -121,6 +112,15 @@ namespace Util
       * \param a scalar factor (input)
       */
       Polynomial<T>& operator /= (T a);
+
+      /**
+      * Multiply this polynomial by another.
+      *
+      * Upon return, *this = this*a.
+      *
+      * \param a increment (input)
+      */
+      Polynomial<T>& operator *= (const Polynomial<T>& a);
 
       //@}
 
@@ -199,17 +199,42 @@ namespace Util
          if (a.size() > capacity()) {
             GArray<T>::resize(a.size());
          }
-         int min;
+         int min = a.size() > size() ? size() : a.size();
+         if (min > 0) {
+            for (int i = 0; i < min; ++i) {
+               (*this)[i] += a[i];
+            }
+         }
          if (a.size() > size()) {
-            min = size();
             for (int i = size(); i < a.size(); ++i) {
                (*this)[i] = a[i];
             }
-         } else {
-            min = a.size();
          }
+      }
+      return *this;
+   }
+
+   /*
+   * Subtrat assignment operator : subtract another polynomial from this.
+   */
+   template <typename T>
+   inline
+   Polynomial<T>& Polynomial<T>::operator -= (const Polynomial<T>& a)
+   {
+      if (a.size() == 0) {
+         clear();
+      } else {
+         if (a.size() > capacity()) {
+            GArray<T>::resize(a.size());
+         }
+         int min = a.size() > size() ? size() : a.size();
          for (int i = 0; i < min; ++i) {
-            (*this)[i] += a[i];
+            (*this)[i] -= a[i];
+         }
+         if (a.size() > size()) {
+            for (int i = size(); i < a.size(); ++i) {
+               (*this)[i] = -a[i];
+            }
          }
       }
       return *this;
@@ -252,33 +277,82 @@ namespace Util
    inline
    Polynomial<T>& Polynomial<T>::operator *= (const Polynomial<T>& a)
    {
-      // Make copy of coefficients
-      GArray<T> b(*this);
-      UTIL_CHECK(b.size() == size());
+      if (size() > 0) {
+         
+         if (a.size() == 0) {
 
-      // Resize array of coefficients
-      clear();
-      int n = size() + a.size();
-      if (n > capacity()) {
-         GArray<T>::resize(n);
+            clear();
+
+         } else {
+
+            UTIL_ASSERT(a.size() > 0);
+
+            // Compute size of new array
+            int n = size() + a.size() - 1;
+
+            // Make b = copy of current coefficients
+            GArray<T> b(*this);
+            UTIL_CHECK(b.size() == size());
+
+            // Clear this array of coefficients
+            clear();
+      
+            // Set all coefficients of resized array to zero
+            if (n > capacity()) {
+               GArray<T>::reserve(n);
+            }
+            T zero = 0;
+            int i;
+            for (i = 0; i < n; ++i) {
+               GArray<T>::append(zero);
+            }
+            UTIL_ASSERT(size() == n);
+      
+            // Double loop over coefficients
+            int j, k;
+            for (i = 0; i < a.size(); ++i) {
+               for (j = 0; j < b.size(); ++j) {
+                  k = i + j;
+                  UTIL_ASSERT(k < n);
+                  (*this)[k] += a[i]*b[j];
+               }
+            }
+
+         }      
       }
+      return *this;
+   }
 
-      // Zero all coefficients
-      int i;
-      for (i = 0; n; ++i) {
-         (*this)[i] = T(0);
-      }
-
-      // Double loop over coefficients
-      int j, k;
-      for (i = 0; i < a.size(); ++i) {
-         for (j = 0; j < b.size(); ++j) {
-            k = i + j;
-            (*this)[i] += a[i]*b[j];
+   template <typename T>
+   bool operator == (Polynomial<T>& a, Polynomial<T>& b)
+   {
+      if (a.size() != b.size()) return false;
+      if (a.size() > 0) {
+         for (int i = 0; i < a.size(); ++i) {
+            if (a[i] != b[i]) return false;
          }
       }
+      return true;
+   }
 
-      return *this;
+   template <typename T>
+   bool operator != (Polynomial<T>& a, Polynomial<T>& b)
+   {  return !(a == b); }
+
+   /*
+   * Unary negation of polynomial.
+   */
+   template <typename T>
+   inline
+   Polynomial<T> operator - (Polynomial<T> const & a)
+   {
+      Polynomial<T> b(a);
+      if (a.size() > 0) {
+         for (int i = 0; i < a.size(); ++i) {
+           b[i] *= -1;
+         }
+      }
+      return b;
    }
 
 }

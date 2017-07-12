@@ -206,6 +206,8 @@ namespace Util
 
    //friends:
 
+      friend Rational operator - (const Rational& a, int b);
+      friend Rational operator - (int b, const Rational& a);
       friend Rational operator + (const Rational& a, const Rational& b);
       friend Rational operator + (const Rational& a, int b);
 
@@ -222,6 +224,9 @@ namespace Util
 
       friend bool operator == (const Rational& a, const Rational& b);
       friend bool operator == (const Rational& a, int b);
+
+      // Unary negation operation
+      friend Rational operator - (const Rational& a);
 
       friend 
       std::istream& operator >> (std::istream& in, Rational &rational);
@@ -340,6 +345,8 @@ namespace Util
       den_ = 1;
       return *this;
    }
+
+   // Inline arithmetic assignment operators
 
    /*
    * Addition assignment operator : add b to this.
@@ -610,6 +617,18 @@ namespace Util
       }
       return Rational(b*a.den_, a.num_);
    }
+
+   // Unary arithmetic operators
+
+   /**
+   * Unary negation of Rational.
+   *
+   * \param a Rational argument
+   * \return negation -a
+   */
+   inline
+   Rational operator - ( const Rational& a)
+   {  return Rational(-a.num_, a.den_); }
 
    /// Equality and inequality operators
 
