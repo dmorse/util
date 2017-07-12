@@ -51,7 +51,7 @@ namespace Util
       /**
       * Constructor, convert from integer.
       *
-      * Creates an integer using a denominator == 1.
+      * Creates a rational with a denominator == 1.
       *
       * \param number integer number.
       */
@@ -64,15 +64,20 @@ namespace Util
       */
       Rational(const Rational& v);
 
-      /**
-      * Serialize to/from an archive.
-      *
-      * \param ar       archive
-      * \param version  archive version id
-      */
-      template <class Archive>
-      void serialize(Archive& ar, const unsigned int version);
+      /// \name Accessors
+      //@{
 
+      /**
+      * Return numerator.
+      */
+      int num() const;
+
+      /**
+      * Return denominator.
+      */
+      int den() const;
+
+      //@}
       /// \name Assignment
       //@{
 
@@ -93,22 +98,7 @@ namespace Util
       Rational& operator = (int other);
 
       //@}
-      /// \name Accessors
-      //@{
-
-      /**
-      * Return numerator.
-      */
-      int num() const;
-
-      /**
-      * Return denominator.
-      */
-      int den() const;
-
-      //@}
-
-      /// \name Arithmetic Assignment
+      /// \name Arithmetic Assignment Operators
       //@{
 
       /**
@@ -121,13 +111,31 @@ namespace Util
       Rational& operator += (const Rational& a);
 
       /**
-      * Add another rational to this one.
+      * Add an integer to this rational.
       *
       * Upon return, *this = this + a.
       *
       * \param a increment (input)
       */
+      Rational& operator += (int a);
+
+      /**
+      * Subtract another rational from this one.
+      *
+      * Upon return, *this = this + a.
+      *
+      * \param a decrement (input)
+      */
       Rational& operator -= (const Rational& a);
+
+      /**
+      * Subtract an integer from this rational.
+      *
+      * Upon return, *this = this + a.
+      *
+      * \param a decrement (input)
+      */
+      Rational& operator -= (int);
 
       /**
       * Multiply this rational by another.
@@ -139,6 +147,15 @@ namespace Util
       Rational& operator *= (const Rational& a);
 
       /**
+      * Multiply this rational by an integer.
+      *
+      * Upon return, *this = this*a.
+      *
+      * \param a increment (input)
+      */
+      Rational& operator *= (int a);
+
+      /**
       * Divide this rational by another.
       *
       * Upon return, *this = this*a.
@@ -147,7 +164,25 @@ namespace Util
       */
       Rational& operator /= (const Rational& a);
 
+      /**
+      * Divide this rational by an integer.
+      *
+      * Upon return, *this = this*a.
+      *
+      * \param a increment (input)
+      */
+      Rational& operator /= (int a);
+
       //@}
+
+      /**
+      * Serialize to/from an archive.
+      *
+      * \param ar       archive
+      * \param version  archive version id
+      */
+      template <class Archive>
+      void serialize(Archive& ar, const unsigned int version);
 
       #ifdef UTIL_MPI
       /**
@@ -164,27 +199,29 @@ namespace Util
 
       int den_;
 
+      /**
+      * Convert to standard form, in which denominator is greatest divisor.
+      */ 
       void reduce();
 
    //friends:
 
-      friend 
-      Rational operator + (const Rational& a, const Rational& b);
+      friend Rational operator + (const Rational& a, const Rational& b);
+      friend Rational operator + (const Rational& a, int b);
 
-      friend 
-      Rational operator - (const Rational& a, const Rational& b);
+      friend Rational operator - (const Rational& a, const Rational& b);
+      friend Rational operator - (const Rational& a, int b);
+      friend Rational operator - (int b, const Rational& a);
 
-      friend 
-      Rational operator * (const Rational& a, const Rational& b);
+      friend Rational operator * (const Rational& a, const Rational& b);
+      friend Rational operator * (const Rational& a, int b);
 
-      friend 
-      Rational operator / (const Rational& a, const Rational& b);
+      friend Rational operator / (const Rational& a, const Rational& b);
+      friend Rational operator / (const Rational& a, int b);
+      friend Rational operator / (int b, const Rational& a);
 
-      friend 
-      bool operator == (const Rational& a, const Rational& b);
-
-      friend 
-      bool operator == (const Rational& a, const double* b);
+      friend bool operator == (const Rational& a, const Rational& b);
+      friend bool operator == (const Rational& a, int b);
 
       friend 
       std::istream& operator >> (std::istream& in, Rational &rational);
@@ -317,6 +354,17 @@ namespace Util
    }
 
    /*
+   * Addition assignment operator : add integer to this.
+   */
+   inline
+   Rational& Rational::operator += (int a)
+   {
+      num_ += a*den_;
+      reduce();
+      return *this;
+   }
+
+   /*
    * Subtraction assignment operator : subtract a from this.
    */
    inline
@@ -329,19 +377,41 @@ namespace Util
    }
 
    /*
-   * Multipication assignment operator : multiply this by a.
+   * Subtraction assignment operator : subtract integer from this.
    */
    inline
-   Rational& Rational::operator *= (const Rational& a)
+   Rational& Rational::operator -= (int a)
    {
-      num_ = num_*a.num_;
-      den_ = den_*a.den_;
+      num_ -= a*den_;
       reduce();
       return *this;
    }
 
    /*
-   * Division assignment operator : divide this by a.
+   * Multipication assignment operator : multiply this by a.
+   */
+   inline
+   Rational& Rational::operator *= (const Rational& a)
+   {
+      num_ *= a.num_;
+      den_ *= a.den_;
+      reduce();
+      return *this;
+   }
+
+   /*
+   * Multipication assignment operator : multiply this by a.
+   */
+   inline
+   Rational& Rational::operator *= (int a)
+   {
+      num_ *= a;
+      reduce();
+      return *this;
+   }
+
+   /*
+   * Division assignment operator : divide this by rational.
    */
    inline
    Rational& Rational::operator /= (const Rational& a)
@@ -355,8 +425,24 @@ namespace Util
       return *this;
    }
 
+   /*
+   * Division assignment operator : divide this by rational.
+   */
+   inline
+   Rational& Rational::operator /= (int a)
+   {
+      if (a == 0) {
+         UTIL_THROW("Attempt to divide Rational by zero integer"); 
+      }
+      den_ *= a;
+      reduce();
+      return *this;
+   }
+
+   // Friend functions for binary arithmetic operations
+
    /**
-   * Compute sum of rationals a and b.
+   * Compute sum of two rationals.
    *
    * \param a 1st argument
    * \param a 2st argument
@@ -369,6 +455,31 @@ namespace Util
      int den = a.den_*b.den_;
      return Rational(num, den);
    }
+
+   /**
+   * Compute sum of rational and integer.
+   *
+   * \param a Rational argument
+   * \param b integer argument
+   * \return sum a + b
+   */
+   inline
+   Rational operator + (const Rational& a, int b)
+   {
+     int num = a.num_ + b*a.den_;
+     return Rational(num, a.den_);
+   }
+
+   /**
+   * Compute sum of integer and integer.
+   *
+   * \param b integer argument
+   * \param a Rational argument
+   * \return sum a + b
+   */
+   inline
+   Rational operator + (int b, const Rational& a)
+   { return (a + b); }
 
    /**
    * Compute difference of rationals.
@@ -386,6 +497,34 @@ namespace Util
    }
 
    /**
+   * Compute difference of rational and integer.
+   *
+   * \param a Rational argument
+   * \param b integer argument
+   * \return difference a - b
+   */
+   inline
+   Rational operator - (const Rational& a, int b)
+   {
+     int num = a.num_ - b*a.den_;
+     return Rational(num, a.den_);
+   }
+
+   /**
+   * Compute difference of integer and rational.
+   *
+   * \param b integer argument
+   * \param a Rational argument
+   * \return difference b - a 
+   */
+   inline
+   Rational operator - (int b, const Rational& a)
+   {
+     int num = b*a.den_ - a.num_;
+     return Rational(num, a.den_);
+   }
+
+   /**
    * Compute product of rationals.
    *
    * \param a 1st argument
@@ -399,6 +538,28 @@ namespace Util
       int den = a.den_*b.den_;
       return Rational(num, den);
    }
+
+   /**
+   * Compute product of rational and integer.
+   *
+   * \param a Rational argument
+   * \param b integer argument
+   * \return product a*b
+   */
+   inline
+   Rational operator * (const Rational& a, int b)
+   { return Rational(b*a.num_, a.den_); }
+
+   /**
+   * Compute product of rational and integer.
+   *
+   * \param b integer argument
+   * \param a Rational argument
+   * \return product a*b
+   */
+   inline
+   Rational operator * (int b, const Rational& a)
+   { return a*b; }
 
    /**
    * Compute quotient of two rationals.
@@ -418,14 +579,59 @@ namespace Util
       return Rational(num, den);
    }
 
-   /// Equality for Rationals.
+   /**
+   * Compute quotient Rational divided by integer.
+   *
+   * \param a Rational argument
+   * \param b integer argument
+   * \return ratio a/b
+   */
    inline
+   Rational operator / (const Rational& a, int b)
+   {
+      if (b == 0) {
+         UTIL_THROW("Attempt to divide Rational by zero integer"); 
+      }
+      return Rational(a.num_, a.den_*b);
+   }
+
+   /**
+   * Compute quotient integer divided by Rational.
+   *
+   * \param b integer argument
+   * \param a Rational argument
+   * \return ratio b/a
+   */
+   inline
+   Rational operator / (int b, const Rational& a)
+   {
+      if (a.num_ == 0) {
+         UTIL_THROW("Attempt to divide integer by zero Rational"); 
+      }
+      return Rational(b*a.den_, a.num_);
+   }
+
+   /// Equality and inequality operators
+
+   inline 
    bool operator == (const Rational& a, const Rational& b)
    {  return ((a.num_ == b.num_) && (a.den_ == b.den_)); }
 
+   inline bool operator == (const Rational& a, int b)
+   {  return ((a.num_ == b) && (a.den_ == 1)); }
+
+   inline bool operator == (int b, const Rational& a)
+   {  return (a == b); }
+
    /// Inequality of two Rationals.
-   inline
-   bool operator != (const Rational& a, const Rational& b)
+
+   inline bool operator != (const Rational& a, const Rational& b)
+   {  return !(a == b); }
+
+   inline bool operator != (const Rational& a, int b)
+   {  return !(a == b); }
+
+   inline bool operator != (int b, const Rational& a)
    {  return !(a == b); }
 
    /*
@@ -439,11 +645,12 @@ namespace Util
    }
 
    /*
-   * Reduce denominator to greatest common divisor (private function).
+   * Reduce denominator to greatest common divisor (private).
    */
    inline
    void Rational::reduce ()
    {
+      UTIL_CHECK(den_ != 0);
       if (den_ < 0) {
          den_ *= -1;
          num_ *= -1;
