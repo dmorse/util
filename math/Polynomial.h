@@ -134,7 +134,8 @@ namespace Util
    * Constructor.
    */
    template <typename T>
-   inline Polynomial<T>::Polynomial(int capacity)
+   inline 
+   Polynomial<T>::Polynomial(int capacity)
    { GArray<T>::reserve(capacity); }
 
    /*
@@ -190,7 +191,6 @@ namespace Util
    * Addition assignment operator : add another polynomial to this one.
    */
    template <typename T>
-   inline
    Polynomial<T>& Polynomial<T>::operator += (const Polynomial<T>& a)
    {
       if (a.size() == 0) {
@@ -215,10 +215,9 @@ namespace Util
    }
 
    /*
-   * Subtrat assignment operator : subtract another polynomial from this.
+   * Subtract assignment operator : subtract another polynomial from this.
    */
    template <typename T>
-   inline
    Polynomial<T>& Polynomial<T>::operator -= (const Polynomial<T>& a)
    {
       if (a.size() == 0) {
@@ -274,7 +273,6 @@ namespace Util
    * Multiplication assignment operator : multiply this by a polynomial.
    */
    template <typename T>
-   inline
    Polynomial<T>& Polynomial<T>::operator *= (const Polynomial<T>& a)
    {
       // If this polynomial is zero (size == 0), do nothing. Otherwise:
