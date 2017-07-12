@@ -8,12 +8,9 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "gcd.h"
+#include <util/math/Rational.h>
 #include <util/global.h>
 
-#ifdef UTIL_MPI
-#include <util/mpi/MpiTraits.h>
-#endif
 
 #include <iostream>
 
@@ -25,7 +22,7 @@ namespace Util
    *
    * \ingroup Math_Module
    */
-   template <typename Scalar>
+   template <typename T = Rational>
    class Polynomial
    {
 
@@ -70,7 +67,7 @@ namespace Util
       *
       * \param v Polynomial to be copied
       */
-      Polynomial(const Polynomial& v);
+      Polynomial(const Polynomial<T>& v);
 
       /// \name Accessors
       //@{
@@ -78,7 +75,7 @@ namespace Util
       /**
       * Return a particular coefficient.
       */
-      Scalar coeff(int i) const;
+      T coeff(int i) const;
 
       int den() const;
 
@@ -91,7 +88,7 @@ namespace Util
       *
       * \param other Polynomial to assign.
       */
-      Polynomial& operator = (const Polynomial& other);
+      Polynomial<T>& operator = (const Polynomial<T>& other);
 
       //@}
       /// \name Arithmetic Assignment Operators
@@ -104,7 +101,7 @@ namespace Util
       *
       * \param a increment (input)
       */
-      Polynomial& operator += (const Polynomial& a);
+      Polynomial<T>& operator += (const Polynomial<T>& a);
 
       /**
       * Subtract another polynomial from this one.
@@ -113,7 +110,7 @@ namespace Util
       *
       * \param a decrement (input)
       */
-      Polynomial& operator -= (const Polynomial& a);
+      Polynomial<T>& operator -= (const Polynomial<T>& a);
 
       /**
       * Multiply this polynomial by another.
@@ -122,25 +119,25 @@ namespace Util
       *
       * \param a increment (input)
       */
-      Polynomial& operator *= (const Polynomial& a);
+      Polynomial<T>& operator *= (const Polynomial<T>& a);
 
       /**
-      * Multiply this polynomial by a Scalar.
+      * Multiply this polynomial by a T.
       *
       * Upon return, *this = this*a.
       *
       * \param a scalar factor
       */
-      Polynomial& operator *= (Scalar a);
+      Polynomial<T>& operator *= (T a);
 
       /**
-      * Divide this polynomial by a Scalar.
+      * Divide this polynomial by a T.
       *
       * Upon return, *this = this*a.
       *
       * \param a scalar factor (input)
       */
-      Polynomial& operator /= (Scalar a);
+      Polynomial<T>& operator /= (T a);
 
       //@}
 
@@ -153,36 +150,25 @@ namespace Util
       template <class Archive>
       void serialize(Archive& ar, const unsigned int version);
 
-      #ifdef UTIL_MPI
-      /**
-      * Commit MPI datatype MpiTraits<Polynomial>::type.
-      */
-      static void commitMpiType();
-      #endif
-
       //@}
 
    private:
 
-      DArray<Scalar> coeffs_;
+      // Array of scalar coefficients
+      T* coeffs_;
 
+      // Order or polynomial (dimension of coeff array - 1)
       int order_;
 
    //friends:
 
-      friend Polynomial operator + (const Polynomial& a, const Polynomial& b);
-      friend Polynomial operator - (const Polynomial& a, const Polynomial& b);
-      friend Polynomial operator * (const Polynomial& a, const Polynomial& b);
-      friend Polynomial operator * (const Polynomial& a, int b);
-      friend Polynomial operator / (const Polynomial& a, int b);
-
-      friend bool operator == (const Polynomial& a, const Polynomial& b);
+      friend bool operator == (const Polynomial<T>& a, const Polynomial<T>& b);
 
       friend 
-      std::istream& operator >> (std::istream& in, Polynomial &polynomial);
+      std::istream& operator >> (std::istream& in, Polynomial<T> &polynomial);
 
       friend 
-      std::ostream& operator << (std::ostream& out, const Polynomial &polynomial);
+      std::ostream& operator << (std::ostream& out, const Polynomial<T> &polynomial);
 
    };
 
@@ -197,7 +183,8 @@ namespace Util
    * \param a  Polynomial to be read from stream
    * \return modified input stream
    */
-   std::istream& operator >> (std::istream& in, Polynomial &a);
+   template <typename T>
+   std::istream& operator >> (std::istream& in, Polynomial<T> &a);
 
    /**
    * ostream inserter for a Polynomial.
@@ -207,279 +194,183 @@ namespace Util
    * \param  polynomial  Polynomial to be written to stream
    * \return modified output stream
    */
+   template <typename T>
    std::ostream& operator << (std::ostream& out, const Polynomial &polynomial);
-
-   #ifdef UTIL_MPI
-   /**
-   * Explicit specialization MpiTraits<Polynomial>.
-   */
-   template <>
-   class MpiTraits<Polynomial>
-   {
-   public:
-      static MPI::Datatype type;   ///< MPI Datatype
-      static bool hasType;         ///< Is the MPI type initialized?
-   };
-   #endif
 
    // Inline methods
 
    /*
    * Default constructor
    */
-   inline
-   Polynomial::Polynomial()
-    : num_(0),
-      den_(1)
-   { reduce(); }
-
-   /*
-   * Constructor from numerator and denominator.
-   */
-   inline
-   Polynomial::Polynomial(int num, int den)
-    : num_(num),
-      den_(den)
-   { reduce(); }
-
-   /*
-   * Constructor from integer.
-   */
-   inline
-   Polynomial::Polynomial(int number)
-    : num_(number),
-      den_(1)
+   template <typename T>
+   inline Polynomial::Polynomial<T>::()
+    : coeffs_(0),
+      order_(-1)
    {}
+
+   /*
+   * Constructor with order.
+   */
+   template <typename T>
+   inline Polynomial::Polynomial<T>::(int order)
+    : coeffs_(0),
+      order_(-1)
+   {
+      UTIL_CHECK(order >= 0);
+      coeffs_ = new T[order+1];
+      order_ = order;
+      for (int i = 0; i < order + 1; ++i) {
+         coeff_[i] = T(0);
+      }
+   }
 
    /*
    * Copy constructor
    */
+   template <typename T>
    inline
-   Polynomial::Polynomial(const Polynomial& other)
-    : num_(other.num_),
-      den_(other.den_)
-   {}
+   Polynomial<T>::Polynomial(const Polynomial<T>::& other)
+    : coeffs_(0),
+      order_(-1)
+   {
+      if (other.order_ >= 0) {
+         coeffs_ = new T[other.order_  + 1];
+         order_ = other.order_;
+         for (int i = 0; i < order_ + 1; ++i) {
+            coeffs_[i] = T(0);
+         }
+      }
+   }
 
    /*
-   * Return numerator.
+   * Return order of polynomial.
    */
+   template <typename T>
    inline
-   int Polynomial::num() const
-   { return num_; }
-
-   /*
-   * Return denominator.
-   */
-   inline
-   int Polynomial::den() const
-   {  return den_; }
+   int Polynomial<T>::order() const
+   { return order_; }
 
    /*
    * Assignment from another polynomial.
    */
+   template <typename T>
    inline
-   Polynomial& Polynomial::operator = (const Polynomial& other)
+   Polynomial<T>::& Polynomial<T>::operator = (const Polynomial<T>::& other)
    {
-      num_ = other.num_;
-      den_ = other.den_;
-      return *this;
-   }
-
-   /*
-   * Assignment from integer.
-   */
-   inline
-   Polynomial& Polynomial::operator = (int other)
-   {
-      num_ = other;
-      den_ = 1;
-      return *this;
-   }
-
-   /*
-   * Addition assignment operator : add b to this.
-   */
-   inline
-   Polynomial& Polynomial::operator += (const Polynomial& a)
-   {
-      num_ = num_*a.den_ + a.num_*den_;
-      den_ = den_*a.den_;
-      reduce();
-      return *this;
-   }
-
-   /*
-   * Addition assignment operator : add integer to this.
-   */
-   inline
-   Polynomial& Polynomial::operator += (int a)
-   {
-      num_ += a*den_;
-      reduce();
-      return *this;
-   }
-
-   /*
-   * Subtraction assignment operator : subtract a from this.
-   */
-   inline
-   Polynomial& Polynomial::operator -= (const Polynomial& a)
-   {
-      num_ = num_*a.den_ - a.num_*den_;
-      den_ = den_*a.den_;
-      reduce();
-      return *this;
-   }
-
-   /*
-   * Subtraction assignment operator : subtract integer from this.
-   */
-   inline
-   Polynomial& Polynomial::operator -= (int a)
-   {
-      num_ -= a*den_;
-      reduce();
-      return *this;
-   }
-
-   /*
-   * Multipication assignment operator : multiply this by a.
-   */
-   inline
-   Polynomial& Polynomial::operator *= (const Polynomial& a)
-   {
-      num_ *= a.num_;
-      den_ *= a.den_;
-      reduce();
-      return *this;
-   }
-
-   /*
-   * Multipication assignment operator : multiply this by a.
-   */
-   inline
-   Polynomial& Polynomial::operator *= (int a)
-   {
-      num_ *= a;
-      reduce();
-      return *this;
-   }
-
-   /*
-   * Division assignment operator : divide this by polynomial.
-   */
-   inline
-   Polynomial& Polynomial::operator /= (const Polynomial& a)
-   {
-      if (a.num_ == 0) {
-         UTIL_THROW("Attempt to divide by zero Polynomial"); 
+      if (other.order_ >= 0) {
+         if (coeffs_) {
+            if (order_ != other.order_) {
+               delete coeffs_ [];
+               coeffs_ = new T[other.order_ + 1];
+            }
+            order_ != other.order_;
+            for (int i = 0; i < order_ + 1; ++i) {
+               coeffs_[i] = other.coeffs_[i]
+            }
+         }
+      } else {
+        if (coeffs_) {
+           delete coeffs_ [];
+        }
+        order_ = -1;
       }
-      num_ = num_*a.den_;
-      den_ = den_*a.num_;
-      reduce();
       return *this;
    }
 
    /*
-   * Division assignment operator : divide this by polynomial.
+   * Addition assignment operator : add another polynomial to this one.
    */
+   template <typename T>
    inline
-   Polynomial& Polynomial::operator /= (int a)
+   Polynomial<T>& Polynomial<T>::operator += (const Polynomial<T>::& a)
    {
-      if (a == 0) {
-         UTIL_THROW("Attempt to divide Polynomial by zero integer"); 
+      if (a.order_ > 0) {
+         if (order_ < 0) {
+            *this = a;
+         } else {
+            min = a.order_;
+            if (a.order_ > order_) {
+               min = order_;
+               T* temp_ = new T[a.order_ + 1];
+               for (int i = 0; i < order_ + 1; ++i) {
+                  temp_[i] = coeffs_[i];
+               }
+               for (int i = order_ + 1; i < a.order_ + 1; ++i) {
+                  temp_[i] = T(0);
+               }
+               delete [] coeffs_;
+               coeffs_ = temp;
+            } 
+            for (int i = 0; i < min + 1; ++i) {
+               coeffs_[i] += a.coeffs_[i];
+            }
+         }
       }
-      den_ *= a;
-      reduce();
       return *this;
    }
 
-   // Friend functions for binary arithmetic operations
-
-   /**
-   * Compute sum of two polynomials.
-   *
-   * \param a 1st polynomials.
-   * \param a 2st polynomials.
-   * \return sum a + b
+   /*
+   * Multipication assignment operator : multiply this by a polynomial.
    */
+   template <typename T>
    inline
-   Polynomial operator + (const Polynomial& a, const Polynomial& b)
+   Polynomial<T>::& Polynomial<T>::operator *= (const Polynomial<T>::& a)
    {
+      // Complicated.
    }
 
-   /**
-   * Compute difference of polynomials.
-   *
-   * \param a 1st polynomial
-   * \param b 2st polynomial
-   * \return difference a - b
+   /*
+   * Multipication assignment operator : multiply this by a scalar.
    */
+   template <typename T>
    inline
-   Polynomial operator - (const Polynomial& a, const Polynomial& b)
+   Polynomial<T>& Polynomial<T>::operator *= (T a)
    {
+      if (order_ >= 0) {
+         for (int i = 0; i < order_ + 1; ++i) {
+            coeffs_[i] *= a;
+         }
+      }
+      return *this;
    }
 
-   /**
-   * Compute product of polynomials.
-   *
-   * \param a 1st argument
-   * \param b 2st argument
-   * \return product a*b
+   /*
+   * Division by scalar assignment operator.
    */
+   template <typename T>
    inline
-   Polynomial operator * (const Polynomial& a, const Polynomial& b)
+   Polynomial<T>& Polynomial<T>::operator /= (T a)
    {
+      if (order_ >= 0) {
+         for (int i = 0; i < order_ + 1; ++i) {
+            coeffs_[i] /= a;
+         }
+      }
+      return *this;
    }
-
-   /**
-   * Compute product of polynomial and scalar.
-   *
-   * \param a Polynomial argument
-   * \param b scalar argument
-   * \return product a*b
-   */
-   inline
-   Polynomial operator * (const Polynomial& a, Scalar b)
-   {
-   }
-
-   /**
-   * Compute product of scalar and a polynomial.
-   *
-   * \param b scalar argument
-   * \param a Polynomial argument
-   * \return product b*a
-   */
-   inline
-   Polynomial operator * (Scalar b, const Polynomial& a)
-   { return a*b; }
-
-   /**
-   * Compute quotient Polynomial divided by integer.
-   *
-   * \param a Polynomial argument
-   * \param b scalar argument
-   * \return ratio a/b
-   */
-   inline
-   Polynomial operator / (const Polynomial& a, Scalar b)
-   {}
 
    /// Equality and inequality operators
 
    inline 
-   bool operator == (const Polynomial& a, const Polynomial& b)
-   {}
-
-   inline bool operator != (const Polynomial& a, const Polynomial& b)
-   {  return !(a == b); }
+   bool operator == (const Polynomial<T>& a, const Polynomial<T>& b)
+   {
+      if (a.order_ != b.order_) {
+        return false   
+      } else {
+         for (int i = 0; i < a.order_ + 1; ++i) {
+            if (a.coeffs_[i] != b.coeffs_[i]) return false;
+         }
+         return true;
+      }
+   }
 
    /*
    * Serialize to/from an archive.
    */
+   template <typename T = Rational>
    template <class Archive>
-   inline void Polynomial::serialize(Archive& ar, const unsigned int version)
+   inline 
+   void Polynomial<T>::serialize(Archive& ar, const unsigned int version)
    { }
 
 }
