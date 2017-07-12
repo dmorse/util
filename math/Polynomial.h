@@ -8,7 +8,9 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <util/math/Rational.h>
+#include <util/containers/GArray.h>  // base class
+#include <util/math/Rational.h>      // default template argument
+#include <util/containers/Array.h>   // function argument
 #include <util/global.h>
 
 
@@ -23,72 +25,53 @@ namespace Util
    * \ingroup Math_Module
    */
    template <typename T = Rational>
-   class Polynomial
+   class Polynomial : private GArray<T>
    {
 
    public:
 
-      /// \name Constructors
+      /// \name Constructors, Destructors, and Assignment
       //@{
 
       /**
-      * Default constructor
+      * Constructor, specified capacity.
+      *
+      * \param order capacity of polynomial.
       */
-      Polynomial();
+      Polynomial(int capacity = 10);
 
       /**
-      * Constructor, sets order.
+      * Construct from array of coefficients.
       *
-      * \param order order of polynomial.
+      * \param coeffs array of coefficients.
       */
-      Polynomial(int order);
-
-      /**
-      * Constructor, explicit numerator and denominator.
-      *
-      * Denominator is reduced to greatest common divisor before return.
-      *
-      * \param num numerator 
-      * \param den denominator
-      */
-      Polynomial(int num, int den);
-
-      /**
-      * Constructor, convert from integer.
-      *
-      * Creates a polynomial with a denominator == 1.
-      *
-      * \param number integer number.
-      */
-      Polynomial(int number);
+      Polynomial(Array<T> const & coeffs);
 
       /**
       * Copy constructor
       *
       * \param v Polynomial to be copied
       */
-      Polynomial(const Polynomial<T>& v);
-
-      /// \name Accessors
-      //@{
-
-      /**
-      * Return a particular coefficient.
-      */
-      T coeff(int i) const;
-
-      int den() const;
-
-      //@}
-      /// \name Assignment
-      //@{
+      Polynomial(Polynomial<T> const & v);
 
       /**
       * Copy assignment.
       *
       * \param other Polynomial to assign.
       */
-      Polynomial<T>& operator = (const Polynomial<T>& other);
+      Polynomial<T>& operator = (Polynomial<T> const & other);
+
+      //@}
+      /// \name Inherited Array Functions
+      //@{
+
+      using GArray<T>::operator [];
+
+      using GArray<T>::size;
+
+      using GArray<T>::capacity;
+
+      using GArray<T>::clear;
 
       //@}
       /// \name Arithmetic Assignment Operators
@@ -122,7 +105,7 @@ namespace Util
       Polynomial<T>& operator *= (const Polynomial<T>& a);
 
       /**
-      * Multiply this polynomial by a T.
+      * Multiply this polynomial by a scalar.
       *
       * Upon return, *this = this*a.
       *
@@ -131,7 +114,7 @@ namespace Util
       Polynomial<T>& operator *= (T a);
 
       /**
-      * Divide this polynomial by a T.
+      * Divide this polynomial by a scalar.
       *
       * Upon return, *this = this*a.
       *
@@ -141,86 +124,31 @@ namespace Util
 
       //@}
 
-      /**
-      * Serialize to/from an archive.
-      *
-      * \param ar       archive
-      * \param version  archive version id
-      */
-      template <class Archive>
-      void serialize(Archive& ar, const unsigned int version);
-
-      //@}
-
-   private:
-
-      // Array of scalar coefficients
-      T* coeffs_;
-
-      // Order or polynomial (dimension of coeff array - 1)
-      int order_;
-
-   //friends:
-
-      friend bool operator == (const Polynomial<T>& a, const Polynomial<T>& b);
-
-      friend 
-      std::istream& operator >> (std::istream& in, Polynomial<T> &polynomial);
-
-      friend 
-      std::ostream& operator << (std::ostream& out, const Polynomial<T> &polynomial);
-
    };
 
    // Friend function declarations.
 
-   /**
-   * istream extractor for a Polynomial.
-   *
-   * Input elements of a polynomial from stream, without line breaks.
-   *
-   * \param in input stream
-   * \param a  Polynomial to be read from stream
-   * \return modified input stream
-   */
-   template <typename T>
-   std::istream& operator >> (std::istream& in, Polynomial<T> &a);
-
-   /**
-   * ostream inserter for a Polynomial.
-   *
-   * Output elements of a polynomial to stream, without line breaks.
-   * \param  out     output stream
-   * \param  polynomial  Polynomial to be written to stream
-   * \return modified output stream
-   */
-   template <typename T>
-   std::ostream& operator << (std::ostream& out, const Polynomial &polynomial);
-
    // Inline methods
 
    /*
-   * Default constructor
+   * Constructor.
    */
    template <typename T>
-   inline Polynomial::Polynomial<T>::()
-    : coeffs_(0),
-      order_(-1)
-   {}
+   inline Polynomial<T>::Polynomial(int capacity)
+   { GArray<T>::reserve(capacity); }
 
    /*
-   * Constructor with order.
+   * Construct from array of coefficients.
    */
    template <typename T>
-   inline Polynomial::Polynomial<T>::(int order)
-    : coeffs_(0),
-      order_(-1)
+   inline
+   Polynomial<T>::Polynomial(Array<T> const & coeffs)
    {
-      UTIL_CHECK(order >= 0);
-      coeffs_ = new T[order+1];
-      order_ = order;
-      for (int i = 0; i < order + 1; ++i) {
-         coeff_[i] = T(0);
+      if (coeffs.capacity() > 0) {
+         GArray<T>::reserve(coeffs.capacity());
+         for (int i = 0; i < coeffs.capacity(); ++i) {
+            GArray<T>::append(coeffs[i]);
+         }
       }
    }
 
@@ -229,50 +157,31 @@ namespace Util
    */
    template <typename T>
    inline
-   Polynomial<T>::Polynomial(const Polynomial<T>::& other)
-    : coeffs_(0),
-      order_(-1)
+   Polynomial<T>::Polynomial(Polynomial<T> const & other)
    {
-      if (other.order_ >= 0) {
-         coeffs_ = new T[other.order_  + 1];
-         order_ = other.order_;
-         for (int i = 0; i < order_ + 1; ++i) {
-            coeffs_[i] = T(0);
+      GArray<T>::reserve(other.capacity());
+      if (other.size() > 0) {
+         for (int i = 0; i < other.size(); ++i) {
+            GArray<T>::append(other[i]);
          }
-      }
+      } 
    }
-
-   /*
-   * Return order of polynomial.
-   */
-   template <typename T>
-   inline
-   int Polynomial<T>::order() const
-   { return order_; }
 
    /*
    * Assignment from another polynomial.
    */
    template <typename T>
    inline
-   Polynomial<T>::& Polynomial<T>::operator = (const Polynomial<T>::& other)
+   Polynomial<T>& Polynomial<T>::operator = (const Polynomial<T>& other)
    {
-      if (other.order_ >= 0) {
-         if (coeffs_) {
-            if (order_ != other.order_) {
-               delete coeffs_ [];
-               coeffs_ = new T[other.order_ + 1];
-            }
-            order_ != other.order_;
-            for (int i = 0; i < order_ + 1; ++i) {
-               coeffs_[i] = other.coeffs_[i]
-            }
+      clear();
+      if (other.size() >= 0) {
+         if (other.size() > capacity()) {
+            GArray<T>::reserve(other.capacity());
          }
-      } else {
-        if (coeffs_) {
-           delete coeffs_ [];
-        }
-        order_ = -1;
+         for (int i = 0; i < other.size(); ++i) {
+            GArray<T>::append(other[i]);
+         }
       }
       return *this;
    }
@@ -282,41 +191,28 @@ namespace Util
    */
    template <typename T>
    inline
-   Polynomial<T>& Polynomial<T>::operator += (const Polynomial<T>::& a)
+   Polynomial<T>& Polynomial<T>::operator += (const Polynomial<T>& a)
    {
-      if (a.order_ > 0) {
-         if (order_ < 0) {
-            *this = a;
-         } else {
-            min = a.order_;
-            if (a.order_ > order_) {
-               min = order_;
-               T* temp_ = new T[a.order_ + 1];
-               for (int i = 0; i < order_ + 1; ++i) {
-                  temp_[i] = coeffs_[i];
-               }
-               for (int i = order_ + 1; i < a.order_ + 1; ++i) {
-                  temp_[i] = T(0);
-               }
-               delete [] coeffs_;
-               coeffs_ = temp;
-            } 
-            for (int i = 0; i < min + 1; ++i) {
-               coeffs_[i] += a.coeffs_[i];
+      if (a.size() == 0) {
+         clear();
+      } else {
+         if (a.size() > capacity()) {
+            GArray<T>::resize(a.size());
+         }
+         int min;
+         if (a.size() > size()) {
+            min = size();
+            for (int i = size(); i < a.size(); ++i) {
+               (*this)[i] = a[i];
             }
+         } else {
+            min = a.size();
+         }
+         for (int i = 0; i < min; ++i) {
+            (*this)[i] += a[i];
          }
       }
       return *this;
-   }
-
-   /*
-   * Multipication assignment operator : multiply this by a polynomial.
-   */
-   template <typename T>
-   inline
-   Polynomial<T>::& Polynomial<T>::operator *= (const Polynomial<T>::& a)
-   {
-      // Complicated.
    }
 
    /*
@@ -326,9 +222,9 @@ namespace Util
    inline
    Polynomial<T>& Polynomial<T>::operator *= (T a)
    {
-      if (order_ >= 0) {
-         for (int i = 0; i < order_ + 1; ++i) {
-            coeffs_[i] *= a;
+      if (size() >= 0) {
+         for (int i = 0; i < size(); ++i) {
+            (*this)[i] *= a;
          }
       }
       return *this;
@@ -341,37 +237,49 @@ namespace Util
    inline
    Polynomial<T>& Polynomial<T>::operator /= (T a)
    {
-      if (order_ >= 0) {
-         for (int i = 0; i < order_ + 1; ++i) {
-            coeffs_[i] /= a;
+      if (size() >= 0) {
+         for (int i = 0; i < size(); ++i) {
+            (*this)[i] /= a;
          }
       }
       return *this;
    }
 
-   /// Equality and inequality operators
-
-   inline 
-   bool operator == (const Polynomial<T>& a, const Polynomial<T>& b)
-   {
-      if (a.order_ != b.order_) {
-        return false   
-      } else {
-         for (int i = 0; i < a.order_ + 1; ++i) {
-            if (a.coeffs_[i] != b.coeffs_[i]) return false;
-         }
-         return true;
-      }
-   }
-
    /*
-   * Serialize to/from an archive.
+   * Multipication assignment operator : multiply this by a polynomial.
    */
-   template <typename T = Rational>
-   template <class Archive>
-   inline 
-   void Polynomial<T>::serialize(Archive& ar, const unsigned int version)
-   { }
+   template <typename T>
+   inline
+   Polynomial<T>& Polynomial<T>::operator *= (const Polynomial<T>& a)
+   {
+      // Make copy of coefficients
+      GArray<T> b(*this);
+      UTIL_CHECK(b.size() == size());
+
+      // Resize array of coefficients
+      clear();
+      int n = size() + a.size();
+      if (n > capacity()) {
+         GArray<T>::resize(n);
+      }
+
+      // Zero all coefficients
+      int i;
+      for (i = 0; n; ++i) {
+         (*this)[i] = T(0);
+      }
+
+      // Double loop over coefficients
+      int j, k;
+      for (i = 0; i < a.size(); ++i) {
+         for (j = 0; j < b.size(); ++j) {
+            k = i + j;
+            (*this)[i] += a[i]*b[j];
+         }
+      }
+
+      return *this;
+   }
 
 }
 #endif
