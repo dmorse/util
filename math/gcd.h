@@ -26,10 +26,10 @@ namespace Util
    */
    inline int gcd(int a, int b)
    {
-      if (a == 0) return b;
-      if (b == 0) return a;
       a = abs(a);
       b = abs(b);
+      if (a == 0) return b;
+      if (b == 0) return a;
       int c;
       // If b > a, swap such that b < a
       if (b > a) {
@@ -37,6 +37,7 @@ namespace Util
          a = b;
          b = c;
       }
+      // Euclid's algorithm, for a > b > 0
       while (b !=0) {
          c = a % b;
          a = b;

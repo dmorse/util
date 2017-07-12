@@ -14,6 +14,7 @@
 #include "containers/ContainersTestComposite.h"
 #include "crystal/CrystalTestComposite.h"
 #include "format/FormatTest.h"
+#include "math/MathTestComposite.h"
 #include "param/serial/ParamTestComposite.h"
 #include "random/RandomTest.h"
 #include "signal/SignalTest.h"
@@ -36,6 +37,7 @@ addChild(new BoundaryTestComposite, "boundary/");
 addChild(new ContainersTestComposite, "containers/");
 addChild(new CrystalTestComposite, "crystal/");
 addChild(new TEST_RUNNER(FormatTest), "format/");
+addChild(new MathTestComposite, "math/");
 addChild(new ParamTestComposite, "param/serial/");
 addChild(new TEST_RUNNER(RandomTest), "random/");
 addChild(new TEST_RUNNER(SignalTest), "signal/");
