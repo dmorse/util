@@ -49,8 +49,8 @@ public:
    void test3()
    {
       printMethod(TEST_FUNC);
-      int a = 49;
-      int b =  0;
+      int a = -49;
+      int b = 0;
       int c = gcd(a, b);
       TEST_ASSERT(a%c == 0);
       TEST_ASSERT(b%c == 0);
