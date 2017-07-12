@@ -94,8 +94,18 @@ public:
       Rational a(-2);
       Rational b(4, -2);
       Rational c(-4,-2);
+
       TEST_ASSERT(a == b);
+      TEST_ASSERT(a == -2);
+      TEST_ASSERT(-2 == a);
+      TEST_ASSERT(b == -2);
       TEST_ASSERT(a != c);
+      TEST_ASSERT(a != 2);
+      TEST_ASSERT(2 != a);
+      TEST_ASSERT(c == 2);
+      TEST_ASSERT(2 == c);
+      TEST_ASSERT(c != -2);
+      TEST_ASSERT(-2 != c);
    } 
 
    void testAddSubtractAssignment()
@@ -111,16 +121,38 @@ public:
       TEST_ASSERT(a == c);
    } 
 
+   void testAddSubtractIntAssignment()
+   {
+      printMethod(TEST_FUNC);
+      Rational a(3, -7);
+      Rational c(a);
+      int b = -4;
+      a += b;
+      TEST_ASSERT(a.num() == -31);
+      TEST_ASSERT(a.den() == 7);
+      a -= b;
+      TEST_ASSERT(a == c);
+   } 
+
    void testAddSubtract()
    {
       printMethod(TEST_FUNC);
       Rational a(3, -7);
       Rational b(2, 5);
       Rational c(a);
+
+      // Add and subtract rationals
       Rational d = a + b;
       TEST_ASSERT(d.num() == -1);
       TEST_ASSERT(d.den() == 35);
       a = d - b;
+      TEST_ASSERT(a == c);
+
+      // Add and subtract integers
+      d = a + 4;
+      TEST_ASSERT(d.num() == 25);
+      TEST_ASSERT(d.den() == 7);
+      a = d - 4;
       TEST_ASSERT(a == c);
    } 
 
@@ -137,18 +169,48 @@ public:
       TEST_ASSERT(a == c);
    } 
 
+   void testMultiplyDivideIntAssignment()
+   {
+      printMethod(TEST_FUNC);
+      Rational a(3, -7);
+      Rational c(a);
+      Rational b = 7;
+
+      a *= b;
+      TEST_ASSERT(a.num() == -3);
+      TEST_ASSERT(a.den() == 1);
+      TEST_ASSERT(a == b*c);
+      a /= b;
+      TEST_ASSERT(c.num() == -3);
+      TEST_ASSERT(c.den() == 7);
+      TEST_ASSERT(a == c);
+   } 
+
    void testMultiplyDivide()
    {
       printMethod(TEST_FUNC);
       Rational a(3, -7);
       Rational b(2, 5);
       Rational c(a);
+
+      // Multiply and divide rationals
       Rational d = a * b;
       TEST_ASSERT(d.num() == -6);
       TEST_ASSERT(d.den() == 35);
+      //std::cout <<  d;
+      TEST_ASSERT(d == b*a);
+      TEST_ASSERT((d/b)*(b/d) == 1);
       a = d / b;
       TEST_ASSERT(a == c);
-      std::cout <<  d;
+
+      // Multiply and divide rationals
+      d = a * 7;
+      TEST_ASSERT(d.num() == -3);
+      TEST_ASSERT(d.den() == 1);
+      TEST_ASSERT(d == 7*a);
+      TEST_ASSERT((d/7)*(7/d) == 1);
+      a = d / 7;
+      TEST_ASSERT(a == c);
    } 
 
 };
@@ -164,8 +226,10 @@ TEST_ADD(RationalTest, testCopyAssignment)
 TEST_ADD(RationalTest, testIntAssignment)
 TEST_ADD(RationalTest, testEquality)
 TEST_ADD(RationalTest, testAddSubtractAssignment)
+TEST_ADD(RationalTest, testAddSubtractIntAssignment)
 TEST_ADD(RationalTest, testAddSubtract)
 TEST_ADD(RationalTest, testMultiplyDivideAssignment)
+TEST_ADD(RationalTest, testMultiplyDivideIntAssignment)
 TEST_ADD(RationalTest, testMultiplyDivide)
 TEST_END(RationalTest)
 
