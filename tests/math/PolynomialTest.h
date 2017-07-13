@@ -31,6 +31,15 @@ public:
       TEST_ASSERT(r.capacity() == 12);
    } 
 
+   void testConstantConstructor()
+   {
+      printMethod(TEST_FUNC);
+      Rational c(4, 5);
+      Polynomial<Rational> r(c);
+      TEST_ASSERT(r.size() == 1);
+      TEST_ASSERT(r[0] == c);
+   } 
+
    void testArrayConstructor()
    {
       printMethod(TEST_FUNC);
@@ -207,6 +216,86 @@ public:
 
    }
 
+   void testIntegrate()
+   {
+      printMethod(TEST_FUNC);
+
+      DArray<Rational> ac;
+      ac.allocate(3);
+      ac[0] = Rational(2);
+      ac[1] = Rational(3);
+      ac[2] = Rational(4);
+      Polynomial<Rational> a(ac);
+      TEST_ASSERT(a.size() == 3);
+      TEST_ASSERT(a.capacity() == 3);
+    
+      Polynomial<Rational> b = a.integrate();
+      TEST_ASSERT(b.size() == 4);
+      TEST_ASSERT(b.capacity() == 4);
+      TEST_ASSERT(b[0] == Rational(0));
+      TEST_ASSERT(b[1] == Rational(2));
+      TEST_ASSERT(b[2] == Rational(3,2));
+      TEST_ASSERT(b[3] == Rational(4,3));
+   }
+
+   void testReflect()
+   {
+      printMethod(TEST_FUNC);
+
+      DArray<Rational> ac;
+      ac.allocate(4);
+      ac[0] = Rational(2);
+      ac[1] = Rational(3);
+      ac[2] = Rational(4);
+      ac[3] = Rational(5);
+      Polynomial<Rational> a(ac);
+      TEST_ASSERT(a.size() == 4);
+      TEST_ASSERT(a.capacity() == 4);
+    
+      Polynomial<Rational> b = a.reflect();
+      TEST_ASSERT(b.size() == 4);
+      TEST_ASSERT(b.capacity() == 4);
+      TEST_ASSERT(b[0] == Rational(2));
+      TEST_ASSERT(b[1] == Rational(-3));
+      TEST_ASSERT(b[2] == Rational(4));
+      TEST_ASSERT(b[3] == Rational(-5));
+   }
+
+   void testShift()
+   {
+      printMethod(TEST_FUNC);
+
+      DArray<Rational> ac;
+      ac.allocate(3);
+      ac[0] = Rational(2);
+      ac[1] = Rational(3);
+      ac[2] = Rational(1);
+      Polynomial<Rational> a(ac);
+      TEST_ASSERT(a.size() == 3);
+      TEST_ASSERT(a.capacity() == 3);
+   
+      Rational c(2);
+      Polynomial<Rational> b = a.shift(c);
+      TEST_ASSERT(b.size() == 3);
+      TEST_ASSERT(b.capacity() == 3);
+      TEST_ASSERT(b[2] == a[2]);
+      TEST_ASSERT(b[1] == a[1] + 2*a[2]*c );
+      TEST_ASSERT(b[0] == a[0] + a[1]*c + a[2]*c*c);
+   }
+
+   void testMonomial()
+   {
+      printMethod(TEST_FUNC);
+
+      Polynomial<Rational> r = Polynomial<Rational>::monomial(2);
+       
+      TEST_ASSERT(r.size() == 3);
+      TEST_ASSERT(r.capacity() == 3);
+      TEST_ASSERT(r[0] == Rational(0));
+      TEST_ASSERT(r[1] == Rational(0));
+      TEST_ASSERT(r[2] == Rational(1));
+   }
+ 
    void testNegation()
    {
       printMethod(TEST_FUNC);
@@ -234,12 +323,17 @@ public:
 
 TEST_BEGIN(PolynomialTest)
 TEST_ADD(PolynomialTest, testDefaultConstructor)
+TEST_ADD(PolynomialTest, testConstantConstructor)
 TEST_ADD(PolynomialTest, testArrayConstructor)
 TEST_ADD(PolynomialTest, testEquality)
 TEST_ADD(PolynomialTest, testAddition)
 TEST_ADD(PolynomialTest, testScalarMultiplication)
 TEST_ADD(PolynomialTest, testScalarDivision)
 TEST_ADD(PolynomialTest, testPolynomialMultiplication)
+TEST_ADD(PolynomialTest, testIntegrate)
+TEST_ADD(PolynomialTest, testReflect)
+TEST_ADD(PolynomialTest, testShift)
+TEST_ADD(PolynomialTest, testMonomial)
 TEST_ADD(PolynomialTest, testNegation)
 TEST_END(PolynomialTest)
 

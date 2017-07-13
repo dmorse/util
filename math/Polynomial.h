@@ -9,8 +9,10 @@
 */
 
 #include <util/containers/GArray.h>  // base class
+#include <util/containers/DArray.h>  // base class
 #include <util/math/Rational.h>      // default template argument
-#include <util/containers/Array.h>   // function argument
+#include <util/math/Binomial.h>      // default in implementation
+#include <util/containers/DArray.h>  // used in implementation
 #include <util/global.h>
 
 
@@ -34,14 +36,31 @@ namespace Util
       //@{
 
       /**
-      * Constructor.
+      * Construct a zero polynomial.
+      *
+      * Creates a zero polynomial f(x) = 0, with logical size() = 0.
+      * The capacity parameter specifies how much physical space to
+      * allocate for subsqequent growth in the array of coefficients.
       *
       * \param capacity initial capacity of coefficient array.
       */
       Polynomial(int capacity = 10);
 
       /**
-      * Construct from array of coefficients.
+      * Construct a constant polynomial.
+      *
+      * Creates a polynomial f(x) = c, with logical size() = 1.
+      *
+      * \param c constant coefficient value
+      */
+      Polynomial(T c);
+
+      /**
+      * Construct a nonzero polynomial from array of coefficients.
+      *
+      * Constructs an polynomial in which the coefficient of x^{i} 
+      * is given by coeffs[i]. The logical and physical size of the
+      * coefficient array are both set to the capacity of coeffs.
       *
       * \param coeffs array of coefficients.
       */
@@ -50,12 +69,12 @@ namespace Util
       /**
       * Copy constructor
       *
-      * \param v Polynomial to be copied
+      * \param other Polynomial to be copied
       */
-      Polynomial(Polynomial<T> const & v);
+      Polynomial(Polynomial<T> const & other);
 
       /**
-      * Copy assignment.
+      * Assignment from another polynomial.
       *
       * \param other Polynomial to assign.
       */
@@ -123,6 +142,50 @@ namespace Util
       Polynomial<T>& operator *= (const Polynomial<T>& a);
 
       //@}
+      /// \name Mathematical Functions (return related polynomials)
+      //@{
+
+      /**
+      * Compute and return indefinite integral of this polynomial.
+      *
+      * Returns an indefinite integral with zero constant term.
+      *
+      * \return indefinite integral polynomial.
+      */
+      Polynomial<T> integrate() const;
+
+      /**
+      * Compute and return reflected polynomial f(-x).
+      *
+      * If this polynomial is f(x), this returns a polynomial g(x) = f(-x) 
+      * created by the reflection operation x-> -x. This yields a
+      * polynomial in which the sign is reversed for all coefficients
+      * of odd powers of x.
+      *
+      * \return polynomial created by reflection x -> -x. 
+      */
+      Polynomial<T> reflect() const;
+
+      /**
+      * Compute and return shifted polynomial f(x+a).
+      *
+      * If this polynomial is f(x), this returns a polynomial g(x) = f(x+a) 
+      * created by the shift operation x-> x + a. 
+      *
+      * \return polynomial created by shift operation x -> x + a.
+      */
+      Polynomial<T> shift(T a) const;
+
+      //@}
+
+      // Static member functions
+      
+      /**
+      * Return a monomial f(x) = x^{n}.
+      *
+      * \param n power of x in monomial.
+      */ 
+      static Polynomial<T> monomial(int n);
 
    };
 
@@ -136,7 +199,18 @@ namespace Util
    template <typename T>
    inline 
    Polynomial<T>::Polynomial(int capacity)
-   { GArray<T>::reserve(capacity); }
+   {  GArray<T>::reserve(capacity); }
+
+   /*
+   * Construct a constant polynomial f(x) = c.
+   */
+   template <typename T>
+   inline
+   Polynomial<T>::Polynomial(T c)
+   {
+      GArray<T>::reserve(10); 
+      GArray<T>::append(c);
+   }
 
    /*
    * Construct from array of coefficients.
@@ -279,36 +353,30 @@ namespace Util
       if (size() > 0) {
 
          if (a.size() == 0) {
-
-            // If other polynomial (a) is zero, clear this one.
+            // If polynomial a is zero, set this one to zero (clear it).
             clear();
-
          } else {
 
-            UTIL_ASSERT(a.size() > 0);
-
-            // Compute size of new array
+            // Compute size of new array of coefficients (order + 1)
             int n = size() + a.size() - 1;
 
-            // Make a copy of initial coefficients
+            // Make a copy of coefficients of this polynomial
             GArray<T> b(*this);
-            UTIL_CHECK(b.size() == size());
 
-            // Clear this array of coefficients
+            // Clear this array of coefficients and reserve enough space
             clear();
-
-            // Set all coefficients to zero
             if (n > capacity()) {
                GArray<T>::reserve(n);
             }
-            T zero = 0;
+
+            // Set all coefficients of resized array to zero
             int i;
+            T zero = 0;
             for (i = 0; i < n; ++i) {
                GArray<T>::append(zero);
             }
-            UTIL_ASSERT(size() == n);
 
-            // Double loop over coefficients
+            // Compute new coefficients as a double sum
             int j, k;
             for (i = 0; i < a.size(); ++i) {
                for (j = 0; j < b.size(); ++j) {
@@ -322,6 +390,97 @@ namespace Util
       }
       return *this;
    }
+
+   /*
+   * Compute and return indefinite integral of this polynomial.
+   */
+   template <typename T>
+   Polynomial<T> Polynomial<T>::integrate() const
+   {
+      // Construct and compute coefficient array for integral
+      DArray<T> coeffs;
+      coeffs.allocate(size()+1);
+      coeffs[0] = T(0);
+      for (int i = 0; i < size(); ++i) {
+         coeffs[i+1] = (*this)[i];
+         coeffs[i+1] /= T(i+1);
+      }
+
+      // Construct and return associated Polynomial
+      Polynomial<T> b(coeffs);
+      return b;
+   }
+
+   /*
+   * Compute and return reflection g(x) = f(-x) this polynomial f(x).
+   */
+   template <typename T>
+   Polynomial<T> Polynomial<T>::reflect() const
+   {
+      // Make copy
+      Polynomial<T> b(*this);
+
+      // Reverse odd power coefficients
+      for (int i = 0; i < b.size(); ++i) {
+         if (i%2 != 0) {
+            b[i] *= -1;
+         }
+      }
+
+      return b;
+   }
+
+   /*
+   * Compute and return reflection g(x) = f(-x) this polynomial f(x).
+   */
+   template <typename T>
+   Polynomial<T> Polynomial<T>::shift(T a) const
+   {
+      // Make copy of this
+      Polynomial<T> b(*this);
+
+      int order = size() - 1;
+      if (order > 0) {
+         Binomial::setup(order);
+         int n, m;
+         T p;
+         for (n = 1; n <= order; ++n) {
+            p = b[n]*a;
+            for (m = 1; m <= n; ++m) {
+               b[n -m] += Binomial::coeff(n, m)*p;
+               p *= a;
+            }
+         }
+      }
+
+      return b;
+   }
+   // Static function
+
+   // Static function
+
+   /**
+   * Return a monomial.
+   */
+   template <typename T>
+   Polynomial<T> Polynomial<T>::monomial(int power)
+   {
+      UTIL_CHECK(power >= 0);
+      Polynomial<T> a(power+1);
+
+      // Append zero coefficients.
+      T zero(0);
+      for (int i = 0; i <= power; ++i) {
+         a.GArray<T>::append(zero);
+      }
+
+      // Set coefficient of highest power to unity
+      a[power] = T(1);
+
+      return a;
+   }
+
+   // Related non-member functions
 
    /**
    * Equality operator for polynomials.

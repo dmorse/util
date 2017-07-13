@@ -23,6 +23,11 @@ namespace Util
    /**
    * A Rational number (a ratio of integers).
    *
+   * A rational is always stored in a standard reduced form in which the
+   * denominator is a positive integer and the numerator and denominator
+   * have no common divisors other than unity.  All integers, including
+   * zero, have a denominator of 1.
+   *
    * \ingroup Math_Module
    */
    class Rational
@@ -558,7 +563,7 @@ namespace Util
    { return Rational(b*a.num_, a.den_); }
 
    /**
-   * Compute product of rational and integer.
+   * Compute product of integer and rational.
    *
    * \param b integer argument
    * \param a Rational argument
@@ -632,24 +637,66 @@ namespace Util
 
    /// Equality and inequality operators
 
+   /**
+   * Equality operator for two Rational numbers.
+   *
+   * \param a 1st Rational
+   * \param b 2nd Rational
+   * \return true if equal, false otherwise
+   */
    inline 
    bool operator == (const Rational& a, const Rational& b)
    {  return ((a.num_ == b.num_) && (a.den_ == b.den_)); }
 
+   /**
+   * Equality operator for a Rational and an integer.
+   *
+   * \param a Rational number
+   * \param b integer number
+   * \return true if equal, false otherwise
+   */
    inline bool operator == (const Rational& a, int b)
    {  return ((a.num_ == b) && (a.den_ == 1)); }
 
+   /**
+   * Equality operator for an integer and a Rational.
+   *
+   * \param b integer number
+   * \param a Rational number
+   * \return true if equal, false otherwise
+   */
    inline bool operator == (int b, const Rational& a)
    {  return (a == b); }
 
    /// Inequality of two Rationals.
 
+   /**
+   * Equality operator for two Rational numbers.
+   *
+   * \param a 1st Rational
+   * \param b 2nd Rational
+   * \return true if unequal, false if equal
+   */
    inline bool operator != (const Rational& a, const Rational& b)
    {  return !(a == b); }
 
+   /**
+   * Inequality operator for a Rational and an integer.
+   *
+   * \param a Rational number
+   * \param b integer number
+   * \return true if unequal, false if equal
+   */
    inline bool operator != (const Rational& a, int b)
    {  return !(a == b); }
 
+   /**
+   * Inequality operator for an integer and a Rational.
+   *
+   * \param b integer number
+   * \param a Rational number
+   * \return true if unequal, false if equal
+   */
    inline bool operator != (int b, const Rational& a)
    {  return !(a == b); }
 
@@ -664,19 +711,23 @@ namespace Util
    }
 
    /*
-   * Reduce denominator to greatest common divisor (private).
+   * Reduce rational number to standard reduced form (private).
    */
    inline
    void Rational::reduce ()
    {
       UTIL_CHECK(den_ != 0);
-      if (den_ < 0) {
-         den_ *= -1;
-         num_ *= -1;
+      if (num_ == 0) {
+         den_ = 1;
+      } else {
+         if (den_ < 0) {
+            den_ *= -1;
+            num_ *= -1;
+         }
+         int c = gcd(num_, den_);
+         num_ /= c;
+         den_ /= c;
       }
-      int c = gcd(num_, den_);
-      num_ /= c;
-      den_ /= c;
    }
 
 }

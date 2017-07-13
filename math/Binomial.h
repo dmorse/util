@@ -20,7 +20,7 @@ namespace Util
 {
 
    /**
-   * Class for binomial coefficients (all static functions)
+   * Class for binomial coefficients (all static members)
    *
    * \ingroup Math_Module
    */
@@ -28,30 +28,42 @@ namespace Util
    {
 
    public:
-   
-      static void setup(int order); 
+  
+      /**
+      * Precompute all combinations C(n, m) up to n = nMax.
+      *
+      * Algorithm: Construct rows [0,...,nMax] of Pascal's triangle.
+      *
+      * \param nMax maximum value of n to precompute.
+      */ 
+      static void setup(int nMax);
      
-      // static int int(int n, int m); 
-
-      // static double double(int n, int m); 
+      /**
+      * Return coefficient "n choose m", or C(n, m) = n!/(m!(n-m)!).
+      *
+      * Algorithm: Returns precomputed value C(n,m) if already known. 
+      * Otherwise, calls setup(n) to computes and stores values of
+      * C(n', m) for all n' <= n, then returns desired value.
+      *
+      * \param n larger integer (overall power in binomial)
+      * \param m parameter in range [0,n]
+      */ 
+      static int coeff(int n, int m); 
 
    private:
 
       /**
       * Integer binomial coefficients.
       */
-      static
-      GArray<int>  coeffs_;
+      static GArray<int> coeffs_;
 
       /**
-      * Floating point binomial coefficients.
+      * Maximum value of n index (order of polynomial).
       */
-      // GArray<double> rcoeffs_;
-
-      static int maxOrder_;
+      static int maxN_;
 
       /**
-      * Constructor (not implemented, to prevent instantiation)
+      * Constructor (private & not implemented, to prevents instantiation)
       */
       Binomial();
 
