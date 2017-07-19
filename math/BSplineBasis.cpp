@@ -78,7 +78,9 @@ namespace Util
                   std::cout << "Order = " << m + 1;
                   std::cout << "  Domain [" << n 
                             << " , " << n + 1 << "] : "; 
-                  std::cout << polynomials_[n];
+                  std::cout << polynomials_[n] << "   ";
+                  std::cout << polynomials_[n](Rational(n)) << " ";
+                  std::cout << polynomials_[n](Rational(n+1)) << " ";
                }
             }
 
