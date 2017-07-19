@@ -54,7 +54,7 @@ namespace Util
       Rational(int num, int den);
 
       /**
-      * Constructor, convert from integer.
+      * Constructor, construct from integer.
       *
       * Creates a rational with a denominator == 1.
       *
@@ -69,25 +69,17 @@ namespace Util
       */
       Rational(const Rational& v);
 
-      /// \name Accessors
+      /**
+      * Destructor.
+      */
+      ~Rational()
+      {}
+
+      /// \name Assignment and Conversion.
       //@{
 
       /**
-      * Return numerator.
-      */
-      int num() const;
-
-      /**
-      * Return denominator.
-      */
-      int den() const;
-
-      //@}
-      /// \name Assignment
-      //@{
-
-      /**
-      * Copy assignment.
+      * Copy assignment from another Rational.
       *
       * \param other Rational to assign.
       */
@@ -179,6 +171,25 @@ namespace Util
       Rational& operator /= (int a);
 
       //@}
+      /// \name Accessors
+      //@{
+
+      /**
+      * Return numerator.
+      */
+      int num() const;
+
+      /**
+      * Return denominator.
+      */
+      int den() const;
+
+      /**
+      * Convert to double.
+      */
+      operator double () const;
+
+      //@}
 
       /**
       * Serialize to/from an archive.
@@ -233,8 +244,10 @@ namespace Util
       // Unary negation operation
       friend Rational operator - (const Rational& a);
 
+      #if 0
       friend 
       std::istream& operator >> (std::istream& in, Rational &rational);
+      #endif
 
       friend 
       std::ostream& operator << (std::ostream& out, const Rational &rational);
@@ -243,6 +256,7 @@ namespace Util
 
    // Friend function declarations.
 
+   #if 0
    /**
    * istream extractor for a Rational.
    *
@@ -253,6 +267,7 @@ namespace Util
    * \return modified input stream
    */
    std::istream& operator >> (std::istream& in, Rational &a);
+   #endif
 
    /**
    * ostream inserter for a Rational.
@@ -314,20 +329,6 @@ namespace Util
     : num_(other.num_),
       den_(other.den_)
    {}
-
-   /*
-   * Return numerator.
-   */
-   inline
-   int Rational::num() const
-   { return num_; }
-
-   /*
-   * Return denominator.
-   */
-   inline
-   int Rational::den() const
-   {  return den_; }
 
    /*
    * Assignment from another rational.
@@ -449,6 +450,61 @@ namespace Util
       den_ *= a;
       reduce();
       return *this;
+   }
+
+   // Accessors
+
+   /*
+   * Return numerator.
+   */
+   inline
+   int Rational::num() const
+   { return num_; }
+
+   /*
+   * Return denominator.
+   */
+   inline
+   int Rational::den() const
+   {  return den_; }
+
+   /*
+   * Convert to double operator.
+   */
+   inline
+   Rational::operator double () const
+   {  return num_/den_; }
+
+   // Miscellaneous member functions
+
+   /*
+   * Serialize to/from an archive.
+   */
+   template <class Archive>
+   inline void Rational::serialize(Archive& ar, const unsigned int version)
+   {
+      ar & den_;
+      ar & num_;
+   }
+
+   /*
+   * Reduce rational number to standard reduced form (private).
+   */
+   inline
+   void Rational::reduce ()
+   {
+      UTIL_CHECK(den_ != 0);
+      if (num_ == 0) {
+         den_ = 1;
+      } else {
+         if (den_ < 0) {
+            den_ *= -1;
+            num_ *= -1;
+         }
+         int c = gcd(num_, den_);
+         num_ /= c;
+         den_ /= c;
+      }
    }
 
    // Friend functions for binary arithmetic operations
@@ -627,9 +683,6 @@ namespace Util
 
    /**
    * Unary negation of Rational.
-   *
-   * \param a Rational argument
-   * \return negation -a
    */
    inline
    Rational operator - ( const Rational& a)
@@ -699,36 +752,6 @@ namespace Util
    */
    inline bool operator != (int b, const Rational& a)
    {  return !(a == b); }
-
-   /*
-   * Serialize to/from an archive.
-   */
-   template <class Archive>
-   inline void Rational::serialize(Archive& ar, const unsigned int version)
-   {
-      ar & den_;
-      ar & num_;
-   }
-
-   /*
-   * Reduce rational number to standard reduced form (private).
-   */
-   inline
-   void Rational::reduce ()
-   {
-      UTIL_CHECK(den_ != 0);
-      if (num_ == 0) {
-         den_ = 1;
-      } else {
-         if (den_ < 0) {
-            den_ *= -1;
-            num_ *= -1;
-         }
-         int c = gcd(num_, den_);
-         num_ /= c;
-         den_ /= c;
-      }
-   }
 
 }
 #endif

@@ -10,6 +10,7 @@
 namespace Util
 {
 
+   #if 0
    /*
    * istream extractor for a Rational.
    */
@@ -21,13 +22,17 @@ namespace Util
       in >> a.den_;
       return in;
    }
+   #endif
 
    /*
    * ostream inserter for a Rational.
    */
    std::ostream& operator << (std::ostream& out, Rational const &a)
    {
-      out << " " << a.num_ << " / " << a.den_ ;
+      out << " " << a.num_;
+      if (a.den_ != 1) {
+         out << "/" << a.den_ ;
+      }
       return out;
    }
 

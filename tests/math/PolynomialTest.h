@@ -90,7 +90,7 @@ public:
       TEST_ASSERT(b == c);
    }
 
-   void testAddition()
+   void testAdditionSubtraction()
    {
       printMethod(TEST_FUNC);
 
@@ -112,6 +112,25 @@ public:
       TEST_ASSERT(b.capacity() == 2);
 
       Polynomial<Rational> c(a);
+
+      // Test operations involving null polynomial
+      Polynomial<Rational> d;
+      TEST_ASSERT(d.size() == 0);
+      d += d;
+      TEST_ASSERT(d.size() == 0);
+      d -= d;
+      TEST_ASSERT(d.size() == 0);
+      a += d;
+      TEST_ASSERT(a == c);
+      a -= d;
+      TEST_ASSERT(a == c);
+      d += a;
+      TEST_ASSERT(d == a);
+      d.clear();
+      d -= a;
+      d += a;
+      TEST_ASSERT(d.size() == a.size());
+
       a += b;
       TEST_ASSERT(a.size() == 3);
       TEST_ASSERT(a[0] == c[0] + b[0]);
@@ -236,6 +255,9 @@ public:
       TEST_ASSERT(b[1] == Rational(2));
       TEST_ASSERT(b[2] == Rational(3,2));
       TEST_ASSERT(b[3] == Rational(4,3));
+
+      Polynomial<Rational> c = b.differentiate();
+      TEST_ASSERT(c == a);
    }
 
    void testReflect()
@@ -326,7 +348,7 @@ TEST_ADD(PolynomialTest, testDefaultConstructor)
 TEST_ADD(PolynomialTest, testConstantConstructor)
 TEST_ADD(PolynomialTest, testArrayConstructor)
 TEST_ADD(PolynomialTest, testEquality)
-TEST_ADD(PolynomialTest, testAddition)
+TEST_ADD(PolynomialTest, testAdditionSubtraction)
 TEST_ADD(PolynomialTest, testScalarMultiplication)
 TEST_ADD(PolynomialTest, testScalarDivision)
 TEST_ADD(PolynomialTest, testPolynomialMultiplication)

@@ -53,7 +53,7 @@ namespace Util
       *
       * \param c constant coefficient value
       */
-      Polynomial(T c);
+      explicit Polynomial(T c);
 
       /**
       * Construct a nonzero polynomial from array of coefficients.
@@ -106,6 +106,15 @@ namespace Util
       Polynomial<T>& operator += (const Polynomial<T>& a);
 
       /**
+      * Add a constant to this polynomial.
+      *
+      * Upon return, *this = this + a.
+      *
+      * \param a increment (input)
+      */
+      Polynomial<T>& operator += (T a);
+
+      /**
       * Subtract another polynomial from this one.
       *
       * Upon return, *this = this + a.
@@ -113,6 +122,15 @@ namespace Util
       * \param a decrement (input)
       */
       Polynomial<T>& operator -= (const Polynomial<T>& a);
+
+      /**
+      * Subtract a constant from this polynomial.
+      *
+      * Upon return, *this = this + a.
+      *
+      * \param a increment (input)
+      */
+      Polynomial<T>& operator -= (T a);
 
       /**
       * Multiply this polynomial by a scalar.
@@ -155,6 +173,15 @@ namespace Util
       Polynomial<T> integrate() const;
 
       /**
+      * Compute and return derivative of this polynomial.
+      *
+      * Returns a polynomial of one smaller order.
+      *
+      * \return derivative polynomial
+      */
+      Polynomial<T> differentiate() const;
+
+      /**
       * Compute and return reflected polynomial f(-x).
       *
       * If this polynomial is f(x), this returns a polynomial g(x) = f(-x) 
@@ -175,6 +202,26 @@ namespace Util
       * \return polynomial created by shift operation x -> x + a.
       */
       Polynomial<T> shift(T a) const;
+
+      //@}
+      /// \name Polynomial Evaluation Functions
+      //@{ 
+
+      /**
+      * Evaluate polynomial at specific argument of type T.
+      *
+      * \param x value of argument 
+      * \return Value f(x) of this polynomial at specified x
+      */
+      T operator () (T x);
+
+      /**
+      * Evaluate polynomial at specific floating point argument.
+      *
+      * \param x value of argument x
+      * \return Value f(x) of polynomial at specified x
+      */
+      double evaluate (double x);
 
       //@}
 
@@ -267,12 +314,7 @@ namespace Util
    template <typename T>
    Polynomial<T>& Polynomial<T>::operator += (const Polynomial<T>& a)
    {
-      if (a.size() == 0) {
-         clear();
-      } else {
-         if (a.size() > capacity()) {
-            GArray<T>::resize(a.size());
-         }
+      if (a.size() > 0) {
          int min = a.size() > size() ? size() : a.size();
          if (min > 0) {
             for (int i = 0; i < min; ++i) {
@@ -280,10 +322,25 @@ namespace Util
             }
          }
          if (a.size() > size()) {
+            UTIL_CHECK(min == size());
             for (int i = size(); i < a.size(); ++i) {
-               (*this)[i] = a[i];
+               GArray<T>::append(a[i]);
             }
          }
+      }
+      return *this;
+   }
+
+   /*
+   * Add a constant to this polynomial.
+   */
+   template <typename T>
+   Polynomial<T>& Polynomial<T>::operator += (T a)
+   {
+      if (size() == 0) {
+         (*this).append(a);
+      } else {
+         (*this)[0] += a;
       }
       return *this;
    }
@@ -294,21 +351,33 @@ namespace Util
    template <typename T>
    Polynomial<T>& Polynomial<T>::operator -= (const Polynomial<T>& a)
    {
-      if (a.size() == 0) {
-         clear();
-      } else {
-         if (a.size() > capacity()) {
-            GArray<T>::resize(a.size());
-         }
+      if (a.size() > 0) {
          int min = a.size() > size() ? size() : a.size();
-         for (int i = 0; i < min; ++i) {
-            (*this)[i] -= a[i];
-         }
-         if (a.size() > size()) {
-            for (int i = size(); i < a.size(); ++i) {
-               (*this)[i] = -a[i];
+         if (min > 0) {
+            for (int i = 0; i < min; ++i) {
+               (*this)[i] -= a[i];
             }
          }
+         if (a.size() > size()) {
+            UTIL_CHECK(min == size());
+            for (int i = size(); i < a.size(); ++i) {
+               GArray<T>::append(-a[i]);
+            }
+         }
+      }
+      return *this;
+   }
+
+   /*
+   * Subtract a constant from this polynomial.
+   */
+   template <typename T>
+   Polynomial<T>& Polynomial<T>::operator -= (T a)
+   {
+      if (size() == 0) {
+         (*this).append(-a);
+      } else {
+         (*this)[0] -= a;
       }
       return *this;
    }
@@ -397,18 +466,53 @@ namespace Util
    template <typename T>
    Polynomial<T> Polynomial<T>::integrate() const
    {
-      // Construct and compute coefficient array for integral
-      DArray<T> coeffs;
-      coeffs.allocate(size()+1);
-      coeffs[0] = T(0);
-      for (int i = 0; i < size(); ++i) {
-         coeffs[i+1] = (*this)[i];
-         coeffs[i+1] /= T(i+1);
-      }
+      if (size() == 0) {
+         Polynomial<T> b;
+         b.clear();
+         return b;
+      } else {
+         // Construct and compute coefficient array for integral
+         DArray<T> coeffs;
+         coeffs.allocate(size()+1);
+         coeffs[0] = T(0);
+         for (int i = 0; i < size(); ++i) {
+            coeffs[i+1] = (*this)[i];
+            coeffs[i+1] /= T(i+1);
+         }
 
-      // Construct and return associated Polynomial
-      Polynomial<T> b(coeffs);
-      return b;
+         // Construct and return associated Polynomial
+         Polynomial<T> b(coeffs);
+         return b;
+      }
+   }
+
+   /*
+   * Compute and return the derivatvie of this polynomial.
+   */
+   template <typename T>
+   Polynomial<T> Polynomial<T>::differentiate() const
+   {
+      if (size() <= 1) {
+
+         // If this polynomial is null or constant, return null
+         Polynomial<T> b;
+         b.clear();
+         return b;
+
+      } else {
+
+         // Construct coefficient array for derivative polynomial
+         DArray<T> coeffs;
+         coeffs.allocate(size()-1);
+         for (int i = 1; i < size(); ++i) {
+            coeffs[i-1] = (*this)[i];
+            coeffs[i-1] *= T(i);
+         }
+
+         // Construct and return associated Polynomial
+         Polynomial<T> b(coeffs);
+         return b;
+      }
    }
 
    /*
@@ -455,7 +559,40 @@ namespace Util
 
       return b;
    }
-   // Static function
+
+   /*
+   * Evaluate polynomial at specific argument.
+   */
+   template <typename T>
+   inline T Polynomial<T>::operator () (T x)
+   { 
+      int order = size()-1;
+      T value = (*this)[order];
+      if (order > 0) {
+         for (int i = order-1; i >= 0; --i) {
+           value *= x;
+           value += (*this)[i];
+         }
+      }
+      return value;
+   }
+
+   /*
+   * Evaluate polynomial at specific floating point argument.
+   */
+   template <typename T>
+   inline double Polynomial<T>::evaluate (double x)
+   {
+      int order = size()-1;
+      double value = (double)(*this)[order];
+      if (order > 0) {
+         for (int i = order-1; i >= 0; --i) {
+           value *= x;
+           value += (double)(*this)[i];
+         }
+      }
+      return value;
+   }
 
    // Static function
 
@@ -534,5 +671,17 @@ namespace Util
       return b;
    }
 
+   template <typename T>
+   std::ostream& operator << (std::ostream& out, Polynomial<T> const & p)
+   {
+      out << "(";
+      if (p.size() > 0) {
+         for (int i = 0; i < p.size(); ++i) {
+            out << p[i] << " ";
+         }
+      }
+      out << ")";
+      return out;
+   }
 }
 #endif
