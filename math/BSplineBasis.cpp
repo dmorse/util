@@ -39,38 +39,40 @@ namespace Util
       if (order > 0) {
 
          // Allocate and initialize work array 
-         DArray< Polynomial<Rational> > integral;
-         integral.allocate(size);
+         DArray< Polynomial<Rational> > work;
+         work.allocate(size);
          int n;
          for (n = 0; n < size; ++n) {
-            integral[n].clear();
+            work[n].clear();
          }
 
          // Recursive construction of spline bases
-         int m;
+         int m; // Order of previously calculated spline polynomials
          for (m = 0; m < order; ++m) {
 
-
-            // Evaluate and store integral of previous order
+            // Evaluate and store integral of order m spline polynomials
             for (n = 0; n <= m; ++n) {
-               integral[n] = polynomials_[n].integrate();
+               work[n] = polynomials_[n].integrate();
             }
+
+            // Clear polynomials_ array
             for (n = 0; n < size; ++n) {
                polynomials_[n].clear();
             }
 
-            // Evaluate integral
+            // Applying recursion relation to obtain order m+1 polynomials
             for (n = 0; n <= m + 1; ++n) {
                if (n < m + 1) {
-                  polynomials_[n] += integral[n];
-                  polynomials_[n] -= integral[n](Rational(n));
+                  polynomials_[n] += work[n];
+                  polynomials_[n] -= work[n](Rational(n));
                }
                if (n > 0) {
-                  polynomials_[n] += integral[n-1](Rational(n));
-                  polynomials_[n] -= integral[n-1].shift(Rational(-1));
+                  polynomials_[n] += work[n-1](Rational(n));
+                  polynomials_[n] -= work[n-1].shift(Rational(-1));
                }
             }
 
+            // Optionally output intermediate results
             if (verbose) {
                std::cout << std::endl;
                for (n = 0; n <= m + 1; ++n) {
@@ -85,7 +87,23 @@ namespace Util
             }
 
          }
-         
+
+         // Check continuity of function derivative up to order - 1
+         for (n = 0; n <= order_; ++n) {
+            work[n] = polynomials_[n];
+         }
+         Rational lower;
+         Rational upper;
+         for (m = 0; m < order_; ++m) {
+            for (n = 1; n <= order_; ++n) {
+               lower = work[n-1](Rational(n));
+               upper = work[n](Rational(n));
+               UTIL_CHECK(lower == upper);
+            }
+            for (n = 0; n <= order_; ++n) {
+               work[n] = work[n].differentiate();
+            }
+         }
       }
 
    }
