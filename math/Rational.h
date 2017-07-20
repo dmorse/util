@@ -185,7 +185,9 @@ namespace Util
       int den() const;
 
       /**
-      * Convert to double.
+      * Cast (convert) to double precision floating point.
+      *
+      * \return double precision floating point representation of this.
       */
       operator double () const;
 
@@ -469,11 +471,11 @@ namespace Util
    {  return den_; }
 
    /*
-   * Convert to double operator.
+   * Cast to double operator.
    */
    inline
    Rational::operator double () const
-   {  return num_/den_; }
+   {  return double(num_)/double(den_); }
 
    // Miscellaneous member functions
 

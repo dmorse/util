@@ -78,7 +78,8 @@ namespace Util
       *
       * \param other Polynomial to assign.
       */
-      Polynomial<T>& operator = (Polynomial<T> const & other);
+      template <typename U>
+      Polynomial<T>& operator = (Polynomial<U> const & other);
 
       //@}
       /// \name Inherited Array Functions
@@ -283,7 +284,7 @@ namespace Util
    {
       GArray<T>::reserve(other.capacity());
       if (other.size() > 0) {
-         for (int i = 0; i < other.size(); ++i) {
+        for (int i = 0; i < other.size(); ++i) {
             GArray<T>::append(other[i]);
          }
       }
@@ -293,16 +294,19 @@ namespace Util
    * Assignment from another polynomial.
    */
    template <typename T>
+   template <typename U>
    inline
-   Polynomial<T>& Polynomial<T>::operator = (const Polynomial<T>& other)
+   Polynomial<T>& Polynomial<T>::operator = (const Polynomial<U>& other)
    {
       clear();
       if (other.size() >= 0) {
          if (other.size() > capacity()) {
             GArray<T>::reserve(other.capacity());
          }
+         T element;
          for (int i = 0; i < other.size(); ++i) {
-            GArray<T>::append(other[i]);
+            element = other[i];
+            GArray<T>::append(element);
          }
       }
       return *this;

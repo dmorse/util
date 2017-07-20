@@ -29,10 +29,35 @@ public:
       BSplineBasis s(5, verbose);
    }
  
+   void testPolynomial()
+   {
+      printMethod(TEST_FUNC);
+      BSplineBasis s(3);
+
+      Polynomial<double> const & p = s[2];
+      std::cout << p << std::endl;
+   }
+
+   void testEvaluate()
+   {
+      printMethod(TEST_FUNC);
+      BSplineBasis s(3);
+
+      std::cout << std::endl;
+      std::cout << "B_3(0.999999) = " << s(0.999999) << std::endl;
+      std::cout << "B_3(1.000001) = " << s(1.000001) << std::endl;
+      std::cout << "B_3(2.999999) = " << s(2.999999) << std::endl;
+      std::cout << "B_3(3.000001) = " << s(3.000001) << std::endl;
+      std::cout << "B_3(4.1)      = " << s(4.1) << std::endl;
+      std::cout << "B_3(-0.1)     = " << s(-0.1) << std::endl;
+   }
+
 };
 
 TEST_BEGIN(BSplineBasisTest)
 TEST_ADD(BSplineBasisTest, testConstructor)
+TEST_ADD(BSplineBasisTest, testPolynomial)
+TEST_ADD(BSplineBasisTest, testEvaluate)
 TEST_END(BSplineBasisTest)
 
 #endif

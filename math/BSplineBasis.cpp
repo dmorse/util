@@ -11,21 +11,22 @@
 namespace Util
 {
 
-   /**
+   /*
    * Construct a spline basis of specified order.
    */
    BSplineBasis::BSplineBasis(int order, bool verbose)
    {
       UTIL_CHECK(order >= 0);
 
-      // Allocate the polynomials array
+      // Allocate the polynomial arrays
       order_ = order;
       int size = order + 1;
-      polynomials_.allocate(size);
+      exactPolynomials_.allocate(size);
+      floatPolynomials_.allocate(size);
 
       // Set B_{0,0} = 1
       Polynomial<Rational> unity(Rational(1));
-      polynomials_[0] = unity;
+      exactPolynomials_[0] = unity;
 
       if (verbose) {
          int n = 0;
@@ -33,7 +34,7 @@ namespace Util
          std::cout << "Order = 0 ";
          std::cout << " Domain [" << n 
                    << " , " << n + 1 << "] : "; 
-         std::cout << polynomials_[n];
+         std::cout << exactPolynomials_[n];
       }
 
       if (order > 0) {
@@ -52,23 +53,23 @@ namespace Util
 
             // Evaluate and store integral of order m spline polynomials
             for (n = 0; n <= m; ++n) {
-               work[n] = polynomials_[n].integrate();
+               work[n] = exactPolynomials_[n].integrate();
             }
 
-            // Clear polynomials_ array
+            // Clear exactPolynomials_ array
             for (n = 0; n < size; ++n) {
-               polynomials_[n].clear();
+               exactPolynomials_[n].clear();
             }
 
             // Applying recursion relation to obtain order m+1 polynomials
             for (n = 0; n <= m + 1; ++n) {
                if (n < m + 1) {
-                  polynomials_[n] += work[n];
-                  polynomials_[n] -= work[n](Rational(n));
+                  exactPolynomials_[n] += work[n];
+                  exactPolynomials_[n] -= work[n](Rational(n));
                }
                if (n > 0) {
-                  polynomials_[n] += work[n-1](Rational(n));
-                  polynomials_[n] -= work[n-1].shift(Rational(-1));
+                  exactPolynomials_[n] += work[n-1](Rational(n));
+                  exactPolynomials_[n] -= work[n-1].shift(Rational(-1));
                }
             }
 
@@ -80,17 +81,17 @@ namespace Util
                   std::cout << "Order = " << m + 1;
                   std::cout << "  Domain [" << n 
                             << " , " << n + 1 << "] : "; 
-                  std::cout << polynomials_[n] << "   ";
-                  std::cout << polynomials_[n](Rational(n)) << " ";
-                  std::cout << polynomials_[n](Rational(n+1)) << " ";
+                  std::cout << exactPolynomials_[n] << "   ";
+                  std::cout << exactPolynomials_[n](Rational(n)) << " ";
+                  std::cout << exactPolynomials_[n](Rational(n+1)) << " ";
                }
             }
 
          }
 
-         // Check continuity of function derivative up to order - 1
+         // Check continuity of function and m-1 derivatives
          for (n = 0; n <= order_; ++n) {
-            work[n] = polynomials_[n];
+            work[n] = exactPolynomials_[n];
          }
          Rational lower;
          Rational upper;
@@ -104,8 +105,20 @@ namespace Util
                work[n] = work[n].differentiate();
             }
          }
+
+         // Convert polynomials coefficients from Rational to double.
+         for (n = 0; n <= order_; ++n) {
+            floatPolynomials_[n] = exactPolynomials_[n];
+         }
+
       }
 
    }
+
+   /*
+   * Destructor.
+   */
+   BSplineBasis::~BSplineBasis()
+   {}
 
 }

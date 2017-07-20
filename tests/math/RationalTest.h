@@ -91,6 +91,16 @@ public:
       TEST_ASSERT(r.den() == 1);
    } 
 
+   void testCastDouble()
+   {
+      printMethod(TEST_FUNC);
+      Rational r(2, 3);
+      double f;
+      f = r;
+      // std::cout << "f = " << f << std::endl;
+      TEST_ASSERT(eq(f, 2.0/3.0));
+   } 
+
    void testEquality()
    {
       printMethod(TEST_FUNC);
@@ -238,6 +248,7 @@ TEST_ADD(RationalTest, testIntConstructor)
 TEST_ADD(RationalTest, testCopyConstructor)
 TEST_ADD(RationalTest, testCopyAssignment)
 TEST_ADD(RationalTest, testIntAssignment)
+TEST_ADD(RationalTest, testCastDouble)
 TEST_ADD(RationalTest, testEquality)
 TEST_ADD(RationalTest, testUnaryNegation)
 TEST_ADD(RationalTest, testAddSubtractAssignment)

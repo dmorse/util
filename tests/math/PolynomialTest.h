@@ -12,7 +12,7 @@
 
 using namespace Util;
 
-class PolynomialTest : public UnitTest 
+class PolynomialTest : public UnitTest
 {
 
 public:
@@ -22,14 +22,14 @@ public:
 
    void tearDown()
    {}
-  
+
    void testDefaultConstructor()
    {
       printMethod(TEST_FUNC);
       Polynomial<Rational> r(12);
       TEST_ASSERT(r.size() == 0);
       TEST_ASSERT(r.capacity() == 12);
-   } 
+   }
 
    void testConstantConstructor()
    {
@@ -38,7 +38,7 @@ public:
       Polynomial<Rational> r(c);
       TEST_ASSERT(r.size() == 1);
       TEST_ASSERT(r[0] == c);
-   } 
+   }
 
    void testArrayConstructor()
    {
@@ -49,8 +49,8 @@ public:
       coeffs[0] = Rational(2,3);
       coeffs[1] = Rational(3,-7);
       coeffs[2] = Rational(-2,1);
-
       Polynomial<Rational> r(coeffs);
+
       TEST_ASSERT(r.size() == 3);
       TEST_ASSERT(r.capacity() == 3);
       TEST_ASSERT(r[0].num() == 2);
@@ -59,7 +59,52 @@ public:
       TEST_ASSERT(r[1].den() == 7);
       TEST_ASSERT(r[2].num() == -2);
       TEST_ASSERT(r[2].den() == 1);
-   } 
+   }
+
+   void testAssignment1()
+   {
+      printMethod(TEST_FUNC);
+
+      // Construct r
+      DArray<Rational> coeffs;
+      coeffs.allocate(3);
+      coeffs[0] = Rational(2,3);
+      coeffs[1] = Rational(3,-7);
+      coeffs[2] = Rational(-2,1);
+      Polynomial<Rational> r(coeffs);
+
+      // Assign s <- r
+      Polynomial<Rational> s;
+      s = r;
+
+      TEST_ASSERT(s.size() == r.size());
+      TEST_ASSERT(s[0] == r[0]);
+      TEST_ASSERT(s[1] == r[1]);
+      TEST_ASSERT(s[2] == r[2]);
+   }
+
+   void testAssignment2()
+   {
+      printMethod(TEST_FUNC);
+
+      // Construct r
+      DArray<Rational> coeffs;
+      coeffs.allocate(3);
+      coeffs[0] = Rational(2,3);
+      coeffs[1] = Rational(3,-7);
+      coeffs[2] = Rational(-2,1);
+      Polynomial<Rational> r(coeffs);
+      TEST_ASSERT(r.size() == 3);
+
+      // Assign s <- r
+      Polynomial<double> s;
+      s = r;
+
+      TEST_ASSERT(s.size() == r.size());
+      TEST_ASSERT(eq(s[0], 2.0/3.0));
+      TEST_ASSERT(eq(s[1], -3.0/7.0));
+      TEST_ASSERT(eq(s[2], -2.0));
+   }
 
    void testEquality()
    {
@@ -247,7 +292,7 @@ public:
       Polynomial<Rational> a(ac);
       TEST_ASSERT(a.size() == 3);
       TEST_ASSERT(a.capacity() == 3);
-    
+
       Polynomial<Rational> b = a.integrate();
       TEST_ASSERT(b.size() == 4);
       TEST_ASSERT(b.capacity() == 4);
@@ -273,7 +318,7 @@ public:
       Polynomial<Rational> a(ac);
       TEST_ASSERT(a.size() == 4);
       TEST_ASSERT(a.capacity() == 4);
-    
+
       Polynomial<Rational> b = a.reflect();
       TEST_ASSERT(b.size() == 4);
       TEST_ASSERT(b.capacity() == 4);
@@ -295,7 +340,7 @@ public:
       Polynomial<Rational> a(ac);
       TEST_ASSERT(a.size() == 3);
       TEST_ASSERT(a.capacity() == 3);
-   
+
       Rational c(2);
       Polynomial<Rational> b = a.shift(c);
       TEST_ASSERT(b.size() == 3);
@@ -310,14 +355,14 @@ public:
       printMethod(TEST_FUNC);
 
       Polynomial<Rational> r = Polynomial<Rational>::monomial(2);
-       
+
       TEST_ASSERT(r.size() == 3);
       TEST_ASSERT(r.capacity() == 3);
       TEST_ASSERT(r[0] == Rational(0));
       TEST_ASSERT(r[1] == Rational(0));
       TEST_ASSERT(r[2] == Rational(1));
    }
- 
+
    void testNegation()
    {
       printMethod(TEST_FUNC);
@@ -330,7 +375,7 @@ public:
 
       Polynomial<Rational> r(coeffs);
       Polynomial<Rational> s = -r;
-       
+
       TEST_ASSERT(s.size() == 3);
       TEST_ASSERT(s.capacity() == 3);
       TEST_ASSERT(s[0].num() == -2);
@@ -340,13 +385,15 @@ public:
       TEST_ASSERT(s[2].num() == 2);
       TEST_ASSERT(s[2].den() == 1);
    }
- 
+
 };
 
 TEST_BEGIN(PolynomialTest)
 TEST_ADD(PolynomialTest, testDefaultConstructor)
 TEST_ADD(PolynomialTest, testConstantConstructor)
 TEST_ADD(PolynomialTest, testArrayConstructor)
+TEST_ADD(PolynomialTest, testAssignment1)
+TEST_ADD(PolynomialTest, testAssignment2)
 TEST_ADD(PolynomialTest, testEquality)
 TEST_ADD(PolynomialTest, testAdditionSubtraction)
 TEST_ADD(PolynomialTest, testScalarMultiplication)
