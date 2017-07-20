@@ -26,7 +26,9 @@ public:
    {
       printMethod(TEST_FUNC);
       int degree = 5;
-      CardinalBSpline s(degree, verbose());
+      //bool noisy = verbose();
+      bool noisy = true;
+      CardinalBSpline s(degree, noisy);
 
       // Constructor has internal tests for continuity
    }
@@ -68,12 +70,34 @@ public:
       }
    }
 
+   void testSum() 
+   {
+     printMethod(TEST_FUNC);
+     CardinalBSpline s(4);
+
+     double sum0 = 0.0;
+     for (int i = -2; i <= 7; ++i) {
+        sum0 += s(double(i));
+     }
+     //std::cout << "sum_i b(i) = " << sum0 << std::endl;
+     TEST_ASSERT(std::fabs(sum0 - 1.0) < 1.0E-7);
+
+     double shift = 0.2786538012;
+     double sum1 = 0.0;
+     for (int i = -2; i <= 7; ++i) {
+        sum1 += s(double(i) + shift);
+     }
+     //std::cout << "sum_i b(i+y) = " << sum1 << std::endl;
+     TEST_ASSERT(std::fabs(sum1 - 1.0) < 1.0E-7);
+     
+   }
 };
 
 TEST_BEGIN(CardinalBSplineTest)
 TEST_ADD(CardinalBSplineTest, testConstructor)
 TEST_ADD(CardinalBSplineTest, testPolynomial)
 TEST_ADD(CardinalBSplineTest, testEvaluate)
+TEST_ADD(CardinalBSplineTest, testSum)
 TEST_END(CardinalBSplineTest)
 
 #endif
