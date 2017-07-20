@@ -26,8 +26,9 @@ public:
    {
       printMethod(TEST_FUNC);
       int degree = 5;
-      bool verbose = true;
-      CardinalBSpline s(degree, verbose);
+      CardinalBSpline s(degree, verbose());
+
+      // Constructor has internal tests for continuity
    }
  
    void testPolynomial()
@@ -37,7 +38,9 @@ public:
       CardinalBSpline s(degree);
 
       Polynomial<double> const & p = s[2];
-      std::cout << p << std::endl;
+      if (verbose()) {
+         std::cout << p << std::endl;
+      }
    }
 
    void testEvaluate()
@@ -45,13 +48,24 @@ public:
       printMethod(TEST_FUNC);
       CardinalBSpline s(3);
 
-      std::cout << std::endl;
-      std::cout << "B_3(0.999999) = " << s(0.999999) << std::endl;
-      std::cout << "B_3(1.000001) = " << s(1.000001) << std::endl;
-      std::cout << "B_3(2.999999) = " << s(2.999999) << std::endl;
-      std::cout << "B_3(3.000001) = " << s(3.000001) << std::endl;
-      std::cout << "B_3(4.1)      = " << s(4.1) << std::endl;
-      std::cout << "B_3(-0.1)     = " << s(-0.1) << std::endl;
+      // Test continuity and domain
+      TEST_ASSERT(std::fabs( s(0.999999) - s(1.000001) ) < 0.0001 );
+      TEST_ASSERT(std::fabs( s(2.999999) - s(3.000001) ) < 0.0001 );
+      TEST_ASSERT(std::fabs( s(4.1) ) < 0.00001 );
+      TEST_ASSERT(std::fabs( s(-0.1) ) < 0.00001 );
+
+      Polynomial<double> const & p = s[2];
+      TEST_ASSERT( eq( p(2.3), s(2.3)) );
+
+      if (verbose()) {
+         std::cout << std::endl;
+         std::cout << "B_3(0.999999) = " << s(0.999999) << std::endl;
+         std::cout << "B_3(1.000001) = " << s(1.000001) << std::endl;
+         std::cout << "B_3(2.999999) = " << s(2.999999) << std::endl;
+         std::cout << "B_3(3.000001) = " << s(3.000001) << std::endl;
+         std::cout << "B_3(4.1)      = " << s(4.1) << std::endl;
+         std::cout << "B_3(-0.1)     = " << s(-0.1) << std::endl;
+      }
    }
 
 };

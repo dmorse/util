@@ -231,7 +231,7 @@ namespace Util
       * \param x value of argument 
       * \return Value f(x) of this polynomial at specified x
       */
-      T operator () (T x);
+      T operator () (T x) const;
 
       /**
       * Evaluate polynomial at specific floating point argument.
@@ -239,7 +239,7 @@ namespace Util
       * \param x value of argument x
       * \return Value f(x) of polynomial at specified x
       */
-      double evaluate (double x);
+      double evaluate (double x) const;
 
       //@}
 
@@ -599,7 +599,7 @@ namespace Util
    * Evaluate polynomial at specific argument.
    */
    template <typename T>
-   inline T Polynomial<T>::operator () (T x)
+   inline T Polynomial<T>::operator () (T x) const
    { 
       int degree = size()-1;
       T value = (*this)[degree];
@@ -616,7 +616,7 @@ namespace Util
    * Evaluate polynomial at specific floating point argument.
    */
    template <typename T>
-   inline double Polynomial<T>::evaluate (double x)
+   inline double Polynomial<T>::evaluate (double x) const
    {
       int degree = size()-1;
       double value = (double)(*this)[degree];
