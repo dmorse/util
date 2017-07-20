@@ -1,17 +1,17 @@
-#ifndef UTIL_B_SPLINE_BASIS_TEST_H
-#define UTIL_B_SPLINE_BASIS_TEST_H
+#ifndef UTIL_CARDINAL_B_SPLINE_TEST_H
+#define UTIL_CARDINAL_B_SPLINE_TEST_H
 
 #include <test/UnitTest.h>
 #include <test/UnitTestRunner.h>
 
 #include <util/math/Rational.h>
-#include <util/math/BSplineBasis.h>
+#include <util/math/CardinalBSpline.h>
 
 #include <fstream>
 
 using namespace Util;
 
-class BSplineBasisTest : public UnitTest 
+class CardinalBSplineTest : public UnitTest 
 {
 
 public:
@@ -25,14 +25,16 @@ public:
    void testConstructor()
    {
       printMethod(TEST_FUNC);
+      int degree = 5;
       bool verbose = true;
-      BSplineBasis s(5, verbose);
+      CardinalBSpline s(degree, verbose);
    }
  
    void testPolynomial()
    {
       printMethod(TEST_FUNC);
-      BSplineBasis s(3);
+      int degree = 3;
+      CardinalBSpline s(degree);
 
       Polynomial<double> const & p = s[2];
       std::cout << p << std::endl;
@@ -41,7 +43,7 @@ public:
    void testEvaluate()
    {
       printMethod(TEST_FUNC);
-      BSplineBasis s(3);
+      CardinalBSpline s(3);
 
       std::cout << std::endl;
       std::cout << "B_3(0.999999) = " << s(0.999999) << std::endl;
@@ -54,10 +56,10 @@ public:
 
 };
 
-TEST_BEGIN(BSplineBasisTest)
-TEST_ADD(BSplineBasisTest, testConstructor)
-TEST_ADD(BSplineBasisTest, testPolynomial)
-TEST_ADD(BSplineBasisTest, testEvaluate)
-TEST_END(BSplineBasisTest)
+TEST_BEGIN(CardinalBSplineTest)
+TEST_ADD(CardinalBSplineTest, testConstructor)
+TEST_ADD(CardinalBSplineTest, testPolynomial)
+TEST_ADD(CardinalBSplineTest, testEvaluate)
+TEST_END(CardinalBSplineTest)
 
 #endif

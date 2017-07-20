@@ -27,7 +27,7 @@ public:
    {
       printMethod(TEST_FUNC);
       Polynomial<Rational> r(12);
-      TEST_ASSERT(r.size() == 0);
+      TEST_ASSERT(r.degree() == -1);
       TEST_ASSERT(r.capacity() == 12);
    }
 
@@ -36,7 +36,7 @@ public:
       printMethod(TEST_FUNC);
       Rational c(4, 5);
       Polynomial<Rational> r(c);
-      TEST_ASSERT(r.size() == 1);
+      TEST_ASSERT(r.degree() == 0);
       TEST_ASSERT(r[0] == c);
    }
 
@@ -51,7 +51,7 @@ public:
       coeffs[2] = Rational(-2,1);
       Polynomial<Rational> r(coeffs);
 
-      TEST_ASSERT(r.size() == 3);
+      TEST_ASSERT(r.degree() == 2);
       TEST_ASSERT(r.capacity() == 3);
       TEST_ASSERT(r[0].num() == 2);
       TEST_ASSERT(r[0].den() == 3);
@@ -77,7 +77,7 @@ public:
       Polynomial<Rational> s;
       s = r;
 
-      TEST_ASSERT(s.size() == r.size());
+      TEST_ASSERT(s.degree() == r.degree());
       TEST_ASSERT(s[0] == r[0]);
       TEST_ASSERT(s[1] == r[1]);
       TEST_ASSERT(s[2] == r[2]);
@@ -94,13 +94,13 @@ public:
       coeffs[1] = Rational(3,-7);
       coeffs[2] = Rational(-2,1);
       Polynomial<Rational> r(coeffs);
-      TEST_ASSERT(r.size() == 3);
+      TEST_ASSERT(r.degree() == 2);
 
       // Assign s <- r
       Polynomial<double> s;
       s = r;
 
-      TEST_ASSERT(s.size() == r.size());
+      TEST_ASSERT(s.degree() == r.degree());
       TEST_ASSERT(eq(s[0], 2.0/3.0));
       TEST_ASSERT(eq(s[1], -3.0/7.0));
       TEST_ASSERT(eq(s[2], -2.0));
@@ -145,7 +145,7 @@ public:
       ac[1] = Rational(3,-7);
       ac[2] = Rational(-2,1);
       Polynomial<Rational> a(ac);
-      TEST_ASSERT(a.size() == 3);
+      TEST_ASSERT(a.degree() == 2);
       TEST_ASSERT(a.capacity() == 3);
 
       DArray<Rational> bc;
@@ -153,44 +153,44 @@ public:
       bc[0] = Rational(2,1);
       bc[1] = Rational(1,1);
       Polynomial<Rational> b(bc);
-      TEST_ASSERT(b.size() == 2);
+      TEST_ASSERT(b.degree() == 1);
       TEST_ASSERT(b.capacity() == 2);
 
       Polynomial<Rational> c(a);
 
       // Test operations involving null polynomial
       Polynomial<Rational> d;
-      TEST_ASSERT(d.size() == 0);
+      TEST_ASSERT(d.degree() == -1);
       d += d;
-      TEST_ASSERT(d.size() == 0);
+      TEST_ASSERT(d.degree() == -1);
       d -= d;
-      TEST_ASSERT(d.size() == 0);
+      TEST_ASSERT(d.degree() == -1);
       a += d;
       TEST_ASSERT(a == c);
       a -= d;
       TEST_ASSERT(a == c);
       d += a;
       TEST_ASSERT(d == a);
-      d.clear();
+      d.setToZero();
       d -= a;
       d += a;
-      TEST_ASSERT(d.size() == a.size());
+      TEST_ASSERT(d.degree() == a.degree());
 
       a += b;
-      TEST_ASSERT(a.size() == 3);
+      TEST_ASSERT(a.degree() == 2);
       TEST_ASSERT(a[0] == c[0] + b[0]);
       TEST_ASSERT(a[1] == c[1] + b[1]);
       TEST_ASSERT(a[2] == c[2]);
       a -= b;
       TEST_ASSERT(a == c);
       a += b;
-      TEST_ASSERT(a.size() == 3);
+      TEST_ASSERT(a.degree() == 2);
       TEST_ASSERT(a[0] == c[0] + b[0]);
       TEST_ASSERT(a[1] == c[1] + b[1]);
       TEST_ASSERT(a[2] == c[2]);
 
       b += c;
-      TEST_ASSERT(b.size() == 3);
+      TEST_ASSERT(b.degree() == 2);
       TEST_ASSERT(a[0] == b[0]);
       TEST_ASSERT(a[1] == b[1]);
       TEST_ASSERT(a[2] == b[2]);
@@ -208,12 +208,13 @@ public:
       ac[1] = Rational(3,-7);
       ac[2] = Rational(-2,1);
       Polynomial<Rational> a(ac);
-      TEST_ASSERT(a.size() == 3);
+      TEST_ASSERT(a.degree() == 2);
       TEST_ASSERT(a.capacity() == 3);
 
       Rational b = Rational(3, 2);
       a *= b;
-      TEST_ASSERT(a.size() == 3);
+      TEST_ASSERT(a.degree() == 2);
+      TEST_ASSERT(a.degree() == 2);
       TEST_ASSERT(a.capacity() == 3);
       TEST_ASSERT(a[0] == Rational(1));
       TEST_ASSERT(a[1] == Rational(-9, 14));
@@ -230,12 +231,12 @@ public:
       ac[1] = Rational(3,-7);
       ac[2] = Rational(-2,1);
       Polynomial<Rational> a(ac);
-      TEST_ASSERT(a.size() == 3);
+      TEST_ASSERT(a.degree() == 2);
       TEST_ASSERT(a.capacity() == 3);
 
       Rational b = Rational(3, 2);
       a /= b;
-      TEST_ASSERT(a.size() == 3);
+      TEST_ASSERT(a.degree() == 2);
       TEST_ASSERT(a.capacity() == 3);
       TEST_ASSERT(a[0] == Rational(4, 9));
       TEST_ASSERT(a[1] == Rational(-6, 21));
@@ -252,7 +253,7 @@ public:
       ac[0] = Rational(2);
       ac[1] = Rational(3);
       Polynomial<Rational> a(ac);
-      TEST_ASSERT(a.size() == 2);
+      TEST_ASSERT(a.degree() == 1);
       TEST_ASSERT(a.capacity() == 2);
 
       DArray<Rational> bc;
@@ -260,19 +261,19 @@ public:
       bc[0] = Rational(2);
       bc[1] = Rational(1);
       Polynomial<Rational> b(bc);
-      TEST_ASSERT(b.size() == 2);
+      TEST_ASSERT(b.degree() == 1);
       TEST_ASSERT(b.capacity() == 2);
 
       Polynomial<Rational> c(a);
 
       a *= b;
-      TEST_ASSERT(a.size() == 3);
+      TEST_ASSERT(a.degree() == 2);
       TEST_ASSERT(a[0] == 4);
       TEST_ASSERT(a[1] == 8);
       TEST_ASSERT(a[2] == 3);
 
       b *= c;
-      TEST_ASSERT(b.size() == 3);
+      TEST_ASSERT(b.degree() == 2);
       TEST_ASSERT(b[0] == 4);
       TEST_ASSERT(b[1] == 8);
       TEST_ASSERT(b[2] == 3);
@@ -290,11 +291,11 @@ public:
       ac[1] = Rational(3);
       ac[2] = Rational(4);
       Polynomial<Rational> a(ac);
-      TEST_ASSERT(a.size() == 3);
+      TEST_ASSERT(a.degree() == 2);
       TEST_ASSERT(a.capacity() == 3);
 
       Polynomial<Rational> b = a.integrate();
-      TEST_ASSERT(b.size() == 4);
+      TEST_ASSERT(b.degree() == 3);
       TEST_ASSERT(b.capacity() == 4);
       TEST_ASSERT(b[0] == Rational(0));
       TEST_ASSERT(b[1] == Rational(2));
@@ -316,11 +317,11 @@ public:
       ac[2] = Rational(4);
       ac[3] = Rational(5);
       Polynomial<Rational> a(ac);
-      TEST_ASSERT(a.size() == 4);
+      TEST_ASSERT(a.degree() == 3);
       TEST_ASSERT(a.capacity() == 4);
 
       Polynomial<Rational> b = a.reflect();
-      TEST_ASSERT(b.size() == 4);
+      TEST_ASSERT(b.degree() == 3);
       TEST_ASSERT(b.capacity() == 4);
       TEST_ASSERT(b[0] == Rational(2));
       TEST_ASSERT(b[1] == Rational(-3));
@@ -338,16 +339,24 @@ public:
       ac[1] = Rational(3);
       ac[2] = Rational(1);
       Polynomial<Rational> a(ac);
-      TEST_ASSERT(a.size() == 3);
+      TEST_ASSERT(a.degree() == 2);
       TEST_ASSERT(a.capacity() == 3);
 
+      // Shift x -> x + c, c = 2.
       Rational c(2);
       Polynomial<Rational> b = a.shift(c);
-      TEST_ASSERT(b.size() == 3);
+      TEST_ASSERT(b.degree() == 2);
       TEST_ASSERT(b.capacity() == 3);
       TEST_ASSERT(b[2] == a[2]);
       TEST_ASSERT(b[1] == a[1] + 2*a[2]*c );
       TEST_ASSERT(b[0] == a[0] + a[1]*c + a[2]*c*c);
+
+      // Undo up-shift by shifting back down in two steps
+      // Shifts of magnitude: -9/7 - 5/7 = -2
+      b = b.shift(Rational(-9,7));
+      b = b.shift(Rational(-5,7));
+      TEST_ASSERT(b == a);
+
    }
 
    void testMonomial()
@@ -356,7 +365,7 @@ public:
 
       Polynomial<Rational> r = Polynomial<Rational>::monomial(2);
 
-      TEST_ASSERT(r.size() == 3);
+      TEST_ASSERT(r.degree() == 2);
       TEST_ASSERT(r.capacity() == 3);
       TEST_ASSERT(r[0] == Rational(0));
       TEST_ASSERT(r[1] == Rational(0));
@@ -376,7 +385,7 @@ public:
       Polynomial<Rational> r(coeffs);
       Polynomial<Rational> s = -r;
 
-      TEST_ASSERT(s.size() == 3);
+      TEST_ASSERT(s.degree() == 2);
       TEST_ASSERT(s.capacity() == 3);
       TEST_ASSERT(s[0].num() == -2);
       TEST_ASSERT(s[0].den() == 3);

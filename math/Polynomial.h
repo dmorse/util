@@ -38,7 +38,7 @@ namespace Util
       /**
       * Construct a zero polynomial.
       *
-      * Creates a zero polynomial f(x) = 0, with logical size() = 0.
+      * Creates a zero polynomial f(x) = 0, with no stored coefficients.
       * The capacity parameter specifies how much physical space to
       * allocate for subsqequent growth in the array of coefficients.
       *
@@ -49,16 +49,16 @@ namespace Util
       /**
       * Construct a constant polynomial.
       *
-      * Creates a polynomial f(x) = c, with logical size() = 1.
+      * Creates a polynomial f(x) = c, with degree() = 0.
       *
       * \param c constant coefficient value
       */
       explicit Polynomial(T c);
 
       /**
-      * Construct a nonzero polynomial from array of coefficients.
+      * Construct a polynomial from array of coefficients.
       *
-      * Constructs an polynomial in which the coefficient of x^{i} 
+      * Constructs a polynomial in which the coefficient of x^{i} 
       * is given by coeffs[i]. The logical and physical size of the
       * coefficient array are both set to the capacity of coeffs.
       *
@@ -81,17 +81,34 @@ namespace Util
       template <typename U>
       Polynomial<T>& operator = (Polynomial<U> const & other);
 
+      /**
+      * Assign this polynomial a value of zero.
+      *
+      * Equivalent to GArray::clear(): Clears all coefficients, setting 
+      * size = 0 and degree = -1.
+      */
+      void setToZero();
+
       //@}
-      /// \name Inherited Array Functions
+      /// \name Simple Accessors
       //@{
 
+      // Get a specific coefficient by index.
       using GArray<T>::operator [];
 
+      /**
+      * Return degree of polynomial.
+      *
+      * Returns size() - 1, number of coefficients - 1.
+      * By convention, a zero polynomial has degree = -1.
+      */
+      int degree() const;
+
+      // Logical size of the coefficient array.
       using GArray<T>::size;
 
+      // Physical capacity of the coefficient array.
       using GArray<T>::capacity;
-
-      using GArray<T>::clear;
 
       //@}
       /// \name Arithmetic Assignment Operators
@@ -161,7 +178,7 @@ namespace Util
       Polynomial<T>& operator *= (const Polynomial<T>& a);
 
       //@}
-      /// \name Mathematical Functions (return related polynomials)
+      /// \name Mathematical Functions (return polynomials)
       //@{
 
       /**
@@ -176,7 +193,7 @@ namespace Util
       /**
       * Compute and return derivative of this polynomial.
       *
-      * Returns a polynomial of one smaller order.
+      * Returns a polynomial of one smaller degree.
       *
       * \return derivative polynomial
       */
@@ -226,7 +243,7 @@ namespace Util
 
       //@}
 
-      // Static member functions
+      // Static public member functions
       
       /**
       * Return a monomial f(x) = x^{n}.
@@ -236,8 +253,6 @@ namespace Util
       static Polynomial<T> monomial(int n);
 
    };
-
-   // Friend function declarations.
 
    // Inline methods
 
@@ -298,7 +313,7 @@ namespace Util
    inline
    Polynomial<T>& Polynomial<T>::operator = (const Polynomial<U>& other)
    {
-      clear();
+      setToZero();
       if (other.size() >= 0) {
          if (other.size() > capacity()) {
             GArray<T>::reserve(other.capacity());
@@ -311,6 +326,22 @@ namespace Util
       }
       return *this;
    }
+
+   /*
+   * Set this polynomial to zero.
+   */
+   template <typename T>
+   inline 
+   void Polynomial<T>::setToZero()
+   {  GArray<T>::clear(); }
+
+   /*
+   * Return degree of polynomial (size of coeff. array - 1).
+   */
+   template <typename T>
+   inline
+   int Polynomial<T>::degree() const
+   {  return GArray<T>::size() - 1; }
 
    /*
    * Addition assignment operator : add another polynomial to this one.
@@ -427,17 +458,17 @@ namespace Util
 
          if (a.size() == 0) {
             // If polynomial a is zero, set this one to zero (clear it).
-            clear();
+            setToZero();
          } else {
 
-            // Compute size of new array of coefficients (order + 1)
+            // Compute size of new array of coefficients (degree + 1)
             int n = size() + a.size() - 1;
 
             // Make a copy of coefficients of this polynomial
             GArray<T> b(*this);
 
             // Clear this array of coefficients and reserve enough space
-            clear();
+            setToZero();
             if (n > capacity()) {
                GArray<T>::reserve(n);
             }
@@ -472,7 +503,7 @@ namespace Util
    {
       if (size() == 0) {
          Polynomial<T> b;
-         b.clear();
+         b.setToZero();
          return b;
       } else {
          // Construct and compute coefficient array for integral
@@ -500,7 +531,7 @@ namespace Util
 
          // If this polynomial is null or constant, return null
          Polynomial<T> b;
-         b.clear();
+         b.setToZero();
          return b;
 
       } else {
@@ -547,12 +578,12 @@ namespace Util
       // Make copy of this
       Polynomial<T> b(*this);
 
-      int order = size() - 1;
-      if (order > 0) {
-         Binomial::setup(order);
+      int degree = size() - 1;
+      if (degree > 0) {
+         Binomial::setup(degree);
          int n, m;
          T p;
-         for (n = 1; n <= order; ++n) {
+         for (n = 1; n <= degree; ++n) {
             p = b[n]*a;
             for (m = 1; m <= n; ++m) {
                b[n -m] += Binomial::coeff(n, m)*p;
@@ -570,10 +601,10 @@ namespace Util
    template <typename T>
    inline T Polynomial<T>::operator () (T x)
    { 
-      int order = size()-1;
-      T value = (*this)[order];
-      if (order > 0) {
-         for (int i = order-1; i >= 0; --i) {
+      int degree = size()-1;
+      T value = (*this)[degree];
+      if (degree > 0) {
+         for (int i = degree-1; i >= 0; --i) {
            value *= x;
            value += (*this)[i];
          }
@@ -587,10 +618,10 @@ namespace Util
    template <typename T>
    inline double Polynomial<T>::evaluate (double x)
    {
-      int order = size()-1;
-      double value = (double)(*this)[order];
-      if (order > 0) {
-         for (int i = order-1; i >= 0; --i) {
+      int degree = size()-1;
+      double value = (double)(*this)[degree];
+      if (degree > 0) {
+         for (int i = degree-1; i >= 0; --i) {
            value *= x;
            value += (double)(*this)[i];
          }
@@ -626,8 +657,8 @@ namespace Util
    /**
    * Equality operator for polynomials.
    *
-   * Two polynomials are equal iff they have the same order (size)
-   * and the same values for all coefficients.
+   * Two polynomials are equal iff they have the same degree and the
+   * the same values for all coefficients.
    *
    * \param a 1st polynomial
    * \param b 2nd polynomial

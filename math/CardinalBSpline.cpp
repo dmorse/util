@@ -5,22 +5,22 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "BSplineBasis.h"
+#include "CardinalBSpline.h"
 #include <util/global.h>
 
 namespace Util
 {
 
    /*
-   * Construct a spline basis of specified order.
+   * Construct a spline basis of specified degree.
    */
-   BSplineBasis::BSplineBasis(int order, bool verbose)
+   CardinalBSpline::CardinalBSpline(int degree, bool verbose)
    {
-      UTIL_CHECK(order >= 0);
+      UTIL_CHECK(degree >= 0);
 
       // Allocate the polynomial arrays
-      order_ = order;
-      int size = order + 1;
+      degree_ = degree;
+      int size = degree + 1;
       exactPolynomials_.allocate(size);
       floatPolynomials_.allocate(size);
 
@@ -31,37 +31,37 @@ namespace Util
       if (verbose) {
          int n = 0;
          std::cout << std::endl;
-         std::cout << "Order = 0 ";
-         std::cout << " Domain [" << n 
+         std::cout << "Degree = 0 ";
+         std::cout << " [" << n 
                    << " , " << n + 1 << "] : "; 
          std::cout << exactPolynomials_[n];
       }
 
-      if (order > 0) {
+      if (degree > 0) {
 
          // Allocate and initialize work array 
          DArray< Polynomial<Rational> > work;
          work.allocate(size);
          int n;
          for (n = 0; n < size; ++n) {
-            work[n].clear();
+            work[n].setToZero();
          }
 
          // Recursive construction of spline bases
-         int m; // Order of previously calculated spline polynomials
-         for (m = 0; m < order; ++m) {
+         int m; // Degree of previously calculated spline polynomials
+         for (m = 0; m < degree; ++m) {
 
-            // Evaluate and store integral of order m spline polynomials
+            // Evaluate and store integrals of degree m polynomials
             for (n = 0; n <= m; ++n) {
                work[n] = exactPolynomials_[n].integrate();
             }
 
             // Clear exactPolynomials_ array
             for (n = 0; n < size; ++n) {
-               exactPolynomials_[n].clear();
+               exactPolynomials_[n].setToZero();
             }
 
-            // Applying recursion relation to obtain order m+1 polynomials
+            // Applying recursion relation to obtain degree m+1 polynomials
             for (n = 0; n <= m + 1; ++n) {
                if (n < m + 1) {
                   exactPolynomials_[n] += work[n];
@@ -78,8 +78,8 @@ namespace Util
                std::cout << std::endl;
                for (n = 0; n <= m + 1; ++n) {
                   std::cout << std::endl;
-                  std::cout << "Order = " << m + 1;
-                  std::cout << "  Domain [" << n 
+                  std::cout << "Degree = " << m + 1;
+                  std::cout << " [" << n 
                             << " , " << n + 1 << "] : "; 
                   std::cout << exactPolynomials_[n] << "   ";
                   std::cout << exactPolynomials_[n](Rational(n)) << " ";
@@ -90,24 +90,24 @@ namespace Util
          }
 
          // Check continuity of function and m-1 derivatives
-         for (n = 0; n <= order_; ++n) {
+         for (n = 0; n <= degree_; ++n) {
             work[n] = exactPolynomials_[n];
          }
          Rational lower;
          Rational upper;
-         for (m = 0; m < order_; ++m) {
-            for (n = 1; n <= order_; ++n) {
+         for (m = 0; m < degree_; ++m) {
+            for (n = 1; n <= degree_; ++n) {
                lower = work[n-1](Rational(n));
                upper = work[n](Rational(n));
                UTIL_CHECK(lower == upper);
             }
-            for (n = 0; n <= order_; ++n) {
+            for (n = 0; n <= degree_; ++n) {
                work[n] = work[n].differentiate();
             }
          }
 
          // Convert polynomials coefficients from Rational to double.
-         for (n = 0; n <= order_; ++n) {
+         for (n = 0; n <= degree_; ++n) {
             floatPolynomials_[n] = exactPolynomials_[n];
          }
 
@@ -118,7 +118,7 @@ namespace Util
    /*
    * Destructor.
    */
-   BSplineBasis::~BSplineBasis()
+   CardinalBSpline::~CardinalBSpline()
    {}
 
 }
