@@ -21,16 +21,16 @@ namespace Util
       UTIL_CHECK(degree >= 0);
 
       // Polynomials with Rational coefficients for use in constructor.
-      DArray< Polynomial<Rational> > exactPolynomials_;
+      DArray< Polynomial<Rational> > exactPolynomials;
 
       // Allocate both polynomial arrays
       int size = degree_ + 1;
-      exactPolynomials_.allocate(size);
+      exactPolynomials.allocate(size);
       floatPolynomials_.allocate(size);
 
       // Set B_{0,0} = 1
       Polynomial<Rational> unity(Rational(1));
-      exactPolynomials_[0] = unity;
+      exactPolynomials[0] = unity;
 
       if (verbose) {
          int n = 0;
@@ -38,7 +38,7 @@ namespace Util
          std::cout << "Degree = 0 ";
          std::cout << " [" << n 
                    << " , " << n + 1 << "] : "; 
-         std::cout << exactPolynomials_[n];
+         std::cout << exactPolynomials[n];
       }
 
       if (degree_ > 0) {
@@ -57,23 +57,23 @@ namespace Util
 
             // Evaluate and store integrals of degree m polynomials
             for (n = 0; n <= m; ++n) {
-               work[n] = exactPolynomials_[n].integrate();
+               work[n] = exactPolynomials[n].integrate();
             }
 
-            // Clear exactPolynomials_ array
+            // Clear exactPolynomials array
             for (n = 0; n < size; ++n) {
-               exactPolynomials_[n].setToZero();
+               exactPolynomials[n].setToZero();
             }
 
             // Applying recursion relation to obtain degree m+1 polynomials
             for (n = 0; n <= m + 1; ++n) {
                if (n < m + 1) {
-                  exactPolynomials_[n] += work[n];
-                  exactPolynomials_[n] -= work[n](Rational(n));
+                  exactPolynomials[n] += work[n];
+                  exactPolynomials[n] -= work[n](Rational(n));
                }
                if (n > 0) {
-                  exactPolynomials_[n] += work[n-1](Rational(n));
-                  exactPolynomials_[n] -= work[n-1].shift(Rational(-1));
+                  exactPolynomials[n] += work[n-1](Rational(n));
+                  exactPolynomials[n] -= work[n-1].shift(Rational(-1));
                }
             }
 
@@ -85,9 +85,9 @@ namespace Util
                   std::cout << "Degree = " << m + 1;
                   std::cout << " [" << n 
                             << " , " << n + 1 << "] : "; 
-                  std::cout << exactPolynomials_[n] << "   ";
-                  std::cout << exactPolynomials_[n](Rational(n)) << " ";
-                  std::cout << exactPolynomials_[n](Rational(n+1)) << " ";
+                  std::cout << exactPolynomials[n] << "   ";
+                  std::cout << exactPolynomials[n](Rational(n)) << " ";
+                  std::cout << exactPolynomials[n](Rational(n+1)) << " ";
                }
             }
 
@@ -95,7 +95,7 @@ namespace Util
 
          // Check continuity of function and m-1 derivatives
          for (n = 0; n <= degree_; ++n) {
-            work[n] = exactPolynomials_[n];
+            work[n] = exactPolynomials[n];
          }
          Rational lower;
          Rational upper;
@@ -112,7 +112,7 @@ namespace Util
 
          // Convert polynomials coefficients from Rational to double.
          for (n = 0; n <= degree_; ++n) {
-            floatPolynomials_[n] = exactPolynomials_[n];
+            floatPolynomials_[n] = exactPolynomials[n];
          }
 
       }
