@@ -12,15 +12,19 @@ namespace Util
 {
 
    /*
-   * Construct a spline basis of specified degree.
+   * Construct a cardinal spline basis function of specified degree.
    */
    CardinalBSpline::CardinalBSpline(int degree, bool verbose)
+    : floatPolynomials_(),
+      degree_(degree)
    {
       UTIL_CHECK(degree >= 0);
 
-      // Allocate the polynomial arrays
-      degree_ = degree;
-      int size = degree + 1;
+      // Polynomials with Rational coefficients for use in constructor.
+      DArray< Polynomial<Rational> > exactPolynomials_;
+
+      // Allocate both polynomial arrays
+      int size = degree_ + 1;
       exactPolynomials_.allocate(size);
       floatPolynomials_.allocate(size);
 
@@ -37,7 +41,7 @@ namespace Util
          std::cout << exactPolynomials_[n];
       }
 
-      if (degree > 0) {
+      if (degree_ > 0) {
 
          // Allocate and initialize work array 
          DArray< Polynomial<Rational> > work;
@@ -49,7 +53,7 @@ namespace Util
 
          // Recursive construction of spline bases
          int m; // Degree of previously calculated spline polynomials
-         for (m = 0; m < degree; ++m) {
+         for (m = 0; m < degree_; ++m) {
 
             // Evaluate and store integrals of degree m polynomials
             for (n = 0; n <= m; ++n) {

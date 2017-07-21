@@ -26,8 +26,8 @@ public:
    {
       printMethod(TEST_FUNC);
       int degree = 5;
-      //bool noisy = verbose();
-      bool noisy = true;
+      bool noisy = verbose();
+      // bool noisy = true;
       CardinalBSpline s(degree, noisy);
 
       // Constructor has internal tests for continuity
@@ -73,24 +73,51 @@ public:
    void testSum() 
    {
      printMethod(TEST_FUNC);
-     CardinalBSpline s(4);
 
-     double sum0 = 0.0;
-     for (int i = -2; i <= 7; ++i) {
-        sum0 += s(double(i));
-     }
-     //std::cout << "sum_i b(i) = " << sum0 << std::endl;
-     TEST_ASSERT(std::fabs(sum0 - 1.0) < 1.0E-7);
+     CardinalBSpline s4(4);
+     double shift = 0.0;
+     double sum4a = computeSum(s4, shift);
+     //std::cout << "sum_i b(i) = " << sum4a << std::endl;
+     TEST_ASSERT(std::fabs(sum4a - 1.0) < 1.0E-7);
 
-     double shift = 0.2786538012;
-     double sum1 = 0.0;
-     for (int i = -2; i <= 7; ++i) {
-        sum1 += s(double(i) + shift);
-     }
-     //std::cout << "sum_i b(i+y) = " << sum1 << std::endl;
-     TEST_ASSERT(std::fabs(sum1 - 1.0) < 1.0E-7);
-     
+     shift = 0.2786538012;
+     double sum4b = computeSum(s4, shift);
+     //std::cout << "sum_i b(i+y) = " << sum4b << std::endl;
+     TEST_ASSERT(std::fabs(sum4b - 1.0) < 1.0E-7);
+
+     shift = -0.786538012;
+     double sum4c = computeSum(s4, shift);
+     //std::cout << "sum_i b(i+y) = " << sum4c << std::endl;
+     TEST_ASSERT(std::fabs(sum4c - 1.0) < 1.0E-7);
+
+     CardinalBSpline s5(5);
+     shift = 0.0;
+     double sum5a = computeSum(s5, shift);
+     //std::cout << "sum_i b(i) = " << sum5a << std::endl;
+     TEST_ASSERT(std::fabs(sum5a - 1.0) < 1.0E-7);
+
+     shift = 0.2786538012;
+     double sum5b = computeSum(s5, shift);
+     //std::cout << "sum_i b(i+y) = " << sum5b << std::endl;
+     TEST_ASSERT(std::fabs(sum5b - 1.0) < 1.0E-7);
+
+     shift = -0.786538012;
+     double sum5c = computeSum(s5, shift);
+     //std::cout << "sum_i b(i+y) = " << sum5c << std::endl;
+     TEST_ASSERT(std::fabs(sum5c - 1.0) < 1.0E-7);
+
    }
+
+   // Compute sum_i b(i + shift) over all integer i.
+   double computeSum(CardinalBSpline b, double shift) 
+   {
+      double sum = 0.0;
+      for (int i = -3; i <= b.degree() + 3; ++i) {
+         sum += b(double(i) + shift);
+      }
+      return sum;
+   }
+
 };
 
 TEST_BEGIN(CardinalBSplineTest)
