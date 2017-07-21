@@ -717,7 +717,7 @@ namespace Util
    template <typename T>
    std::ostream& operator << (std::ostream& out, Polynomial<T> const & p)
    {
-      out << "(";
+      out << "( ";
       if (p.size() > 0) {
          for (int i = 0; i < p.size(); ++i) {
             out << p[i] << " ";

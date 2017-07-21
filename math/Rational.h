@@ -26,7 +26,7 @@ namespace Util
    * A rational is always stored in a standard reduced form in which the
    * denominator is a positive integer and the numerator and denominator
    * have no common divisors other than unity.  All integers, including
-   * zero, have a denominator of 1.
+   * zero, are stored with a denominator of 1.
    *
    * \ingroup Math_Module
    */
@@ -67,7 +67,7 @@ namespace Util
       *
       * \param v Rational to be copied
       */
-      Rational(const Rational& v);
+      Rational(Rational const & v);
 
       /**
       * Destructor.
@@ -83,7 +83,7 @@ namespace Util
       *
       * \param other Rational to assign.
       */
-      Rational& operator = (const Rational& other);
+      Rational & operator = (Rational const & other);
 
       /**
       * Assignment from integer.
@@ -92,7 +92,7 @@ namespace Util
       *
       * \param other integer to assign.
       */
-      Rational& operator = (int other);
+      Rational & operator = (int other);
 
       //@}
       /// \name Arithmetic Assignment Operators
@@ -105,7 +105,7 @@ namespace Util
       *
       * \param a increment (input)
       */
-      Rational& operator += (const Rational& a);
+      Rational & operator += (Rational const & a);
 
       /**
       * Add an integer to this rational.
@@ -114,7 +114,7 @@ namespace Util
       *
       * \param a increment (input)
       */
-      Rational& operator += (int a);
+      Rational & operator += (int a);
 
       /**
       * Subtract another rational from this one.
@@ -123,7 +123,7 @@ namespace Util
       *
       * \param a decrement (input)
       */
-      Rational& operator -= (const Rational& a);
+      Rational & operator -= (Rational const & a);
 
       /**
       * Subtract an integer from this rational.
@@ -132,7 +132,7 @@ namespace Util
       *
       * \param a decrement (input)
       */
-      Rational& operator -= (int);
+      Rational & operator -= (int);
 
       /**
       * Multiply this rational by another.
@@ -141,7 +141,7 @@ namespace Util
       *
       * \param a increment (input)
       */
-      Rational& operator *= (const Rational& a);
+      Rational & operator *= (Rational const & a);
 
       /**
       * Multiply this rational by an integer.
@@ -150,7 +150,7 @@ namespace Util
       *
       * \param a increment (input)
       */
-      Rational& operator *= (int a);
+      Rational & operator *= (int a);
 
       /**
       * Divide this rational by another.
@@ -159,7 +159,7 @@ namespace Util
       *
       * \param a increment (input)
       */
-      Rational& operator /= (const Rational& a);
+      Rational & operator /= (Rational const & a);
 
       /**
       * Divide this rational by an integer.
@@ -168,7 +168,7 @@ namespace Util
       *
       * \param a increment (input)
       */
-      Rational& operator /= (int a);
+      Rational & operator /= (int a);
 
       //@}
       /// \name Accessors
@@ -200,7 +200,7 @@ namespace Util
       * \param version  archive version id
       */
       template <class Archive>
-      void serialize(Archive& ar, const unsigned int version);
+      void serialize(Archive & ar, const unsigned int version);
 
       #ifdef UTIL_MPI
       /**
@@ -224,75 +224,39 @@ namespace Util
 
    //friends:
 
-      friend Rational operator - (const Rational& a, int b);
-      friend Rational operator - (int b, const Rational& a);
-      friend Rational operator + (const Rational& a, const Rational& b);
-      friend Rational operator + (const Rational& a, int b);
+      friend Rational operator - (Rational const & a, int b);
+      friend Rational operator - (int b, Rational const & a);
+      friend Rational operator + (Rational const & a, Rational const & b);
+      friend Rational operator + (Rational const & a, int b);
 
-      friend Rational operator - (const Rational& a, const Rational& b);
-      friend Rational operator - (const Rational& a, int b);
-      friend Rational operator - (int b, const Rational& a);
+      friend Rational operator - (Rational const & a, Rational const & b);
+      friend Rational operator - (Rational const & a, int b);
+      friend Rational operator - (int b, Rational const & a);
 
-      friend Rational operator * (const Rational& a, const Rational& b);
-      friend Rational operator * (const Rational& a, int b);
+      friend Rational operator * (Rational const & a, Rational const & b);
+      friend Rational operator * (Rational const & a, int b);
 
-      friend Rational operator / (const Rational& a, const Rational& b);
-      friend Rational operator / (const Rational& a, int b);
-      friend Rational operator / (int b, const Rational& a);
+      friend Rational operator / (Rational const & a, Rational const & b);
+      friend Rational operator / (Rational const & a, int b);
+      friend Rational operator / (int b, Rational const & a);
 
-      friend bool operator == (const Rational& a, const Rational& b);
-      friend bool operator == (const Rational& a, int b);
+      friend bool operator == (Rational const & a, Rational const & b);
+      friend bool operator == (Rational const & a, int b);
 
       // Unary negation operation
-      friend Rational operator - (const Rational& a);
+      friend Rational operator - (Rational const & a);
 
       #if 0
       friend 
-      std::istream& operator >> (std::istream& in, Rational &rational);
+      std::istream & operator >> (std::istream & in, Rational & rational);
       #endif
 
       friend 
-      std::ostream& operator << (std::ostream& out, const Rational &rational);
+      std::ostream & operator << (std::ostream& out, Rational const & rational);
 
    };
 
-   // Friend function declarations.
 
-   #if 0
-   /**
-   * istream extractor for a Rational.
-   *
-   * Input elements of a rational from stream, without line breaks.
-   *
-   * \param in input stream
-   * \param a  Rational to be read from stream
-   * \return modified input stream
-   */
-   std::istream& operator >> (std::istream& in, Rational &a);
-   #endif
-
-   /**
-   * ostream inserter for a Rational.
-   *
-   * Output elements of a rational to stream, without line breaks.
-   * \param  out     output stream
-   * \param  rational  Rational to be written to stream
-   * \return modified output stream
-   */
-   std::ostream& operator << (std::ostream& out, const Rational &rational);
-
-   #ifdef UTIL_MPI
-   /**
-   * Explicit specialization MpiTraits<Rational>.
-   */
-   template <>
-   class MpiTraits<Rational>
-   {
-   public:
-      static MPI::Datatype type;   ///< MPI Datatype
-      static bool hasType;         ///< Is the MPI type initialized?
-   };
-   #endif
 
    // Inline methods
 
@@ -327,7 +291,7 @@ namespace Util
    * Copy constructor
    */
    inline
-   Rational::Rational(const Rational& other)
+   Rational::Rational(Rational const & other)
     : num_(other.num_),
       den_(other.den_)
    {}
@@ -336,7 +300,7 @@ namespace Util
    * Assignment from another rational.
    */
    inline
-   Rational& Rational::operator = (const Rational& other)
+   Rational & Rational::operator = (Rational const & other)
    {
       num_ = other.num_;
       den_ = other.den_;
@@ -347,7 +311,7 @@ namespace Util
    * Assignment from integer.
    */
    inline
-   Rational& Rational::operator = (int other)
+   Rational & Rational::operator = (int other)
    {
       num_ = other;
       den_ = 1;
@@ -360,7 +324,7 @@ namespace Util
    * Addition assignment operator : add b to this.
    */
    inline
-   Rational& Rational::operator += (const Rational& a)
+   Rational & Rational::operator += (Rational const & a)
    {
       num_ = num_*a.den_ + a.num_*den_;
       den_ = den_*a.den_;
@@ -372,7 +336,7 @@ namespace Util
    * Addition assignment operator : add integer to this.
    */
    inline
-   Rational& Rational::operator += (int a)
+   Rational & Rational::operator += (int a)
    {
       num_ += a*den_;
       reduce();
@@ -383,7 +347,7 @@ namespace Util
    * Subtraction assignment operator : subtract a from this.
    */
    inline
-   Rational& Rational::operator -= (const Rational& a)
+   Rational & Rational::operator -= (Rational const & a)
    {
       num_ = num_*a.den_ - a.num_*den_;
       den_ = den_*a.den_;
@@ -395,7 +359,7 @@ namespace Util
    * Subtraction assignment operator : subtract integer from this.
    */
    inline
-   Rational& Rational::operator -= (int a)
+   Rational & Rational::operator -= (int a)
    {
       num_ -= a*den_;
       reduce();
@@ -406,7 +370,7 @@ namespace Util
    * Multipication assignment operator : multiply this by a.
    */
    inline
-   Rational& Rational::operator *= (const Rational& a)
+   Rational & Rational::operator *= (Rational const & a)
    {
       num_ *= a.num_;
       den_ *= a.den_;
@@ -418,7 +382,7 @@ namespace Util
    * Multipication assignment operator : multiply this by a.
    */
    inline
-   Rational& Rational::operator *= (int a)
+   Rational & Rational::operator *= (int a)
    {
       num_ *= a;
       reduce();
@@ -429,7 +393,7 @@ namespace Util
    * Division assignment operator : divide this by rational.
    */
    inline
-   Rational& Rational::operator /= (const Rational& a)
+   Rational & Rational::operator /= (Rational const & a)
    {
       if (a.num_ == 0) {
          UTIL_THROW("Attempt to divide by zero Rational"); 
@@ -444,7 +408,7 @@ namespace Util
    * Division assignment operator : divide this by rational.
    */
    inline
-   Rational& Rational::operator /= (int a)
+   Rational & Rational::operator /= (int a)
    {
       if (a == 0) {
          UTIL_THROW("Attempt to divide Rational by zero integer"); 
@@ -483,7 +447,7 @@ namespace Util
    * Serialize to/from an archive.
    */
    template <class Archive>
-   inline void Rational::serialize(Archive& ar, const unsigned int version)
+   inline void Rational::serialize(Archive & ar, const unsigned int version)
    {
       ar & den_;
       ar & num_;
@@ -519,7 +483,7 @@ namespace Util
    * \return sum a + b
    */
    inline
-   Rational operator + (const Rational& a, const Rational& b)
+   Rational operator + (Rational const & a, Rational const & b)
    {
      int num = a.num_*b.den_ + b.num_*a.den_;
      int den = a.den_*b.den_;
@@ -534,7 +498,7 @@ namespace Util
    * \return sum a + b
    */
    inline
-   Rational operator + (const Rational& a, int b)
+   Rational operator + (Rational const & a, int b)
    {
      int num = a.num_ + b*a.den_;
      return Rational(num, a.den_);
@@ -548,7 +512,7 @@ namespace Util
    * \return sum a + b
    */
    inline
-   Rational operator + (int b, const Rational& a)
+   Rational operator + (int b, Rational const & a)
    { return (a + b); }
 
    /**
@@ -559,7 +523,7 @@ namespace Util
    * \return difference a - b
    */
    inline
-   Rational operator - (const Rational& a, const Rational& b)
+   Rational operator - (Rational const & a, Rational const & b)
    {
      int num = a.num_*b.den_ - b.num_*a.den_;
      int den = a.den_*b.den_;
@@ -574,7 +538,7 @@ namespace Util
    * \return difference a - b
    */
    inline
-   Rational operator - (const Rational& a, int b)
+   Rational operator - (Rational const & a, int b)
    {
      int num = a.num_ - b*a.den_;
      return Rational(num, a.den_);
@@ -588,7 +552,7 @@ namespace Util
    * \return difference b - a 
    */
    inline
-   Rational operator - (int b, const Rational& a)
+   Rational operator - (int b, Rational const & a)
    {
      int num = b*a.den_ - a.num_;
      return Rational(num, a.den_);
@@ -602,7 +566,7 @@ namespace Util
    * \return product a*b
    */
    inline
-   Rational operator * (const Rational& a, const Rational& b)
+   Rational operator * (Rational const & a, Rational const & b)
    {
       int num = a.num_*b.num_;
       int den = a.den_*b.den_;
@@ -617,7 +581,7 @@ namespace Util
    * \return product a*b
    */
    inline
-   Rational operator * (const Rational& a, int b)
+   Rational operator * (Rational const & a, int b)
    { return Rational(b*a.num_, a.den_); }
 
    /**
@@ -628,7 +592,7 @@ namespace Util
    * \return product a*b
    */
    inline
-   Rational operator * (int b, const Rational& a)
+   Rational operator * (int b, Rational const & a)
    { return a*b; }
 
    /**
@@ -639,7 +603,7 @@ namespace Util
    * \return ratio a/b
    */
    inline
-   Rational operator / (const Rational& a, const Rational& b)
+   Rational operator / (Rational const & a, Rational const & b)
    {
       if (b.num_ == 0) {
          UTIL_THROW("Attempt to divide by zero Rational"); 
@@ -657,7 +621,7 @@ namespace Util
    * \return ratio a/b
    */
    inline
-   Rational operator / (const Rational& a, int b)
+   Rational operator / (Rational const & a, int b)
    {
       if (b == 0) {
          UTIL_THROW("Attempt to divide Rational by zero integer"); 
@@ -673,7 +637,7 @@ namespace Util
    * \return ratio b/a
    */
    inline
-   Rational operator / (int b, const Rational& a)
+   Rational operator / (int b, Rational const & a)
    {
       if (a.num_ == 0) {
          UTIL_THROW("Attempt to divide integer by zero Rational"); 
@@ -685,12 +649,15 @@ namespace Util
 
    /**
    * Unary negation of Rational.
+   *
+   * \param a Rational number
+   * \return negation -a
    */
    inline
-   Rational operator - ( const Rational& a)
+   Rational operator - ( Rational const & a)
    {  return Rational(-a.num_, a.den_); }
 
-   /// Equality and inequality operators
+   /// Equality operators
 
    /**
    * Equality operator for two Rational numbers.
@@ -700,7 +667,7 @@ namespace Util
    * \return true if equal, false otherwise
    */
    inline 
-   bool operator == (const Rational& a, const Rational& b)
+   bool operator == (Rational const & a, Rational const & b)
    {  return ((a.num_ == b.num_) && (a.den_ == b.den_)); }
 
    /**
@@ -710,7 +677,7 @@ namespace Util
    * \param b integer number
    * \return true if equal, false otherwise
    */
-   inline bool operator == (const Rational& a, int b)
+   inline bool operator == (Rational const & a, int b)
    {  return ((a.num_ == b) && (a.den_ == 1)); }
 
    /**
@@ -720,19 +687,19 @@ namespace Util
    * \param a Rational number
    * \return true if equal, false otherwise
    */
-   inline bool operator == (int b, const Rational& a)
+   inline bool operator == (int b, Rational const & a)
    {  return (a == b); }
 
-   /// Inequality of two Rationals.
+   /// Inequality operators
 
    /**
-   * Equality operator for two Rational numbers.
+   * Inequality operator for two Rational numbers.
    *
    * \param a 1st Rational
    * \param b 2nd Rational
    * \return true if unequal, false if equal
    */
-   inline bool operator != (const Rational& a, const Rational& b)
+   inline bool operator != (Rational const & a, Rational const & b)
    {  return !(a == b); }
 
    /**
@@ -742,7 +709,7 @@ namespace Util
    * \param b integer number
    * \return true if unequal, false if equal
    */
-   inline bool operator != (const Rational& a, int b)
+   inline bool operator != (Rational const & a, int b)
    {  return !(a == b); }
 
    /**
@@ -752,8 +719,33 @@ namespace Util
    * \param a Rational number
    * \return true if unequal, false if equal
    */
-   inline bool operator != (int b, const Rational& a)
+   inline bool operator != (int b, Rational const & a)
    {  return !(a == b); }
+
+   //  Miscellaneous global functions.
+
+   /**
+   * Output stream inserter for a Rational.
+   *
+   * Output elements of a rational to stream, without line breaks.
+   * \param  out     output stream
+   * \param  rational  Rational to be written to stream
+   * \return modified output stream
+   */
+   std::ostream& operator << (std::ostream& out, Rational const & rational);
+
+   #ifdef UTIL_MPI
+   /**
+   * Explicit specialization MpiTraits<Rational>.
+   */
+   template <>
+   class MpiTraits<Rational>
+   {
+   public:
+      static MPI::Datatype type;   ///< MPI Datatype
+      static bool hasType;         ///< Is the MPI type initialized?
+   };
+   #endif
 
 }
 #endif
