@@ -224,8 +224,6 @@ namespace Util
 
    //friends:
 
-      friend Rational operator - (Rational const & a, int b);
-      friend Rational operator - (int b, Rational const & a);
       friend Rational operator + (Rational const & a, Rational const & b);
       friend Rational operator + (Rational const & a, int b);
 
