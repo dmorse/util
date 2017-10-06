@@ -58,14 +58,14 @@ namespace Util
       *
       * \param iterator ArrayIterator, initialized on output. 
       */
-      void begin(ArrayIterator<Data> &iterator);
+      void begin(ArrayIterator<Data>& iterator);
 
       /**
       * Set a const iterator to begin this Array.
       *
       * \param iterator ConstArrayIterator, initialized on output. 
       */
-      void begin(ConstArrayIterator<Data> &iterator) const;
+      void begin(ConstArrayIterator<Data>& iterator) const;
 
       /**
       * Get an element by non-const reference.
@@ -75,7 +75,7 @@ namespace Util
       * \param  i array index
       * \return non-const reference to element i
       */
-      Data& operator[] (int i);
+      Data& operator [] (int i);
 
       /**
       * Get an element by const reference.
@@ -85,7 +85,7 @@ namespace Util
       * \param i array index
       * \return const reference to element i
       */
-      const Data& operator[] (int i) const;
+      const Data& operator [] (int i) const;
 
       /**
       * Return pointer to underlying C array.
@@ -181,7 +181,7 @@ namespace Util
    * Get an element by reference (C-array subscripting)
    */
    template <typename Data>
-   inline Data& Array<Data>::operator[] (int i)
+   inline Data& Array<Data>::operator [] (int i)
    {
       assert(data_ != 0);
       assert(i >= 0);
@@ -193,7 +193,7 @@ namespace Util
    * Get an element by const reference (C-array subscripting)
    */
    template <typename Data>
-   inline const Data& Array<Data>::operator[] (int i) const
+   inline const Data& Array<Data>::operator [] (int i) const
    {
       assert(data_ != 0);
       assert(i >= 0 );
