@@ -479,7 +479,7 @@ namespace Util
    * Compute sum of two rationals.
    *
    * \param a 1st argument
-   * \param a 2st argument
+   * \param b 2st argument
    * \return sum a + b
    */
    inline
