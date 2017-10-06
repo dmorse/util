@@ -121,7 +121,7 @@ namespace Util
       *
       * Upon return, *this = this + a.
       *
-      * \param a decrement (input)
+      * \param a rational decrement (input)
       */
       Rational & operator -= (Rational const & a);
 
@@ -130,7 +130,7 @@ namespace Util
       *
       * Upon return, *this = this + a.
       *
-      * \param a decrement (input)
+      * \param a integer decrement (input)
       */
       Rational & operator -= (int);
 
@@ -139,7 +139,7 @@ namespace Util
       *
       * Upon return, *this = this*a.
       *
-      * \param a increment (input)
+      * \param a Rational number to multiply this by (input)
       */
       Rational & operator *= (Rational const & a);
 
@@ -148,7 +148,7 @@ namespace Util
       *
       * Upon return, *this = this*a.
       *
-      * \param a increment (input)
+      * \param a integer to multiply this by (input)
       */
       Rational & operator *= (int a);
 
@@ -157,7 +157,7 @@ namespace Util
       *
       * Upon return, *this = this*a.
       *
-      * \param a increment (input)
+      * \param a rational number to divide this by (input)
       */
       Rational & operator /= (Rational const & a);
 
@@ -166,7 +166,7 @@ namespace Util
       *
       * Upon return, *this = this*a.
       *
-      * \param a increment (input)
+      * \param a integer to divide this by (input)
       */
       Rational & operator /= (int a);
 
@@ -187,7 +187,7 @@ namespace Util
       /**
       * Cast (convert) to double precision floating point.
       *
-      * \return double precision floating point representation of this.
+      * \return double precision representation of this.
       */
       operator double () const;
 
@@ -213,8 +213,14 @@ namespace Util
 
    private:
 
+      /**
+      * Numerator.
+      */
       int num_;
 
+      /**
+      * Denominator (positive, equal to 1 for integers).
+      */
       int den_;
 
       /**
@@ -559,8 +565,8 @@ namespace Util
    /**
    * Compute product of rationals.
    *
-   * \param a 1st argument
-   * \param b 2st argument
+   * \param a 1st Rational argument
+   * \param b 2st Rational argument
    * \return product a*b
    */
    inline
@@ -596,8 +602,8 @@ namespace Util
    /**
    * Compute quotient of two rationals.
    *
-   * \param a 1st argument
-   * \param b 2st argument
+   * \param a 1st Rational argument (numerator)
+   * \param b 2st Rational argument (denominator)
    * \return ratio a/b
    */
    inline
@@ -614,8 +620,8 @@ namespace Util
    /**
    * Compute quotient Rational divided by integer.
    *
-   * \param a Rational argument
-   * \param b integer argument
+   * \param a Rational argument (numerator)
+   * \param b integer argument (denominator)
    * \return ratio a/b
    */
    inline
@@ -630,8 +636,8 @@ namespace Util
    /**
    * Compute quotient integer divided by Rational.
    *
-   * \param b integer argument
-   * \param a Rational argument
+   * \param b integer argument (numerator)
+   * \param a Rational argument (denominator)
    * \return ratio b/a
    */
    inline
