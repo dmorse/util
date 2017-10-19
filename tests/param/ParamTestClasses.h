@@ -215,6 +215,23 @@
 
    };
 
+   class AManagerUnique : public Manager<A>
+   {
+
+   public:
+
+      AManagerUnique()
+       : Manager<A>(true)
+      { setClassName("AManager"); }
+
+      ~AManagerUnique()
+      {} 
+
+      Factory<A>* newDefaultFactory() const
+      { return new AFactory(); }
+
+   };
+
 
    class AComposite : public ParamComposite
    {
