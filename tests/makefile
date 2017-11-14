@@ -14,7 +14,9 @@ run: $(util_tests_OBJS) $(BLD_DIR)/$(TEST)
 	@echo `grep failed log` ", "\
               `grep successful log` "in util/tests/log" > count
 	@cat count
-	@$(MAKE) clean-outputs > /dev/null
+	@rm -f count dummy xdr
+	@cd $(SRC_DIR)/util/tests; $(MAKE) clean-outputs > /dev/null
+	
 
 clean:
 	rm -f $(util_tests_OBJS) $(util_tests_OBJS:.o=.d)
@@ -39,9 +41,9 @@ else
 	cd $(SRC_DIR)/util/tests; $(MAKE) clean-outputs
 endif
 
-ifeq ($(BLD_DIR),$(SRC_DIR))
 clean-outputs:
 	rm -f count dummy xdr
+ifeq ($(BLD_DIR),$(SRC_DIR))
 	cd accumulators/unit; $(MAKE) clean-outputs
 	cd archives; $(MAKE) clean-outputs
 	cd containers; $(MAKE) clean-outputs
