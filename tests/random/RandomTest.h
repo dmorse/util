@@ -180,7 +180,7 @@ public:
          random->uniformInt(0, 255);
       }
       BinaryFileOArchive oar;
-      openOutputFile("binary", oar.file());
+      openOutputFile("tmp/binary", oar.file());
   
       oar << *random;
       oar.file().close();
@@ -195,7 +195,7 @@ public:
       printMethod(TEST_FUNC);
 
       BinaryFileIArchive iar;
-      openInputFile("binary", iar.file());
+      openInputFile("tmp/binary", iar.file());
   
       iar >> *random;
 

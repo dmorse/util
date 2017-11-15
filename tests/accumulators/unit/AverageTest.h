@@ -110,13 +110,13 @@ void AverageTest::testSerializeFile()
    readData();
 
    BinaryFileOArchive u;
-   openOutputFile("binary", u.file());
+   openOutputFile("tmp/AverageTestSerializeFile", u.file());
    u << accumulator_;
    u.file().close();
 
    Average clone;
    BinaryFileIArchive v;
-   openInputFile("binary", v.file());
+   openInputFile("tmp/AverageTestSerializeFile", v.file());
    v >> clone;
    v.file().close();
    
@@ -131,13 +131,13 @@ void AverageTest::testSaveLoad()
    readData();
 
    BinaryFileOArchive u;
-   openOutputFile("binary", u.file());
+   openOutputFile("tmp/AverageTestSaveLoad", u.file());
    accumulator_.save(u);
    u.file().close();
 
    Average clone;
    BinaryFileIArchive v;
-   openInputFile("binary", v.file());
+   openInputFile("tmp/AverageTestSaveLoad", v.file());
    clone.load(v);
    v.file().close();
  

@@ -21,9 +21,9 @@ run: $(util_tests_OBJS) $(BLD_DIR)/$(TEST)
 clean:
 	rm -f $(util_tests_OBJS) $(util_tests_OBJS:.o=.d)
 	rm -f $(BLD_DIR)/$(TEST) $(BLD_DIR)/$(TEST).d
-	rm -f log 
+	rm -f log
 ifeq ($(BLD_DIR),$(SRC_DIR))
-	rm -f count dummy xdr
+	rm -f count
 	cd accumulators/unit; $(MAKE) clean
 	cd archives; $(MAKE) clean
 	cd boundary; $(MAKE) clean
@@ -42,7 +42,7 @@ else
 endif
 
 clean-outputs:
-	rm -f count dummy xdr
+	rm -f count
 ifeq ($(BLD_DIR),$(SRC_DIR))
 	cd accumulators/unit; $(MAKE) clean-outputs
 	cd archives; $(MAKE) clean-outputs

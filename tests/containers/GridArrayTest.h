@@ -403,7 +403,7 @@ void GridArrayTest::testSerializeFile1()
    TEST_ASSERT(v(1,1) == 6 );
 
    BinaryFileOArchive oArchive;
-   openOutputFile("binary", oArchive.file());
+   openOutputFile("tmp/binary", oArchive.file());
    oArchive << v;
    oArchive << i1;
    oArchive.file().close();
@@ -420,7 +420,7 @@ void GridArrayTest::testSerializeFile1()
    u.allocate(2, 2);
 
    BinaryFileIArchive iArchive;
-   openInputFile("binary", iArchive.file());
+   openInputFile("tmp/binary", iArchive.file());
    iArchive >> u;
    iArchive >> i2;
    iArchive.file().close();
@@ -443,7 +443,7 @@ void GridArrayTest::testSerializeFile1()
    i2 = 0;
 
    // Reload into u and i2
-   openInputFile("binary", iArchive.file());
+   openInputFile("tmp/binary", iArchive.file());
    iArchive >> u;
    iArchive >> i2;
 
@@ -476,7 +476,7 @@ void GridArrayTest::testSerializeFile2()
    TEST_ASSERT(v(1,1) == 6 );
 
    BinaryFileOArchive oArchive;
-   openOutputFile("binary", oArchive.file());
+   openOutputFile("tmp/binary", oArchive.file());
    oArchive << v;
    oArchive << i1;
    oArchive.file().close();
@@ -494,7 +494,7 @@ void GridArrayTest::testSerializeFile2()
    //u.allocate(2, 2);  -> Note allocation, different from previous
 
    BinaryFileIArchive iArchive;
-   openInputFile("binary", iArchive.file());
+   openInputFile("tmp/binary", iArchive.file());
    iArchive >> u;
    iArchive >> i2;
    iArchive.file().close();
@@ -517,7 +517,7 @@ void GridArrayTest::testSerializeFile2()
    i2 = 0;
 
    // Reload into u and i2
-   openInputFile("binary", iArchive.file());
+   openInputFile("tmp/binary", iArchive.file());
    iArchive >> u;
    iArchive >> i2;
 

@@ -416,7 +416,7 @@ void DArrayTest::testSerialize1FileCmplx()
       int i2;
 
       BinaryFileOArchive oArchive;
-      openOutputFile("binary", oArchive.file());
+      openOutputFile("tmp/binary", oArchive.file());
       oArchive << v;
       oArchive << i1;
       oArchive.file().close();
@@ -431,7 +431,7 @@ void DArrayTest::testSerialize1FileCmplx()
       u.allocate(3);
 
       BinaryFileIArchive iArchive;
-      openInputFile("binary", iArchive.file());
+      openInputFile("tmp/binary", iArchive.file());
       iArchive >> u;
       iArchive >> i2;
       iArchive.file().close();
@@ -450,7 +450,7 @@ void DArrayTest::testSerialize1FileCmplx()
       i2 = 0;
 
       // Reload into u and i2
-      openInputFile("binary", iArchive.file());
+      openInputFile("tmp/binary", iArchive.file());
       iArchive >> u;
       iArchive >> i2;
 
@@ -478,7 +478,7 @@ void DArrayTest::testSerialize2FileCmplx()
       int i2;
 
       BinaryFileOArchive oArchive;
-      openOutputFile("binary", oArchive.file());
+      openOutputFile("tmp/binary", oArchive.file());
       oArchive << v;
       oArchive << i1;
       oArchive.file().close();
@@ -496,7 +496,7 @@ void DArrayTest::testSerialize2FileCmplx()
       // from the previous test
 
       BinaryFileIArchive iArchive;
-      openInputFile("binary", iArchive.file());
+      openInputFile("tmp/binary", iArchive.file());
       iArchive >> u;
       iArchive >> i2;
       iArchive.file().close();
@@ -515,7 +515,7 @@ void DArrayTest::testSerialize2FileCmplx()
       i2 = 0;
 
       // Reload into u and i2
-      openInputFile("binary", iArchive.file());
+      openInputFile("tmp/binary", iArchive.file());
       iArchive >> u;
       iArchive >> i2;
 
