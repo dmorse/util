@@ -14,7 +14,7 @@ run: $(util_tests_OBJS) $(BLD_DIR)/$(TEST)
 	@echo `grep failed log` ", "\
               `grep successful log` "in util/tests/log" > count
 	@cat count
-	@rm -f count dummy xdr
+	@rm -f count
 	@cd $(SRC_DIR)/util/tests; $(MAKE) clean-outputs > /dev/null
 	
 

@@ -49,26 +49,39 @@ addChild(new MiscTestComposite, "misc/");
 #endif 
 TEST_COMPOSITE_END
 
-
 int main(int argc, char* argv[])
 {
-   #ifdef UTIL_MPI
-   MPI::Init();
-   Vector::commitMpiType();
-   IntVector::commitMpiType();
-   #endif 
+   try {
 
-   UtilNsTestComposite runner;
+      #ifdef UTIL_MPI
+      MPI::Init();
+      Vector::commitMpiType();
+      IntVector::commitMpiType();
+      #endif 
+   
+      UtilNsTestComposite runner;
+   
+      if (argc > 2) {
+         UTIL_THROW("Too many arguments");
+      }
+      if (argc == 2) {
+         runner.addFilePrefix(argv[1]);
+      }
 
-   if (argc > 2) {
-      UTIL_THROW("Too many arguments");
+      // Run the composite unit test runner
+      int failures = runner.run();
+
+      #ifdef UTIL_MPI
+      MPI::Finalize();
+      #endif 
+
+      return (failures != 0);
+
+   } catch (...) {
+
+      std::cerr << "Uncaught exception" << std::endl;
+      return EXIT_FAILURE;
+
    }
-   if (argc == 2) {
-      runner.addFilePrefix(argv[1]);
-    }
-   runner.run();
 
-   #ifdef UTIL_MPI
-   MPI::Finalize();
-   #endif 
 }

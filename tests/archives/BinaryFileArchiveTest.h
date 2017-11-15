@@ -38,14 +38,16 @@ void BinaryFileArchiveTest::testOArchiveConstructor1()
 {
    printMethod(TEST_FUNC);
    BinaryFileOArchive  v;
-   openOutputFile("binary", v.file());
+   openOutputFile("tmp/BinaryTestOArchiveConstructor1", v.file());
    v.file().close();
 } 
 
 void BinaryFileArchiveTest::testOArchiveConstructor2()
 {
    printMethod(TEST_FUNC);
-   BinaryFileOArchive  v("dummy");
+   std::string filename = filePrefix();
+   filename += "tmp/BinaryTestOArchiveConstructor2";
+   BinaryFileOArchive  v(filename);
    v.file().close();
 } 
 
@@ -53,7 +55,7 @@ void BinaryFileArchiveTest::testPack()
 {
    printMethod(TEST_FUNC);
    BinaryFileOArchive  v;
-   openOutputFile("binary", v.file());
+   openOutputFile("tmp/BinaryTestPack", v.file());
 
    // Declare variables
    int i1, i2;
@@ -86,7 +88,6 @@ void BinaryFileArchiveTest::testPack()
    m1[1][0] = 15.0;
    m1[1][1] = 16.0;
   
-  
    // Write variables to OArchive v
    v << i1;
    v & d1;
@@ -100,7 +101,7 @@ void BinaryFileArchiveTest::testPack()
 
    // Create IArchive u
    BinaryFileIArchive u;
-   openInputFile("binary", u.file());
+   openInputFile("tmp/BinaryTestPack", u.file());
 
    u >> i2;
    TEST_ASSERT(i1 == i2);
