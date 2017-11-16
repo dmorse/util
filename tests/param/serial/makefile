@@ -14,7 +14,7 @@ clean:
 	$(MAKE) clean-outputs
 
 clean-outputs:
-	rm -f out/*
+	@rm -f out/*
 
 -include $(util_tests_param_serial_OBJS:.o=.d)
 -include $(util_OBJS:.o=.d)

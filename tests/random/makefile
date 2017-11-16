@@ -15,7 +15,7 @@ clean:
 	$(MAKE) clean-outputs
 
 clean-outputs:
-	rm -f tmp/*
+	@rm -f tmp/*
 
 -include $(util_tests_random_OBJS:.o=.d)
 -include $(util_OBJS:.o=.d)
