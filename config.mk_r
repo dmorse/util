@@ -22,6 +22,9 @@
 # To define UTIL_DEBUG, and enable debugging, uncomment the following:
 #UTIL_DEBUG=1
 
+# To exclude the ensembles and boundary classes, comment out the following:
+UTIL_BOUND=1
+
 # Most users will not need to modify the rest of this file. 
 #-----------------------------------------------------------------------
 # Comments:
