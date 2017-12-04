@@ -10,7 +10,6 @@
 
 #include "accumulators/unit/AccumulatorTestComposite.h"
 #include "archives/ArchiveTestComposite.h"
-#include "boundary/BoundaryTestComposite.h"
 #include "containers/ContainersTestComposite.h"
 #include "crystal/CrystalTestComposite.h"
 #include "format/FormatTest.h"
@@ -20,6 +19,7 @@
 #include "signal/SignalTest.h"
 #include "space/SpaceTestComposite.h"
 #include "misc/MiscTestComposite.h"
+//#include "boundary/BoundaryTestComposite.h"
 
 #ifdef  UTIL_MPI
 #include "param/mpi/MpiParamTestComposite.h"
@@ -33,7 +33,6 @@ using namespace Util;
 TEST_COMPOSITE_BEGIN(UtilNsTestComposite)
 addChild(new AccumulatorTestComposite, "accumulators/unit/");
 addChild(new ArchiveTestComposite, "archives/");
-addChild(new BoundaryTestComposite, "boundary/");
 addChild(new ContainersTestComposite, "containers/");
 addChild(new CrystalTestComposite, "crystal/");
 addChild(new TEST_RUNNER(FormatTest), "format/");
@@ -43,6 +42,7 @@ addChild(new TEST_RUNNER(RandomTest), "random/");
 addChild(new TEST_RUNNER(SignalTest), "signal/");
 addChild(new SpaceTestComposite, "space/");
 addChild(new MiscTestComposite, "misc/");
+//addChild(new BoundaryTestComposite, "boundary/");
 #ifdef UTIL_MPI
 //addChild(new MpiParamTestComposite, "param/mpi/");
 //addChild(new TEST_RUNNER(MpiSendRecvTest), "mpi/");
