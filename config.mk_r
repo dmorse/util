@@ -19,8 +19,8 @@
 #-----------------------------------------------------------------------
 # Flag to define preprocessor macros.
 
-# To define UTIL_DEBUG, and enable debugging, uncomment the following:
-#UTIL_DEBUG=1
+# The variables UTIL_MPI, UTIL_DEBUG, and UTIL_CXX11 used in this file
+# must defined (or not not defined) in the file src/config.mk. 
 
 # Most users will not need to modify the rest of this file. 
 #-----------------------------------------------------------------------
@@ -72,19 +72,12 @@ endif
 ifdef UTIL_DEBUG
 UTIL_DEFS+= -DUTIL_DEBUG
 #UTIL_SUFFIX:=$(UTIL_SUFFIX)_g
-CXXFLAGS:= $(filter-out -O3,$(CXXFLAGS))
-CXXFLAGS+= -g -O0
-else
-CXXFLAGS+= $(WINLINE)
 endif
 
 # Enable features that require features of the C++11 standard
 ifdef UTIL_CXX11
 UTIL_DEFS+= -DUTIL_CXX11
 endif
-
-# Note: The variables UTIL_MPI and UTIL_CXX11 must be defined (or not
-# not defined) in the file src/config.mk. 
 
 #-----------------------------------------------------------------------
 # Path to the util library 

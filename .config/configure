@@ -70,7 +70,7 @@ while getopts "m:g:b:a:d:e:f:l:s:u:k:c:j:q" opt; do
     g)
       MACRO=UTIL_DEBUG
       VALUE=1
-      FILE=util/config.mk
+      FILE=config.mk
       ;;
     k)
       case $OPTARG in
