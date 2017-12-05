@@ -116,13 +116,13 @@ void AutoCorrTest::testSerializeFile()
    readData();
 
    BinaryFileOArchive u;
-   openOutputFile("binary", u.file());
+   openOutputFile("tmp/AutoCorrTestSerializeFile", u.file());
    u << accumulator_;
    u.file().close();
 
    AutoCorr<double, double> clone;
    BinaryFileIArchive v;
-   openInputFile("binary", v.file());
+   openInputFile("tmp/AutoCorrTestSerializeFile", v.file());
    v >> clone;
    v.file().close();
    
@@ -137,13 +137,13 @@ void AutoCorrTest::testSaveLoad()
    readData();
 
    BinaryFileOArchive u;
-   openOutputFile("binary", u.file());
+   openOutputFile("tmp/AutoCorrTestSaveLoad", u.file());
    accumulator_.save(u);
    u.file().close();
 
    AutoCorr<double, double> clone;
    BinaryFileIArchive v;
-   openInputFile("binary", v.file());
+   openInputFile("tmp/AutoCorrTestSaveLoad", v.file());
    clone.load(v);
    v.file().close();
  
@@ -156,7 +156,7 @@ TEST_ADD(AutoCorrTest, testReadParam)
 TEST_ADD(AutoCorrTest, testSample)
 TEST_ADD(AutoCorrTest, testSerialize)
 TEST_ADD(AutoCorrTest, testSerializeFile)
-//TEST_ADD(AutoCorrTest, testSaveLoad)
+TEST_ADD(AutoCorrTest, testSaveLoad)
 TEST_END(AutoCorrTest)
 
 #endif

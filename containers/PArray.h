@@ -20,7 +20,7 @@ namespace Util
    *
    * A PArray<Data> is an array that is implemented by storing pointers 
    * to Data objects, rather than actual Data objects. The array suscript 
-   * [] operator returns a reference to an associated Data object, as for 
+   * operator [] returns a reference to an associated Data object, as for 
    * Array<Data>. A PArray<Data> is not responsible for destroying the
    * associated Data objects.
    *
@@ -61,14 +61,14 @@ namespace Util
       *
       * \param iterator PArrayIterator, initialized on output.
       */
-      void begin(PArrayIterator<Data> &iterator) const;
+      void begin(PArrayIterator<Data>& iterator) const;
 
       /**
       * Set a ConstPArrayIterator to the beginning of this PArray.
       *
       * \param iterator PArrayIterator, initialized on output.
       */
-      void begin(ConstPArrayIterator<Data> &iterator) const;
+      void begin(ConstPArrayIterator<Data>& iterator) const;
 
       /**
       * Mimic C array subscripting.
@@ -76,7 +76,7 @@ namespace Util
       * \param  i array index
       * \return reference to element i
       */
-      Data& operator[] (int i) const;
+      Data& operator [] (int i) const;
 
    protected:
 
@@ -143,7 +143,7 @@ namespace Util
    * \param iterator PArrayIterator, initialized on output. 
    */
    template <typename Data>
-   inline void PArray<Data>::begin(PArrayIterator<Data> &iterator) const
+   inline void PArray<Data>::begin(PArrayIterator<Data>& iterator) const
    {
       if (ptrs_ && size_ > 0) {
          iterator.setCurrent(ptrs_);
@@ -159,7 +159,7 @@ namespace Util
    * \param iterator ConstPArrayIterator, initialized on output. 
    */
    template <typename Data>
-   inline void PArray<Data>::begin(ConstPArrayIterator<Data> &iterator) const
+   inline void PArray<Data>::begin(ConstPArrayIterator<Data>& iterator) const
    {
       if (ptrs_ && size_ > 0) {
          iterator.setCurrent(ptrs_);
@@ -176,7 +176,7 @@ namespace Util
    * \return reference to element i
    */
    template <typename Data>
-   inline Data& PArray<Data>::operator[] (int i) const
+   inline Data& PArray<Data>::operator [] (int i) const
    {
       assert(ptrs_);
       assert(i >= 0);

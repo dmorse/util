@@ -63,7 +63,28 @@ public:
 
    }
 
-   void testCustomManager() 
+   void testFindFirst() 
+   {
+      printMethod(TEST_FUNC);
+      AManager manager;
+      std::ifstream in;
+      openInputFile("in/Manager", in);
+      manager.readParam(in);
+
+      A* ptr = 0;
+      ptr = manager.findFirst("C");
+      TEST_ASSERT(ptr != 0);
+      TEST_ASSERT(ptr->className() == "C");
+      printEndl();
+      ptr->writeParam(std::cout);
+
+      ptr = manager.findFirst("B");
+      TEST_ASSERT(ptr != 0);
+      TEST_ASSERT(ptr->className() == "B");
+      ptr->writeParam(std::cout);
+   }
+
+   void testManagerSubfactory() 
    {
       printMethod(TEST_FUNC);
       AManager manager;
@@ -79,13 +100,49 @@ public:
 
    }
 
+   void testManagerUnique1() 
+   {
+      printMethod(TEST_FUNC);
+      printEndl();
+
+      AManagerUnique manager;
+      std::ifstream in;
+      openInputFile("in/Manager", in);
+      bool success = false;
+      try {
+         manager.readParam(in);
+      } catch (Exception) {
+         success = true;
+      }
+      TEST_ASSERT(success);
+   }
+
+   void testManagerUnique2() 
+   {
+      printMethod(TEST_FUNC);
+
+      AManagerUnique manager;
+      std::ifstream in;
+      openInputFile("in/ManagerUnique", in);
+      bool success = true;
+      try {
+         manager.readParam(in);
+      } catch (Exception) {
+         success = false;
+      }
+      TEST_ASSERT(success);
+   }
+
 };
 
 TEST_BEGIN(ManagerTest)
 TEST_ADD(ManagerTest, testFactory)
 TEST_ADD(ManagerTest, testCustomFactory)
 TEST_ADD(ManagerTest, testManager)
-TEST_ADD(ManagerTest, testCustomManager)
+TEST_ADD(ManagerTest, testFindFirst)
+TEST_ADD(ManagerTest, testManagerSubfactory)
+TEST_ADD(ManagerTest, testManagerUnique1)
+TEST_ADD(ManagerTest, testManagerUnique2)
 TEST_END(ManagerTest)
 
 #endif

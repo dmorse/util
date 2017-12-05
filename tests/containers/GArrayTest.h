@@ -228,7 +228,7 @@ void GArrayTest::testSerialize1File()
       TEST_ASSERT(v[2] == 5 );
    
       BinaryFileOArchive oArchive;
-      openOutputFile("binary", oArchive.file());
+      openOutputFile("tmp/binary", oArchive.file());
       oArchive << v;
       oArchive << i1;
       oArchive.file().close();
@@ -245,7 +245,7 @@ void GArrayTest::testSerialize1File()
       u.reserve(4);
    
       BinaryFileIArchive iArchive;
-      openInputFile("binary", iArchive.file());
+      openInputFile("tmp/binary", iArchive.file());
       iArchive >> u;
       iArchive >> i2;
       iArchive.file().close();

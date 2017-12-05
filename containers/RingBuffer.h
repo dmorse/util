@@ -92,14 +92,21 @@ namespace Util
       /** 
       * Return true if full (if size == capacity), false otherwise.
       */
-      bool isFull();
+      bool isFull() const;
    
       /**
-      * Retrieve a previous value, a specified number of time steps ago.
+      * Retrieve a const value, a specified number of time steps ago.
       *
       * \param offset number of steps back in time (offset=0 is current value).
       */
-      Data operator [] (int offset) const;
+      const Data& operator [] (int offset) const;
+
+      /**
+      * Retrieve a value, a specified number of time steps ago.
+      *
+      * \param offset number of steps back in time (offset=0 is current value).
+      */
+      Data& operator [] (int offset);
 
       /**
       * Serialize a RingBuffer to/from an Archive.
@@ -234,6 +241,7 @@ namespace Util
    * Set buffer to empty state, by resetting counters.
    */
    template <class Data>
+   inline
    void RingBuffer<Data>::clear()
    {
       last_  = capacity_ - 1; 
@@ -244,6 +252,7 @@ namespace Util
    * Append a new value to the end of the buffer
    */
    template <class Data>
+   inline
    void RingBuffer<Data>::append(Data data) 
    {
       assert(last_ < capacity_);
@@ -264,6 +273,7 @@ namespace Util
    * Return number of values in buffer.
    */
    template <class Data>
+   inline
    int RingBuffer<Data>::size() const
    { return size_; }
   
@@ -271,6 +281,7 @@ namespace Util
    * Return the capacity of the buffer.
    */
    template <class Data>
+   inline
    int RingBuffer<Data>::capacity() const
    { return capacity_; }
  
@@ -278,6 +289,7 @@ namespace Util
    * Return true if the RingBuffer has been allocated, false otherwise.
    */
    template <class Data>
+   inline
    bool RingBuffer<Data>::isAllocated() const
    {  return (data_ != 0); }
   
@@ -285,14 +297,34 @@ namespace Util
    * Return true if the RingBuffer is full.
    */
    template <class Data>
-   bool RingBuffer<Data>::isFull()
+   inline
+   bool RingBuffer<Data>::isFull() const
    {  return (size_ == capacity_); }
   
    /*
-   * Retrive a previous value, index backwards from 0 (current)
+   * Retrive a value by const reference, index backwards from 0 (current)
    */
    template <class Data>
-   Data RingBuffer<Data>::operator [] (int offset) const
+   inline
+   const Data& RingBuffer<Data>::operator [] (int offset) const
+   {
+      if ( offset >= size_ )  {
+         UTIL_THROW("offset >= size_");
+      }
+      int i;
+      i = last_ - offset;
+      if (i < 0) {
+         i = i + capacity_;
+      }
+      return data_[i];
+   }
+
+   /*
+   * Retrive a value by reference, index backwards from 0 (current)
+   */
+   template <class Data>
+   inline
+   Data& RingBuffer<Data>::operator [] (int offset)
    {
       if ( offset >= size_ )  {
          UTIL_THROW("offset >= size_");

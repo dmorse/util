@@ -5,7 +5,7 @@ namespace Util
    * \defgroup Container_Module Container Templates
    * \ingroup Util_NS_Module
    *
-   * A set of container and iterator class templates.
+   * Container and iterator class templates.
    *
    * This module contains a set of simple container templates, some of which
    * are similar to containers provided by the C++ standard library. Bounds 
@@ -96,6 +96,8 @@ namespace Util
    /**
    * \defgroup Array_Module Object Arrays
    *
+   * Array containers that store objects by value, and related iterators.
+   *
    * The Array containers that do not have a P prefix are one-dimensional 
    * array containers that store objects by value. These all overload the
    * subscript [] operator to provide access to elements as references.
@@ -126,8 +128,10 @@ namespace Util
    /**
    * \defgroup Pointer_Array_Module Pointer Arrays
    *
-   * One-dimensional array containers that store pointers, and associated 
-   * iterators.
+   * Array containers that store pointers to objects, and related iterators.
+   *
+   * The one-dimensional array with names that contain a prefix "P" all store 
+   * pointers to objects. This module also includes associated iterators.
    *
    * The DPArray and FPArray class templates are dynamically and statically
    * allocated pointer arrays, respectively. A GPArray is a growable pointer

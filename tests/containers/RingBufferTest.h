@@ -101,6 +101,16 @@ void RingBufferTest::testSubscript2()
       TEST_ASSERT(real(v[2]) == 20);
       TEST_ASSERT(v.isFull());
       TEST_ASSERT(v.size() == 3);
+
+      // Make const reference
+      RingBuffer<Data> const & w = v;
+      TEST_ASSERT(real(w[0]) == 40);
+      TEST_ASSERT(real(w[1]) == 30);
+      TEST_ASSERT(imag(w[1]) == 30.1);
+      TEST_ASSERT(real(w[2]) == 20);
+      TEST_ASSERT(w.isFull());
+      TEST_ASSERT(w.size() == 3);
+
    }
    TEST_ASSERT(Memory::total() == memory_);
 }

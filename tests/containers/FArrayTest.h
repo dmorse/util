@@ -221,7 +221,7 @@ void FArrayTest::testSerializeFile()
    int i2;
 
    BinaryFileOArchive oArchive;
-   openOutputFile("binary", oArchive.file());
+   openOutputFile("tmp/binary", oArchive.file());
    oArchive << v;
    oArchive << i1;
    oArchive.file().close();
@@ -235,7 +235,7 @@ void FArrayTest::testSerializeFile()
    FArray<Data, Capacity> u;
 
    BinaryFileIArchive iArchive;
-   openInputFile("binary", iArchive.file());
+   openInputFile("tmp/binary", iArchive.file());
    iArchive >> u;
    iArchive >> i2;
    iArchive.file().close();
@@ -254,7 +254,7 @@ void FArrayTest::testSerializeFile()
    i2 = 0;
 
    // Reload into u and i2
-   openInputFile("binary", iArchive.file());
+   openInputFile("tmp/binary", iArchive.file());
    iArchive >> u;
    iArchive >> i2;
 

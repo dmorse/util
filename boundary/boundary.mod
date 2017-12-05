@@ -4,7 +4,7 @@ namespace Util{
    * \defgroup Boundary_Module Boundary
    * \ingroup Util_NS_Module
    *
-   * \brief   Classes that model periodic boundary conditions.
+   * \brief   Unit cells for periodic boundary conditions.
    *
    * The classes OrthorhombicBoundary, MonoclinicBoundary etc. each define 
    * periodic boundary conditions for a periodic unit cell with a specific 

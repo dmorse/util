@@ -601,15 +601,19 @@ namespace Util
    template <typename T>
    inline T Polynomial<T>::operator () (T x) const
    { 
-      int degree = size()-1;
-      T value = (*this)[degree];
-      if (degree > 0) {
-         for (int i = degree-1; i >= 0; --i) {
-           value *= x;
-           value += (*this)[i];
+      if (size() > 0) {
+         int degree = size() - 1;
+         T value = (*this)[degree];
+         if (degree > 0) {
+            for (int i = degree-1; i >= 0; --i) {
+              value *= x;
+              value += (*this)[i];
+            }
          }
+         return value;
+      } else {
+         return T(0);
       }
-      return value;
    }
 
    /*
@@ -618,15 +622,19 @@ namespace Util
    template <typename T>
    inline double Polynomial<T>::evaluate (double x) const
    {
-      int degree = size()-1;
-      double value = (double)(*this)[degree];
-      if (degree > 0) {
-         for (int i = degree-1; i >= 0; --i) {
-           value *= x;
-           value += (double)(*this)[i];
+      if (size() > 0) {
+         int degree = size()-1;
+         double value = (double)(*this)[degree];
+         if (degree > 0) {
+            for (int i = degree-1; i >= 0; --i) {
+              value *= x;
+              value += (double)(*this)[i];
+            }
          }
+         return value;
+      } else {
+         return 0.0;
       }
-      return value;
    }
 
    // Static function
@@ -709,7 +717,7 @@ namespace Util
    template <typename T>
    std::ostream& operator << (std::ostream& out, Polynomial<T> const & p)
    {
-      out << "(";
+      out << "( ";
       if (p.size() > 0) {
          for (int i = 0; i < p.size(); ++i) {
             out << p[i] << " ";

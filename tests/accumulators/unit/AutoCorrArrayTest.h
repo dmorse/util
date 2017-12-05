@@ -128,13 +128,13 @@ void AutoCorrArrayTest::testSerializeFile()
    readData();
 
    BinaryFileOArchive u;
-   openOutputFile("binary", u.file());
+   openOutputFile("tmp/AutoCorrArrayTestSerializeFile", u.file());
    u << accumulator_;
    u.file().close();
 
    AutoCorrArray<double, double> clone;
    BinaryFileIArchive v;
-   openInputFile("binary", v.file());
+   openInputFile("tmp/AutoCorrArrayTestSerializeFile", v.file());
    v >> clone;
    v.file().close();
    
@@ -149,13 +149,13 @@ void AutoCorrArrayTest::testSaveLoad()
    readData();
 
    BinaryFileOArchive u;
-   openOutputFile("binary", u.file());
+   openOutputFile("tmp/AutoCorrArrayTestSaveLoad", u.file());
    accumulator_.save(u);
    u.file().close();
 
    AutoCorrArray<double, double> clone;
    BinaryFileIArchive v;
-   openInputFile("binary", v.file());
+   openInputFile("tmp/AutoCorrArrayTestSaveLoad", v.file());
    clone.load(v);
    v.file().close();
  

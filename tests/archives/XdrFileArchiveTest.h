@@ -36,16 +36,17 @@ public:
 void XdrFileArchiveTest::testOArchiveConstructor()
 {
    printMethod(TEST_FUNC);
-   XdrFileOArchive v("xdr");
+   std::string filename = filePrefix();
+   filename += "tmp/XdrTestOArchiveConstructor";
+   XdrFileOArchive v(filename);
    fclose(v.file());
 }
 
 void XdrFileArchiveTest::testWriteRead()
 {
    printMethod(TEST_FUNC);
-   //XdrFileOArchive v("xdr");
    XdrFileOArchive v;
-   FILE* fo = openFile("xdr", "wb+");
+   FILE* fo = openFile("tmp/XdrTestWriteRead", "wb+");
    v.init(fo);
 
    // Declare variables
@@ -78,9 +79,8 @@ void XdrFileArchiveTest::testWriteRead()
    fclose(v.file());
 
    // Create IArchive u
-   //XdrFileIArchive u("xdr");
    XdrFileIArchive u;
-   FILE* fi = openFile("xdr", "rb");
+   FILE* fi = openFile("tmp/XdrTestWriteRead", "rb");
    u.init(fi);
 
    u >> i2;

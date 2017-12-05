@@ -158,7 +158,7 @@ void DSArrayTest::testSerialize1File()
       TEST_ASSERT(v[2] == 5 );
    
       BinaryFileOArchive oArchive;
-      openOutputFile("binary", oArchive.file());
+      openOutputFile("tmp/binary", oArchive.file());
       oArchive << v;
       oArchive << i1;
       oArchive.file().close();
@@ -176,7 +176,7 @@ void DSArrayTest::testSerialize1File()
       u.allocate(3);
    
       BinaryFileIArchive iArchive;
-      openInputFile("binary", iArchive.file());
+      openInputFile("tmp/binary", iArchive.file());
       iArchive >> u;
       iArchive >> i2;
       iArchive.file().close();
@@ -193,7 +193,7 @@ void DSArrayTest::testSerialize1File()
       // Clear values of u and i2
    
       // Reload into u and i2
-      openInputFile("binary", iArchive.file());
+      openInputFile("tmp/binary", iArchive.file());
       iArchive >> u;
       iArchive >> i2;
    

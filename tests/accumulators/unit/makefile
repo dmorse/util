@@ -15,7 +15,7 @@ clean:
 	$(MAKE) clean-outputs
 
 clean-outputs:
-	rm -f binary
+	@rm -f tmp/*
 
 -include $(util_tests_accumulators_unit_OBJS:.o=.d)
 

@@ -42,8 +42,10 @@ namespace Util
 
       /**
       * Constructor.
+      *
+      * \param uniqueNames set true to require unique element class names.
       */
-      Manager();
+      Manager(bool uniqueNames = false);
 
       /**
       * Destructor.
@@ -94,7 +96,7 @@ namespace Util
       virtual void readParam(std::istream &in);
 
       /**
-      * Optioanlly read and create a set of objects.
+      * Optionally read and create a set of objects.
       *
       * Equivalent to readParam(), except that this function does
       * nothing if the first line does not match the expected label,
@@ -143,8 +145,8 @@ namespace Util
       /**
       * Get the subclass name for object number i.
       *
-      * \param   i integer index of object
-      * \return  class name of managed object
+      * \param  i integer index of object
+      * \return class name of managed object
       */
       std::string className(int i) const;
 
@@ -165,6 +167,14 @@ namespace Util
       * \return reference to element i
       */
       Data& operator[] (int i) const;
+
+      /**
+      * Return pointer to first object with specified class name.
+      *
+      * \param className desired class name string
+      * \return pointer to specified objectd, or null if not found.
+      */
+      Data* findFirst(std::string const & className);
 
    protected:
 
@@ -207,8 +217,8 @@ namespace Util
       /// Logical size (number of elements with initialized data).
       int  size_;
 
-      /// True if this manager knows its own classname
-      bool  hasName_;
+      /// True if all class names must be unique
+      bool uniqueNames_;
 
       /// True if this manager created the object *factoryPtr_.
       bool createdFactory_;
@@ -219,13 +229,13 @@ namespace Util
    * Constructor.
    */
    template <typename Data>
-   Manager<Data>::Manager()
+   Manager<Data>::Manager(bool uniqueNames)
     : factoryPtr_(0),
       ptrs_(),
       names_(),
       capacity_(0),
       size_(0),
-      hasName_(false),
+      uniqueNames_(uniqueNames),
       createdFactory_(false)
    {}
 
@@ -363,6 +373,14 @@ namespace Util
 
          if (!isEnd) {
             if (typePtr) {
+               if (uniqueNames_) {
+                  Data* firstPtr = findFirst(name);
+                  if (firstPtr) {
+                     std::string msg("Non-unique subclass name: ");
+                     msg += name;
+                     UTIL_THROW(msg.c_str());
+                  }
+               }
                append(*typePtr, name);
             } else {
                std::string msg("Unknown subclass name: ");
@@ -478,9 +496,6 @@ namespace Util
 
    /*
    * Array subscript operator - return a reference.
-   *
-   * \param  i array index
-   * \return reference to element i
    */
    template <typename Data>
    inline Data& Manager<Data>::operator[] (int i) const
@@ -488,6 +503,20 @@ namespace Util
       assert(i >= 0);
       assert(i < size_);
       return *ptrs_[i];
+   }
+
+   /*
+   * Find first object with specified class name.
+   */
+   template <typename Data>
+   Data* Manager<Data>::findFirst(std::string const & className)
+   {
+      for (int i = 0; i < size_; ++i) {
+         if (names_[i] == className) {
+            return ptrs_[i];
+         }
+      }
+      return 0;
    }
 
    // Protected methods

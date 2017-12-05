@@ -33,13 +33,15 @@ void TextFileArchiveTest::testOArchiveConstructor1()
 {
    printMethod(TEST_FUNC);
    TextFileOArchive  v;
-   openOutputFile("text", v.file());
+   openOutputFile("tmp/TextTestOArchiveConstructor1", v.file());
 } 
 
 void TextFileArchiveTest::testOArchiveConstructor2()
 {
    printMethod(TEST_FUNC);
-   TextFileOArchive  v("dummy");
+   std::string filename = filePrefix();
+   filename += "tmp/TextTestOArchiveConstructor2";
+   TextFileOArchive  v(filename);
    v.file().close();
 } 
 
@@ -47,7 +49,7 @@ void TextFileArchiveTest::testPack()
 {
    printMethod(TEST_FUNC);
    TextFileOArchive  v;
-   openOutputFile("text", v.file());
+   openOutputFile("tmp/TextTestPack", v.file());
 
    // Declare variables
    int i1, i2;
@@ -95,7 +97,7 @@ void TextFileArchiveTest::testPack()
    v.file().close();
 
    TextFileIArchive u;
-   openInputFile("text", u.file());
+   openInputFile("tmp/TextTestPack", u.file());
 
    u >> i2;
    TEST_ASSERT(i1 == i2);

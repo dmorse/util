@@ -13,10 +13,13 @@
 namespace Util
 {
 
-   /*
+   /**
    * Compute greatest common divisor (gcd) of two integers.
    *
-   * Uses Euclidean algorithm to compute gcd.
+   * Uses Euclidean algorithm to compute gcd. Always returns a
+   * non-negative integer. If one argument is zero, the absolute
+   * value of the other is returned. Returns zero if and only if
+   * both integers are zero.
    *
    * \ingroup Math_Module
    *

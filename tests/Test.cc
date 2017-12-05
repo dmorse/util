@@ -10,7 +10,6 @@
 
 #include "accumulators/unit/AccumulatorTestComposite.h"
 #include "archives/ArchiveTestComposite.h"
-#include "boundary/BoundaryTestComposite.h"
 #include "containers/ContainersTestComposite.h"
 #include "crystal/CrystalTestComposite.h"
 #include "format/FormatTest.h"
@@ -20,6 +19,7 @@
 #include "signal/SignalTest.h"
 #include "space/SpaceTestComposite.h"
 #include "misc/MiscTestComposite.h"
+//#include "boundary/BoundaryTestComposite.h"
 
 #ifdef  UTIL_MPI
 #include "param/mpi/MpiParamTestComposite.h"
@@ -33,7 +33,6 @@ using namespace Util;
 TEST_COMPOSITE_BEGIN(UtilNsTestComposite)
 addChild(new AccumulatorTestComposite, "accumulators/unit/");
 addChild(new ArchiveTestComposite, "archives/");
-addChild(new BoundaryTestComposite, "boundary/");
 addChild(new ContainersTestComposite, "containers/");
 addChild(new CrystalTestComposite, "crystal/");
 addChild(new TEST_RUNNER(FormatTest), "format/");
@@ -43,32 +42,46 @@ addChild(new TEST_RUNNER(RandomTest), "random/");
 addChild(new TEST_RUNNER(SignalTest), "signal/");
 addChild(new SpaceTestComposite, "space/");
 addChild(new MiscTestComposite, "misc/");
+//addChild(new BoundaryTestComposite, "boundary/");
 #ifdef UTIL_MPI
 //addChild(new MpiParamTestComposite, "param/mpi/");
 //addChild(new TEST_RUNNER(MpiSendRecvTest), "mpi/");
 #endif 
 TEST_COMPOSITE_END
 
-
 int main(int argc, char* argv[])
 {
-   #ifdef UTIL_MPI
-   MPI::Init();
-   Vector::commitMpiType();
-   IntVector::commitMpiType();
-   #endif 
+   try {
 
-   UtilNsTestComposite runner;
+      #ifdef UTIL_MPI
+      MPI::Init();
+      Vector::commitMpiType();
+      IntVector::commitMpiType();
+      #endif 
+   
+      UtilNsTestComposite runner;
+   
+      if (argc > 2) {
+         UTIL_THROW("Too many arguments");
+      }
+      if (argc == 2) {
+         runner.addFilePrefix(argv[1]);
+      }
 
-   if (argc > 2) {
-      UTIL_THROW("Too many arguments");
+      // Run the composite unit test runner
+      int failures = runner.run();
+
+      #ifdef UTIL_MPI
+      MPI::Finalize();
+      #endif 
+
+      return (failures != 0);
+
+   } catch (...) {
+
+      std::cerr << "Uncaught exception" << std::endl;
+      return EXIT_FAILURE;
+
    }
-   if (argc == 2) {
-      runner.addFilePrefix(argv[1]);
-    }
-   runner.run();
 
-   #ifdef UTIL_MPI
-   MPI::Finalize();
-   #endif 
 }

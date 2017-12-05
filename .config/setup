@@ -61,10 +61,27 @@ cp src/util/config.mk_r src/util/config.mk
 cp src/util/boundary/Boundary.h_r src/util/boundary/Boundary.h
 
 # Copy the makeDep dependency-maker script into the bin directory
-mkdir bin
+if [ ! -d bin ]; then
+  mkdir bin
+fi
 cp src/util/.config/makeDep bin/
 
 # Copy python files into the scripts/python directory
-mkdir scripts
-mkdir scripts/python
+if [ ! -d scripts ]; then
+   mkdir scripts
+fi
+if [ ! -d scripts/python ]; then
+   mkdir scripts/python
+fi
 cp src/util/.config/*.py scripts/python/
+
+if [ ! -d doc ]; then
+   mkdir doc
+fi
+if [ ! -d doc/html ]; then
+   mkdir doc/html
+fi
+if [ ! -d doc/manual ]; then
+   mkdir doc/manual
+fi
+cp src/util/.config/doc/* doc/
