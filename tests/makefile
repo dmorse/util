@@ -5,25 +5,26 @@ include $(SRC_DIR)/util/patterns.mk
 include $(SRC_DIR)/util/sources.mk
 include $(SRC_DIR)/util/tests/sources.mk
 
-TEST=util/tests/Test
+TEST=$(BLD_DIR)/util/tests/Test
 
-all: $(util_tests_OBJS) $(BLD_DIR)/$(TEST)
+all: $(TEST)
 
-run: $(util_tests_OBJS) $(BLD_DIR)/$(TEST)
-	$(BLD_DIR)/$(TEST) $(SRC_DIR)/util/tests/ 
-	cd $(SRC_DIR)/util/tests; $(MAKE) clean-outputs
+run: $(TEST)
+	$(TEST) $(SRC_DIR)/util/tests/ 
+	@cd $(SRC_DIR)/util/tests; $(MAKE) -s clean-outputs
 	
-quiet: $(util_tests_OBJS) $(BLD_DIR)/$(TEST)
-	@$(BLD_DIR)/$(TEST) $(SRC_DIR)/util/tests/ > log
+quiet: $(TEST)
+	@$(TEST) $(SRC_DIR)/util/tests/ > log
 	@echo `grep failed log` ", "\
               `grep successful log` "in util/tests/log" > count
 	@cat count
-	@cd $(SRC_DIR)/util/tests; $(MAKE) clean-outputs
+	@cd $(SRC_DIR)/util/tests; $(MAKE) -s clean-outputs
 	
 
 clean:
-	rm -f $(util_tests_OBJS) $(util_tests_OBJS:.o=.d)
-	rm -f $(BLD_DIR)/$(TEST) $(BLD_DIR)/$(TEST).d
+	rm -f $(util_tests_EXES) 
+	rm -f $(util_tests_OBJS) 
+	rm -f $(util_tests_OBJS:.o=.d)
 	rm -f log count
 	cd $(SRC_DIR)/util/tests; $(MAKE) clean-outputs
 ifeq ($(BLD_DIR),$(SRC_DIR))
