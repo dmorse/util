@@ -80,15 +80,40 @@ namespace Util
    /*
    * Extract a label from an input stream.
    */
-   std::istream& operator>>(std::istream& in, Label label)
+   std::istream& operator >> (std::istream& in, Label label)
    {
-      // If previous input value matched, read a new one.
+      UTIL_CHECK(label.string_.size() > 0);
+
+      // If previous input value matched, try to read a new one.
       if (label.isClear_) {
-         in >> label.input_;
-         label.isClear_ = false;
+         if (!in.eof()) {
+            if (in.fail()) {
+               UTIL_THROW("istream::fail() before reading Label");
+            } 
+            skipws(in);
+            in >> label.input_;
+            label.isClear_ = false;
+            if (label.isRequired()) {
+               if (label.input_.size() == 0) {
+                  Log::file() << "Empty required label" << std::endl;
+                  UTIL_THROW("Empty required label after read");
+               }
+            }
+         } else { // if is eof
+            if (label.isRequired()) {
+               Log::file() << "End-of-file before required label" << std::endl;
+               Log::file() << "Expected: " << label.string_ << std::endl;
+               UTIL_THROW("EOF before reading required label");
+            } else {
+               label.input_ = "";
+               label.isClear_ = false;
+               return in;
+            }
+         }
       }
       if (label.input_ == label.string_) {
-         label.clear(); // Clear label input buffer
+         // Clear Label static buffer on successful match
+         label.clear(); 
       } else {
          if (label.isRequired_) {
             Log::file() << "Error reading label"        << std::endl;
@@ -103,7 +128,7 @@ namespace Util
    /*
    * Insert a Label into an output stream.
    */
-   std::ostream& operator<<(std::ostream& out, Label label)
+   std::ostream& operator << (std::ostream& out, Label label)
    {
       out << std::left << std::setw(Label::LabelWidth) 
           << label.string_; 

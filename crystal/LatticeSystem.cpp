@@ -5,8 +5,9 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <util/global.h>      // uses UTIL_THROW
-#include "LatticeSystem.h"    // class header
+#include "LatticeSystem.h"      // class header
+#include <util/misc/ioUtil.h> 
+#include <util/global.h>      
 
 namespace Util
 {
@@ -22,10 +23,25 @@ namespace Util
    /* 
    * Extract a LatticeSystem from an istream as a string.
    */
-   std::istream& operator>>(std::istream& in, LatticeSystem& lattice)
+   std::istream& operator >> (std::istream& in, LatticeSystem& lattice)
    {
+      // Precondition (check state of input stream)
+      try {
+         checkRequiredIstream(in);
+      } catch (Exception e) {
+         Log::file() << "Error in istream reading LatticeSystem" << std::endl;
+         throw e;
+      }
+
+      // Read string representation
       std::string buffer;
+      skipws(in);
       in >> buffer;
+      if (buffer.size() == 0) {
+         UTIL_THROW("Empty LatticeSystem string after read");
+      }
+
+      // Match string representation and set value
       if (buffer == "Cubic" || buffer == "cubic") {
          lattice = Cubic;
       } else 
@@ -48,7 +64,8 @@ namespace Util
          lattice = Hexagonal; 
       } else {
          #ifndef UTIL_MPI
-         Log::file() << "Unknown LatticeSystem: " << buffer << std::endl;
+         Log::file() << "Unknown LatticeSystem. Value =|" 
+                     << buffer << "|" << std::endl;
          #endif
          UTIL_THROW("Invalid LatticeSystem value input");
       }
