@@ -72,7 +72,7 @@ namespace Util
    bool getNextLine(std::istream& in, std::string& line);
 
    /**
-   * Read the next non-empty line into a stringstream, strip trailing whitespace.
+   * Read next non-empty line into a stringstream, strip trailing whitespace.
    *
    * Variant of std::getline() that skips empty lines and uses stringstream.
    *
@@ -83,6 +83,15 @@ namespace Util
    * \return true if not end-of-file, false if end-of-file.
    */
    bool getNextLine(std::istream& in, std::stringstream& line);
+
+   /**
+   * Check status of a std::istream just before reading required variable.
+   *
+   * Throw Exception with appropriate error message if not good.
+   *
+   * \param in   input stream from which to read.
+   */
+   void checkRequiredIstream(std::istream& in);
 
 }
 #endif
