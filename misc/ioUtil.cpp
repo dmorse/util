@@ -118,4 +118,30 @@ namespace Util
       }
    }
 
+   /* 
+   * Check status of an istream before required read.
+   */
+   void checkRequiredIstream(std::istream& in)
+   {
+      if (!in.good()) {
+         if (in.eof()) {
+            if (in.fail()) {
+               if (in.bad()) {
+                  UTIL_THROW("Error: istream eof and badbit");
+               } else {
+                  UTIL_THROW("Error: istream eof and failbit");
+               }
+            } else {
+               UTIL_THROW("Error: istream eof");
+            }
+         }
+         if (in.fail()) {
+            if (in.bad()) {
+               UTIL_THROW("Error: istream badbit");
+            } else {
+               UTIL_THROW("Error: istream failbit");
+            }
+         }
+      }
+   }
 }

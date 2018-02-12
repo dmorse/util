@@ -380,10 +380,10 @@ namespace Util
    private:
 
       /// Width of field per Cartesian coordinate in stream IO
-      static const int Width = 25;
+      static const int Width = 24;
 
       /// Precision in stream IO of Vector coordinates
-      static const int Precision = 17;
+      static const int Precision = 16;
 
       /// Elements of the vector.
       double elem_[Dimension];
