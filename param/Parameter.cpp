@@ -36,28 +36,37 @@ namespace Util
    void Parameter::readParam(std::istream &in)
    {
       if (isIoProcessor()) {
+
+         // Read the label and attempt to match.
          in >> label_;
 
          // If this parameter is required and the 
-         // label doesn't match an exception will 
+         // label does not match, an exception will 
          // be thrown by the >> operator.
 
-         if (Label::isClear()) {
+         if (Label::isMatched()) {
+
             // If the label string matches
             readValue(in);
             isActive_ = true;
             if (ParamComponent::echo()) {
                writeParam(Log::file());
             }
+
          } else {
-            // If label does not match and this isOptional
+
+            // If label does not match.
+            // Note: Label must be optional or an
+            // Exception should have been thrown.
+            assert(!isRequired());
             isActive_ = false;
-            if (ParamComponent::echo() && !isRequired()) {
+            if (ParamComponent::echo()) {
                Log::file() << indent() 
                            << label_ << std::right
                            << std::setw(Parameter::Width)
                            << "[ absent ]" << std::endl;
             }
+
          }
       } else {
          #ifdef UTIL_MPI

@@ -23,16 +23,19 @@ MAKE_DEPS+= -A$(BLD_DIR)/util/config.mk
 
 # Pattern rule to compile *.cpp class source files in src/util
 $(BLD_DIR)/%.o:$(SRC_DIR)/%.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLUDES) $(DEFINES) -c -o $@ $<
+	$(CXX) $(INCLUDES) $(DEFINES) $(CXXFLAGS) -c -o $@ $<
 ifdef MAKEDEP
 	$(MAKEDEP) $(INCLUDES) $(DEFINES) $(MAKE_DEPS) -S$(SRC_DIR) -B$(BLD_DIR) $<
 endif
 
 # Pattern rule to compile *.cc test programs in src/util/tests
-$(BLD_DIR)/%: $(SRC_DIR)/%.cc $(LIBS)
-	$(CXX) $(TESTFLAGS) $(CPPFLAGS) $(INCLUDES) $(DEFINES) -c -o $@.o $<
-	$(CXX) $(TESTFLAGS) $(CPPFLAGS) $(INCLUDES) $(DEFINES) -o $@ $@.o $(LIBS) $(LDFLAGS)
+$(BLD_DIR)/util/tests/%.o: $(SRC_DIR)/util/tests/%.cc 
+	$(CXX) $(INCLUDES) $(DEFINES) $(TESTFLAGS) -c -o $@ $<
 ifdef MAKEDEP
 	$(MAKEDEP) $(INCLUDES) $(DEFINES) $(MAKE_DEPS) -S$(SRC_DIR) -B$(BLD_DIR) $<
 endif
+
+# Pattern rule to link *.cc test programs in src/util/tests
+$(BLD_DIR)/util/tests/%: $(BLD_DIR)/util/tests/%.o $(LIBS)
+	$(CXX) $(INCLUDES) $(DEFINES) -o $@ $@.o $(LIBS) $(LDFLAGS)
 

@@ -113,6 +113,7 @@ public:
          manager.readParam(in);
       } catch (Exception) {
          success = true;
+         std::cout << "Caught expected Exception" << std::endl;
       }
       TEST_ASSERT(success);
    }

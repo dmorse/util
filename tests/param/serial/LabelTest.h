@@ -29,12 +29,17 @@ public:
    {
       printMethod(TEST_FUNC);
       Label label("MyLabel");
+      TEST_ASSERT(Label::isClear());
+      TEST_ASSERT(!Label::isMatched());
+
    }
 
    void testLabelConstructor2() 
    {
       printMethod(TEST_FUNC);
       Label label("MyLabel", false);
+      TEST_ASSERT(Label::isClear());
+      TEST_ASSERT(!Label::isMatched());
    }
 
    void testExtractor1() 
@@ -44,7 +49,11 @@ public:
       std::ifstream in;
       openInputFile("in/Label", in);
       in >> label;
+      TEST_ASSERT(Label::isClear());
+      TEST_ASSERT(Label::isMatched());
       in >> Label("YourLabel");
+      TEST_ASSERT(Label::isClear());
+      TEST_ASSERT(Label::isMatched());
       in.close();
    }
 
@@ -55,12 +64,24 @@ public:
       Label label1("AnotherLabel", false);
       Label label2("MyLabel", false);
       Label label3("YourLabel", true);
+      Label label4("LastLabel", false);
       std::ifstream in;
       openInputFile("in/Label", in);
+      TEST_ASSERT(Label::isClear());
+      TEST_ASSERT(!Label::isMatched());
       in >> label0;
+      TEST_ASSERT(!Label::isClear());
+      TEST_ASSERT(!Label::isMatched());
       in >> label1;
+      TEST_ASSERT(!Label::isClear());
+      TEST_ASSERT(!Label::isMatched());
       in >> label2;
+      TEST_ASSERT(Label::isClear());
+      TEST_ASSERT(Label::isMatched());
       in >> label3;
+      TEST_ASSERT(Label::isClear());
+      TEST_ASSERT(Label::isMatched());
+      TEST_ASSERT(!label4.match(in));
       in.close();
    }
 

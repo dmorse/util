@@ -31,18 +31,17 @@
 using namespace Util;
 
 TEST_COMPOSITE_BEGIN(UtilNsTestComposite)
-addChild(new AccumulatorTestComposite, "accumulators/unit/");
+addChild(new ParamTestComposite, "param/serial/");
+addChild(new TEST_RUNNER(FormatTest), "format/");
+addChild(new SpaceTestComposite, "space/");
 addChild(new ArchiveTestComposite, "archives/");
 addChild(new ContainersTestComposite, "containers/");
-addChild(new CrystalTestComposite, "crystal/");
-addChild(new TEST_RUNNER(FormatTest), "format/");
 addChild(new MathTestComposite, "math/");
-addChild(new ParamTestComposite, "param/serial/");
+addChild(new AccumulatorTestComposite, "accumulators/unit/");
+addChild(new CrystalTestComposite, "crystal/");
 addChild(new TEST_RUNNER(RandomTest), "random/");
 addChild(new TEST_RUNNER(SignalTest), "signal/");
-addChild(new SpaceTestComposite, "space/");
 addChild(new MiscTestComposite, "misc/");
-//addChild(new BoundaryTestComposite, "boundary/");
 #ifdef UTIL_MPI
 //addChild(new MpiParamTestComposite, "param/mpi/");
 //addChild(new TEST_RUNNER(MpiSendRecvTest), "mpi/");

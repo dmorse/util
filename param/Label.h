@@ -38,11 +38,15 @@ namespace Util
 
    public:
 
+      // Static Public Members
+
       /// Width of label field in file output format.
       static const int LabelWidth  = 20;
 
       /**
-      * Initialize read buffer to empty.
+      * Reset buffer and flags to initial state.
+      * 
+      * Clears buffer, sets isClear = true and isMatched = false.
       */
       static void clear();
 
@@ -50,6 +54,18 @@ namespace Util
       * Is the input buffer clear?
       */
       static bool isClear();
+
+      /**
+      * Did the most recent attempt to match a Label succeed?
+      *
+      * Returns true after a succesful match by operator >>
+      * or the match() function. Returns false before any 
+      * attempt to match any Label, after a failed attempt 
+      * with an an optional label.
+      */
+      static bool isMatched();
+
+      // Non-static Public Members
 
       /**
       * Constructor.
@@ -86,6 +102,17 @@ namespace Util
       void setString(std::string string);
 
       /**
+      * Read and attempt to match next word in an input stream.
+      *
+      * This is a convenience function that invokes operator >>
+      * to read a word and then returns the value of isMatched().
+      * For an optional Label, this returns true upon a successful
+      * match and false otherwise. For a required label, returns
+      * true upon a successful match or throws an Exception. 
+      */
+      bool match(std::istream& in);
+
+      /**
       * Return label string.
       */
       std::string string() const;
@@ -97,34 +124,54 @@ namespace Util
 
    private:
 
-      /// Is this label a required entry ? (passed to constructor).
+      /**
+      * Is this label a required entry ? 
+      *
+      * This is passed to the constructor, and constant thereafter.
+      */
       bool isRequired_;
 
-      /// Expected label string.
+      /**
+      * Expected label string.
+      */
       std::string string_;
 
    // Static members:
 
-      /// Did the input buffer clear? (initialized true).
+      /**
+      * Is the Label::input_ buffer clear? (initialized true).
+      */
       static bool isClear_;
+
+      /**
+      * Did the most recent attempt to match this label succeed?
+      *
+      * This is used for optional labels to check whether the most
+      * recent attempt to match the string succeeded. The variable
+      * is set false in the constructor, and can be set true by the
+      * extraction operator (operator >>) and the match function.
+      */
+      static bool isMatched_;
 
       /// Most recent input value from istream (initialized empty).
       static std::string input_;
 
    //friends:
 
-      friend std::istream& operator>>(std::istream& in, Label label);
-      friend std::ostream& operator<<(std::ostream& out, Label label);
+      friend std::istream& operator >> (std::istream& in, Label label);
+      friend std::ostream& operator << (std::ostream& out, Label label);
 
    };
+
+   // Friend function declarations
 
    /**
    * Extractor for Label.
    *
-   * \param in    input stream
-   * \param label Label to be read from file
+   * \param in  input stream
+   * \param label  Label to be read from file
    */ 
-   std::istream& operator>>(std::istream& in, Label label);
+   std::istream& operator >> (std::istream& in, Label label);
 
    /**
    * Inserter for Label.
@@ -132,13 +179,21 @@ namespace Util
    * \param out   output stream
    * \param label Label to be written to file
    */ 
-   std::ostream& operator<<(std::ostream& out, Label label);
+   std::ostream& operator << (std::ostream& out, Label label);
+
+   // Inline functions
 
    /*
-   * Is this the label for a required component?
+   * Is this label a required component of the file format?
    */
    inline bool Label::isRequired() const
    {  return isRequired_; }
+
+   /*
+   * Did the most recent attempt to read match?
+   */
+   inline bool Label::isMatched()
+   {  return isMatched_; }
 
 } 
 #endif
