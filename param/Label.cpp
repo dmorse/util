@@ -118,6 +118,7 @@ namespace Util
             } else {
                if (label.isRequired()) {
                   Log::file() << "Empty required label" << std::endl;
+                  Log::file() << "Expected: " << label.string_ << std::endl;
                   UTIL_THROW("Empty required label after read");
                }
             }
