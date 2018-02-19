@@ -1,14 +1,14 @@
 # ---------------------------------------------------------------------
 # File: src/util/patterns.mk
 #
-# This makefile contains the pattern rule used to compile all sources
-# files in the directory tree rooted at the src/util directory, which
-# contains all source code for the Util namespace. It is included by
-# all "makefile" files in this directory tree. 
+# This makefile contains the pattern rule used to compile all C++ source
+# files in the util/ directory tree, which contains all source code for 
+# the Util namespace. 
 #
-# This file should be included in other makefiles after inclusion of
-# the files src/config.mk and src/util/config.mk because this file
-# uses makefile variables defined in those files.
+# This file is included by all "makefile" files in the util/ directory 
+# tree. This file should be included in other makefiles after inclusion 
+# of main config.mk configuration file of the build directory, and the
+# util/config.mk namespace level config file. 
 #-----------------------------------------------------------------------
 
 # All libraries needed in src/util

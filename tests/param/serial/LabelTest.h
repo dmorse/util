@@ -97,6 +97,7 @@ public:
       openInputFile("in/Label", in);
       in >> label0;
       in >> label1;
+      printEndl();
       try {
          in >> label3;
       } catch (Util::Exception& e) {

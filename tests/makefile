@@ -5,8 +5,8 @@ include $(SRC_DIR)/util/patterns.mk
 include $(SRC_DIR)/util/sources.mk
 include $(SRC_DIR)/util/tests/sources.mk
 
-
 TEST=$(BLD_DIR)/util/tests/Test
+
 .SECONDARY:$(util_tests_OBJS)
 
 all: $(util_tests_EXES)
@@ -18,7 +18,7 @@ run: $(TEST)
 	@echo "Finished running $(TEST)"
 	@cd $(SRC_DIR)/util/tests; $(MAKE) -s clean-outputs
 	
-quiet: $(util_tests_EXES)
+quiet: $(TEST)
 	@$(TEST) $(SRC_DIR)/util/tests/ > log
 	@echo `grep failed log` ", "\
               `grep successful log` "in util/tests/log" > count

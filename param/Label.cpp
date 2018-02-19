@@ -105,27 +105,30 @@ namespace Util
             } 
             skipws(in);
             in >> label.input_;
-            label.isClear_ = false;
-            if (label.isRequired()) {
-               if (label.input_.size() == 0) {
+            if (label.input_.size() != 0) {
+               label.isClear_ = false;
+            } else {
+               if (label.isRequired()) {
                   Log::file() << "Empty required label" << std::endl;
                   UTIL_THROW("Empty required label after read");
                }
             }
          } else { // if is eof
             if (label.isRequired()) {
-               Log::file() << "End-of-file before reading required Label" << std::endl;
+               Log::file() << "End-of-file before reading required Label" 
+                           << std::endl;
                Log::file() << "Expected: " << label.string_ << std::endl;
                UTIL_THROW("EOF before reading required label");
             } else {
-               Label::input_ = "";
-               Label::isClear_ = false;
+               Label::input_.clear();
+               Label::isClear_ = true;
+               Label::isMatched_ = false;
                return in;
             }
          }
       }
       if (label.input_ == label.string_) {
-         Label::input_ = "";
+         Label::input_.clear();;
          Label::isClear_ = true;
          Label::isMatched_ = true;
       } else {
