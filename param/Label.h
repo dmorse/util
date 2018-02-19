@@ -80,6 +80,14 @@ namespace Util
       * \param string  label string that precedes value in file format
       * \param isRequired Is this label a required entry? (true by default)
       */
+      Label(std::string string, bool isRequired = true);
+
+      /**
+      * Constructor.
+      *
+      * \param string  label string that precedes value in file format
+      * \param isRequired Is this label a required entry? (true by default)
+      */
       Label(const char* string, bool isRequired = true);
 
       /**
@@ -92,7 +100,7 @@ namespace Util
       /**
       * Destructor.
       */
-      ~Label();
+      virtual ~Label();
 
       /**
       * Set the label string.
@@ -104,8 +112,8 @@ namespace Util
       /**
       * Read and attempt to match next word in an input stream.
       *
-      * This is a convenience function that invokes operator >>
-      * to read a word and then returns the value of isMatched().
+      * This is a convenience function that invokes operator >> to
+      * read a word and then returns the value of Label::isMatched().
       * For an optional Label, this returns true upon a successful
       * match and false otherwise. For a required label, returns
       * true upon a successful match or throws an Exception. 

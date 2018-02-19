@@ -50,6 +50,14 @@ namespace Util
    /*
    * Constructor.
    */
+   Label::Label(std::string string, bool isRequired)
+    : isRequired_(isRequired),
+      string_(string)
+   {}
+
+   /*
+   * Constructor.
+   */
    Label::Label(const char* string, bool isRequired)
     : isRequired_(isRequired),
       string_(string)
