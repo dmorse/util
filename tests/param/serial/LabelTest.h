@@ -5,6 +5,7 @@
 #include <test/UnitTestRunner.h>
 
 #include <util/param/Label.h>
+#include <util/param/OptionalLabel.h>
 #include <util/global.h>
 
 #include <iostream>
@@ -42,45 +43,64 @@ public:
       TEST_ASSERT(!Label::isMatched());
    }
 
+   void testLabelConstructor3() 
+   {
+      printMethod(TEST_FUNC);
+      OptionalLabel label("MyLabel");
+      TEST_ASSERT(Label::isClear());
+      TEST_ASSERT(!Label::isMatched());
+   }
+
    void testExtractor1() 
    {
       printMethod(TEST_FUNC);
       Label label("MyLabel");
       std::ifstream in;
       openInputFile("in/Label", in);
+
       in >> label;
       TEST_ASSERT(Label::isClear());
       TEST_ASSERT(Label::isMatched());
+
       in >> Label("YourLabel");
       TEST_ASSERT(Label::isClear());
       TEST_ASSERT(Label::isMatched());
+
+      in >> OptionalLabel("NotThere");
+      TEST_ASSERT(!Label::isMatched());
+      TEST_ASSERT(Label::isClear());
+
       in.close();
    }
 
    void testExtractor2() 
    {
       printMethod(TEST_FUNC);
-      Label label0("WrongLabel", false);
-      Label label1("AnotherLabel", false);
-      Label label2("MyLabel", false);
-      Label label3("YourLabel", true);
-      Label label4("LastLabel", false);
       std::ifstream in;
       openInputFile("in/Label", in);
       TEST_ASSERT(Label::isClear());
       TEST_ASSERT(!Label::isMatched());
+
+      Label label0("WrongLabel", false);
       in >> label0;
       TEST_ASSERT(!Label::isClear());
       TEST_ASSERT(!Label::isMatched());
-      in >> label1;
+
+      OptionalLabel label1("AnotherLabel");
+      TEST_ASSERT(!label1.match(in));
       TEST_ASSERT(!Label::isClear());
-      TEST_ASSERT(!Label::isMatched());
+
+      Label label2("MyLabel", false);
       in >> label2;
       TEST_ASSERT(Label::isClear());
       TEST_ASSERT(Label::isMatched());
+
+      Label label3("YourLabel");
       in >> label3;
       TEST_ASSERT(Label::isClear());
       TEST_ASSERT(Label::isMatched());
+
+      OptionalLabel label4("LastLabel");
       TEST_ASSERT(!label4.match(in));
       in.close();
    }
