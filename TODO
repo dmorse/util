@@ -1,19 +1,6 @@
-Boundary classes - non-orthogonal
----------------------------------
+- Modify patterns.mk to simplify makefile includes
 
-- Add applyShift(Vector& r, IntVector &t) to boundary classes.
+- After checking for usage, remove boundary and ensembles
 
-- Add minimumDeformRatio method to Boundary classes.
-
-- Add bool isOrthogonal() method to Boundary classes. Use to test other 
-  classes that call Boundary::lengths().
-
-Boundary classes - deformation
-------------------------------
-
-- Add typedef Vector Deformation;
-
-- Add void deform(Deformation& deformation) method.
-
-- Add DEFORM_BOUNDARY command to ddSim command script.
+- Consider moving space/ and crystal/ to simp as well.
 
