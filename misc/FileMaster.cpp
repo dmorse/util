@@ -118,7 +118,7 @@ namespace Util
    void FileMaster::readParameters(std::istream &in)
    {
       if (commandFileName_.empty()) {
-         read<std::string>(in, "commandFileName",  commandFileName_);
+         readOptional<std::string>(in, "commandFileName",  commandFileName_);
       }
       readOptional<std::string>(in, "inputPrefix",  inputPrefix_);
       readOptional<std::string>(in, "outputPrefix", outputPrefix_);
