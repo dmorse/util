@@ -3,6 +3,9 @@ util_mpi_=util/mpi/MpiFileIo.cpp
 
 ifdef UTIL_MPI
 util_mpi_+=\
+    util/mpi/MpiDatatype.cpp \
+    util/mpi/MpiComm.cpp \
+    util/mpi/MpiIntracomm.cpp \
     util/mpi/MpiTraits.cpp \
     util/mpi/MpiLogger.cpp \
     util/mpi/MpiSendRecv.cpp \
