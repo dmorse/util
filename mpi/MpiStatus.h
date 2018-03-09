@@ -18,8 +18,8 @@ namespace Mpi {
 
    class Status {
    
-      friend class Request;  //and also from request.cc
-      //friend class Comm;   //so I can access pmpiStatus_ data member in comm.cc
+      friend class Request; 
+      friend class Comm;     
       //friend class File;
    
    public:

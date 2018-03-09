@@ -8,15 +8,13 @@
       MPI_Send(const_cast<void *>(buf), count, datatype, dest, tag, mpiComm_);
    }
 
-   #if 0
    inline void
    Comm::Recv(void *buf, int count, const Datatype & datatype,
            int source, int tag, Status & status) const
    {
       MPI_Recv(buf, count, datatype,
-               source, tag, mpiComm_, &status.mpi_status);
+               source, tag, mpiComm_, &status.mpiStatus_);
    }
-   #endif
 
    inline void
    Comm::Recv(void *buf, int count, const Datatype & datatype,
@@ -50,7 +48,6 @@
                 tag, mpiComm_);
    }
 
-   #if 0
    inline Request
    Comm::Isend(const void *buf, int count,
             const Datatype & datatype, int dest, int tag) const
@@ -105,7 +102,7 @@
    Comm::Iprobe(int source, int tag, Status & status) const
    {
       int t;
-      MPI_Iprobe(source, tag, mpiComm_, &t, &status.mpi_status);
+      MPI_Iprobe(source, tag, mpiComm_, &t, &status.mpiStatus_);
       return bool(t);
    }
 
@@ -120,7 +117,7 @@
    inline void
    Comm::Probe(int source, int tag, Status & status) const
    {
-     (void)MPI_Probe(source, tag, mpiComm_, &status.mpi_status);
+     (void)MPI_Probe(source, tag, mpiComm_, &status.mpiStatus_);
    }
 
    inline void
@@ -178,9 +175,7 @@
                  tag, mpiComm_, &request);
      return request;
    }
-   #endif
 
-   #if 0
    inline void
    Comm::Sendrecv(const void *sendbuf, int sendcount,
                const Datatype & sendtype, int dest, int sendtag,
@@ -192,9 +187,8 @@
                 sendtype,
                 dest, sendtag, recvbuf, recvcount,
                 recvtype,
-                source, recvtag, mpiComm_, &status.mpi_status);
+                source, recvtag, mpiComm_, &status.mpiStatus_);
    }
-   #endif
 
    inline void
    Comm::Sendrecv(const void *sendbuf, int sendcount,
@@ -210,7 +204,6 @@
                 source, recvtag, mpiComm_, MPI_STATUS_IGNORE);
    }
 
-   #if 0
    inline void
    Comm::Sendrecv_replace(void *buf, int count,
                    const Datatype & datatype, int dest,
@@ -220,9 +213,8 @@
       MPI_Sendrecv_replace(buf, count, datatype, dest,
                            sendtag, source, recvtag,
                            mpiComm_,
-                           &status.mpi_status);
+                           &status.mpiStatus_);
    }
-   #endif
 
    inline void
    Comm::Sendrecv_replace(void *buf, int count,
@@ -239,7 +231,6 @@
    // Groups, Contexts, and Communicators
    //
 
-   #if 0
    inline Group
    Comm::Get_group() const
    {
@@ -247,7 +238,6 @@
       MPI_Comm_group(mpiComm_, &group);
       return group;
    }
-   #endif
 
    inline int
    Comm::Get_size() const
@@ -287,8 +277,6 @@
       MPI_Comm_test_inter(mpiComm_, &t);
       return bool(t);
    }
-   #if 0
-   #endif
 
    //
    // Collective Communication
@@ -428,7 +416,6 @@
       delete[] data_type_tbl;
    }
 
-   #if 0
    inline void
    Comm::Reduce(const void *sendbuf, void *recvbuf, int count,
                      const Datatype & datatype, const Op& op,
@@ -456,9 +443,7 @@
       MPI_Reduce_scatter(const_cast<void *>(sendbuf), recvbuf, recvcounts,
                          datatype, op, mpiComm_);
    }
-   #endif
 
-   #if 0
    // Process Creation and Management
 
    inline void
@@ -468,24 +453,6 @@
    }
 
 
-   inline Intercomm
-   Comm::Get_parent()
-   {
-      MPI_Comm parent;
-      MPI_Comm_get_parent(&parent);
-      return parent;
-   }
-
-   inline Intercomm
-   Comm::Join(const int fd)
-   {
-      MPI_Comm newComm;
-      MPI_Comm_join((int) fd, &newComm);
-      return newComm;
-   }
-   #endif
-
-   #if 0
    //
    // External Interfaces
    //
@@ -513,7 +480,6 @@
      MPI_Topo_test(mpiComm_, &status);
      return status;
    }
-   #endif
 
    //
    // Environmental Inquiry

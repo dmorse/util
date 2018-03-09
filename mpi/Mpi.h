@@ -17,6 +17,7 @@
 #include "MpiInterComm.h"
 #include "MpiStatus.h"
 #include "MpiOp.h"
+//#include "MpiInfo.h"
 //#include "MpiErrhandler.h"
 #include "MpiConstants.h"
 

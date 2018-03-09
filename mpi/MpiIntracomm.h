@@ -15,6 +15,11 @@
 namespace Util {
 namespace Mpi {
 
+   class Group;
+   class Info;
+   class Cartcomm;
+   class Graphcomm;
+
    class Intracomm : public Comm {
    public:
 
@@ -59,7 +64,6 @@ namespace Mpi {
 
       virtual Intracomm& Clone() const;
 
-      #if 0
       virtual Intracomm
       Create(const Group& group) const;
 
@@ -77,36 +81,39 @@ namespace Mpi {
       virtual Graphcomm
       Create_graph(int nnodes, const int index[],
    	       const int edges[], bool reorder) const;
-      #endif
 
 
-      #if 0
       // Process Creation and Management
 
-      virtual Intercomm Accept(const char* port_name, const Info& info, int root)
-        const;
+      virtual 
+      Intercomm Accept(const char* port_name, const Info& info, int root) 
+      const;
 
-      virtual Intercomm Connect(const char* port_name, const Info& info, int root)
-        const;
+      virtual 
+      Intercomm Connect(const char* port_name, const Info& info, int root)
+      const;
 
-      virtual Intercomm Spawn(const char* command, const char* argv[],
-                              int maxprocs, const Info& info, int root) const;
+      virtual 
+      Intercomm Spawn(const char* command, const char* argv[],
+                      int maxprocs, const Info& info, int root) const;
 
-      virtual Intercomm Spawn(const char* command, const char* argv[],
-                              int maxprocs, const Info& info,
-                              int root, int array_of_errcodes[]) const;
+      virtual 
+      Intercomm Spawn(const char* command, const char* argv[],
+                      int maxprocs, const Info& info,
+                      int root, int array_of_errcodes[]) const;
 
-      virtual Intercomm Spawn_multiple(int count, const char* array_of_commands[],
-                                       const char** array_of_argv[],
-                                       const int array_of_maxprocs[],
-                                       const Info array_of_info[], int root);
+      virtual 
+      Intercomm Spawn_multiple(int count, const char* array_of_commands[],
+                               const char** array_of_argv[],
+                               const int array_of_maxprocs[],
+                               const Info array_of_info[], int root);
 
-      virtual Intercomm Spawn_multiple(int count, const char* array_of_commands[],
-                                       const char** array_of_argv[],
-                                       const int array_of_maxprocs[],
-                                       const Info array_of_info[], int root,
-                                       int array_of_errcodes[]);
-      #endif
+      virtual 
+      Intercomm Spawn_multiple(int count, const char* array_of_commands[],
+                               const char** array_of_argv[],
+                               const int array_of_maxprocs[],
+                               const Info array_of_info[], int root,
+                               int array_of_errcodes[]);
 
    };
 

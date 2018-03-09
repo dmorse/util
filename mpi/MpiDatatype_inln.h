@@ -118,34 +118,6 @@
       MPI_Type_commit(&mpiDatatype_);
    }
  
-   #if 0 
-   inline void
-   Datatype::Pack(const void* inbuf, int incount,
-                  void *outbuf, int outsize,
-                  int& position, const Comm &comm) const
-   {
-      MPI_Pack(const_cast<void *>(inbuf), incount,  mpiDatatype_, outbuf,
-               outsize, &position, comm);
-   }
-   
-   inline void
-   Datatype::Unpack(const void* inbuf, int insize,
-                    void *outbuf, int outcount, int& position,
-                    const Comm& comm) const
-   {
-      MPI_Unpack(const_cast<void *>(inbuf), insize, &position,
-                 outbuf, outcount, mpiDatatype_, comm);
-   }
-   
-   inline int
-   Datatype::Pack_size(int incount, const Comm& comm) const
-   {
-      int size;
-       MPI_Pack_size(incount, mpiDatatype_, comm, &size);
-      return size;
-   }
-   #endif
-   
    inline void
    Datatype::Pack_external(const char* datarep, const void* inbuf, 
                            int incount, void* outbuf, Aint outsize, 

@@ -10,15 +10,19 @@
 */
 
 #include "MpiDatatype.h"
+#include "MpiStatus.h"
+#include "MpiGroup.h"
+#include "MpiRequest.h"
+#include "MpiPrequest.h"
+#include "MpiOp.h"
 #include <mpi.h>
 
 namespace Util {
 namespace Mpi {
 
-   class Request;
-   class Status;
-   class Group;
    class Op;
+   class Intercomm;
+   class Errhandler;
 
    class Comm
    {
@@ -112,7 +116,6 @@ namespace Mpi {
       Irecv(void* buf, int count, const Datatype & datatype,
             int source, int tag) const;
   
-      #if 0
       // Probe functions
    
       virtual bool
@@ -146,7 +149,6 @@ namespace Mpi {
       virtual Prequest
       Recv_init(void* buf, int count, const Datatype & datatype,
                 int source, int tag) const;
-      #endif
    
       // Point-to-Point Sendrecv functions 
    
@@ -237,7 +239,6 @@ namespace Mpi {
                 void* recvbuf, const int recvcounts[],
                 const int rdispls[], const Datatype recvtypes[]) const;
 
-      #if 0
       // Collective Computation: Reduce Operation
    
       virtual void
@@ -255,9 +256,7 @@ namespace Mpi {
              int recvcounts[],
              const Datatype & datatype,
              const Op & op) const;
-      #endif
    
-      #if 0 
       //
       // Process Creation
       //
@@ -286,14 +285,13 @@ namespace Mpi {
       // Errhandler
       //
    
-      static Errhandler Create_errhandler(Comm::Errhandler_function* function);
+      //static Errhandler Create_errhandler(Comm::Errhandler_function* function);
    
       virtual void Set_errhandler(const Errhandler& errhandler);
    
       virtual Errhandler Get_errhandler() const;
    
       void Call_errhandler(int errorcode) const;
-      #endif
    
       //
       // Environmental Inquiry

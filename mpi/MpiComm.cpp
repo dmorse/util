@@ -6,6 +6,7 @@
 */
 
 #include "MpiComm.h"
+#include "MpiInterComm.h"
 
 namespace Util {
 namespace Mpi {
@@ -29,6 +30,19 @@ namespace Mpi {
    Comm::~Comm() 
    { }
    
+   Intercomm Comm::Get_parent()
+   {
+      MPI_Comm parent;
+      MPI_Comm_get_parent(&parent);
+      return parent;
+   }
+
+   Intercomm Comm::Join(const int fd)
+   {
+      MPI_Comm newComm;
+      MPI_Comm_join((int) fd, &newComm);
+      return newComm;
+   }
 }
 }
 
