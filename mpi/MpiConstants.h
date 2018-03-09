@@ -14,6 +14,16 @@
 namespace Util {
 namespace Mpi {
 
+   class Datatype;
+   class Group;
+   class Comm;
+   class Request;
+   class Op;
+   class Errhandler;
+   //class File;
+   //class Win;
+   //class Info;
+
    // return  codes
    static const int SUCCESS = MPI_SUCCESS;
    static const int ERR_BUFFER = MPI_ERR_BUFFER;
@@ -86,11 +96,6 @@ namespace Mpi {
    static const int DISTRIBUTE_NONE = MPI_DISTRIBUTE_NONE;
    static const int DISTRIBUTE_DFLT_DARG = MPI_DISTRIBUTE_DFLT_DARG;
    
-   // error-handling specifiers
-   extern const Errhandler  ERRORS_ARE_FATAL;
-   extern const Errhandler  ERRORS_RETURN;
-   extern const Errhandler  ERRORS_THROW_EXCEPTIONS;
-   
    // typeclass definitions for MPI_Type_match_size
    static const int TYPECLASS_INTEGER = MPI_TYPECLASS_INTEGER;
    static const int TYPECLASS_REAL = MPI_TYPECLASS_REAL;
@@ -103,8 +108,15 @@ namespace Mpi {
    static const int MAX_INFO_VAL = MPI_MAX_INFO_VAL;
    static const int MAX_PORT_NAME = MPI_MAX_PORT_NAME;
    static const int MAX_OBJECT_NAME = MPI_MAX_OBJECT_NAME;
+  
+   #if 0 
+   // Error-handling specifiers
+   extern const Errhandler  ERRORS_ARE_FATAL;
+   extern const Errhandler  ERRORS_RETURN;
+   extern const Errhandler  ERRORS_THROW_EXCEPTIONS;
+   #endif
    
-   // elementary datatypes (C / C++)
+   // Elementary datatypes (C / C++)
    extern const Datatype CHAR;
    extern const Datatype SHORT;
    extern const Datatype INT;
@@ -121,7 +133,7 @@ namespace Mpi {
    extern const Datatype PACKED;
    extern const Datatype WCHAR;
    
-   // datatypes for reductions functions (C / C++)
+   // Datatypes for reductions functions (C / C++)
    extern const Datatype FLOAT_INT;
    extern const Datatype DOUBLE_INT;
    extern const Datatype LONG_INT;
@@ -129,33 +141,12 @@ namespace Mpi {
    extern const Datatype SHORT_INT;
    extern const Datatype LONG_DOUBLE_INT;
    
-   // elementary datatype (Fortran)
-   extern const Datatype INTEGER;
-   extern const Datatype REAL;
-   extern const Datatype DOUBLE_PRECISION;
-   extern const Datatype F_COMPLEX;
-   extern const Datatype LOGICAL;
-   extern const Datatype CHARACTER;
-   
-   // datatype for reduction functions (Fortran)
-   extern const Datatype TWOREAL;
-   extern const Datatype TWODOUBLE_PRECISION;
-   extern const Datatype TWOINTEGER;
-   
-   // optional datatypes (Fortran)
-   extern const Datatype INTEGER1;
-   extern const Datatype INTEGER2;
-   extern const Datatype INTEGER4;
-   extern const Datatype REAL2;
-   extern const Datatype REAL4;
-   extern const Datatype REAL8;
-   
-   // optional datatype (C / C++)
+   // Optional datatype (C / C++)
    extern const Datatype LONG_LONG;
    extern const Datatype LONG_LONG_INT;
    extern const Datatype UNSIGNED_LONG_LONG;
    
-   // c++ types
+   // c++ datatypes
    extern const Datatype BOOL;
    extern const Datatype COMPLEX;
    extern const Datatype DOUBLE_COMPLEX;
@@ -186,13 +177,13 @@ namespace Mpi {
    static const int COMBINER_F90_INTEGER = MPI_COMBINER_F90_INTEGER;
    static const int COMBINER_RESIZED = MPI_COMBINER_RESIZED;
    
-   // thread constants
+   // Thread constants
    static const int THREAD_SINGLE = MPI_THREAD_SINGLE;
    static const int THREAD_FUNNELED = MPI_THREAD_FUNNELED;
    static const int THREAD_SERIALIZED = MPI_THREAD_SERIALIZED;
    static const int THREAD_MULTIPLE = MPI_THREAD_MULTIPLE;
    
-   // reserved communicators
+   // Reserved communicators
    extern Intracomm COMM_WORLD;
    extern Intracomm COMM_SELF;
    
@@ -202,7 +193,7 @@ namespace Mpi {
    static const int SIMILAR = MPI_SIMILAR;
    static const int UNEQUAL = MPI_UNEQUAL;
    
-   // environmental inquiry keys
+   // Environmental inquiry keys
    static const int TAG_UB = MPI_TAG_UB;
    static const int HOST = MPI_HOST;
    static const int IO = MPI_IO;
@@ -230,24 +221,24 @@ namespace Mpi {
    extern const Op REPLACE;
   
    // null handles
-   extern const Group        GROUP_NULL;
-   extern const Win          WIN_NULL;
-   extern const Info         INFO_NULL;
-   extern Comm_Null          COMM_NULL;
    extern const Datatype     DATATYPE_NULL;
+   extern const Group        GROUP_NULL;
+   extern Comm               COMM_NULL;
    extern Request            REQUEST_NULL;
    extern const Op           OP_NULL;
-   extern const Errhandler   ERRHANDLER_NULL;
-   extern const File         FILE_NULL;
+   //extern const Errhandler   ERRHANDLER_NULL;
+   //extern const File         FILE_NULL;
+   //extern const Win          WIN_NULL;
+   //extern const Info         INFO_NULL;
    
-   // constants specifying empty or ignored input
+   // Constants specifying empty or ignored input
    extern const char**       ARGV_NULL;
    extern const char***      ARGVS_NULL;
    
-   // empty group
+   // Empty group
    extern const Group        GROUP_EMPTY;
    
-   // topologies
+   // Topologies
    static const int GRAPH = MPI_GRAPH;
    static const int CART = MPI_CART;
 

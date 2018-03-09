@@ -10,9 +10,12 @@
 */
 
 #include <util/global.h>
+#include "MpiAddress.h"
 
 namespace Util {
 namespace Mpi {
+
+   class Comm;
  
    class Datatype
    {
@@ -66,7 +69,6 @@ namespace Mpi {
       bool operator!= (const Datatype &other) const
       { return (bool) !(*this == other); }
 
-      #if 0   
       //
       // Point-to-Point Communication
       //
@@ -102,25 +104,23 @@ namespace Mpi {
       Datatype Create_indexed_block(int count, int blocklength,
                                     const int array_of_blocklengths[]) 
       const;
-   
+  
       virtual 
       Datatype Create_resized(const Aint lb, const Aint extent) const;
    
       virtual 
       int Get_size() const;
-   
+  
       virtual 
       void Get_extent(Aint& lb, Aint& extent) const;
    
       virtual 
       void Get_true_extent(Aint&, Aint&) const;
-      #endif
    
       virtual void Commit();
    
       virtual void Free();
  
-      #if 0 
       // Packing and Unpacking 
  
       virtual 
@@ -162,12 +162,13 @@ namespace Mpi {
                              const int array_of_psizes[],
                              int order) const;
    
+      Datatype Match_size(int typeclass, int size);
+   
       //
       // External Interfaces
       //
    
       virtual Datatype Dup() const;
-      #endif
    
    protected:
    

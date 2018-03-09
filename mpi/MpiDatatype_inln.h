@@ -3,7 +3,6 @@
    // Point-to-Point Communication
    //
    
-   #if 0
    inline Datatype
    Datatype::Create_contiguous(int count) const
    {
@@ -112,14 +111,13 @@
    {
       MPI_Type_get_true_extent(mpiDatatype_, &lb, &extent);
    }
-   #endif
    
    inline void
    Datatype::Commit()
    {
       MPI_Type_commit(&mpiDatatype_);
    }
-  
+ 
    #if 0 
    inline void
    Datatype::Pack(const void* inbuf, int incount,
@@ -146,6 +144,7 @@
        MPI_Pack_size(incount, mpiDatatype_, comm, &size);
       return size;
    }
+   #endif
    
    inline void
    Datatype::Pack_external(const char* datarep, const void* inbuf, 
@@ -231,5 +230,4 @@
       MPI_Type_dup(mpiDatatype_, &type);
       return type;
    }
-   #endif
    

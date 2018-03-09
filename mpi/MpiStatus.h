@@ -10,7 +10,6 @@
 */
 
 #include <util/global.h>
-#include <complex>
 
 namespace Util {
 namespace Mpi {
