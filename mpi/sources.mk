@@ -11,6 +11,7 @@ util_mpi_+=\
     util/mpi/MpiPrequest.cpp \
     util/mpi/MpiComm.cpp \
     util/mpi/MpiIntracomm.cpp \
+    util/mpi/MpiIntercomm.cpp \
     util/mpi/MpiTraits.cpp \
     util/mpi/MpiLogger.cpp \
     util/mpi/MpiSendRecv.cpp \
