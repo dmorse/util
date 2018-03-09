@@ -7,7 +7,6 @@
 
 #include "MpiStatus.h"
 #include "MpiDatatype.h"
-#include <util/global.h>
 
 namespace Util {
 namespace Mpi {

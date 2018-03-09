@@ -6,7 +6,6 @@
 */
 
 #include "MpiPrequest.h"
-#include <util/global.h>
 
 namespace Util {
 namespace Mpi {

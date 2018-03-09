@@ -1,7 +1,6 @@
 #ifdef UTIL_MPI
 
 #include "MpiStructBuilder.h"
-#include <util/global.h>
 
 namespace Util
 {

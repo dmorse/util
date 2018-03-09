@@ -6,7 +6,6 @@
 */
 
 #include "MpiIntercomm.h"
-#include <util/global.h>
 
 namespace Util {
 namespace Mpi {

@@ -8,7 +8,6 @@
 
 #include "MpiDatatype.h"
 #include "MpiComm.h"
-#include <util/global.h>
 
 namespace Util {
 namespace Mpi {
