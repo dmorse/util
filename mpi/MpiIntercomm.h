@@ -9,10 +9,10 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include "MpiComm.h"
 #include "MpiGroup.h"
+#include "MpiComm.h"
 #include "MpiIntracomm.h"
-#include <util/global.h>
+#include <mpi.h>
 
 namespace Util {
 namespace Mpi {

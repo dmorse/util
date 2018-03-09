@@ -10,7 +10,7 @@
 */
 
 #include "MpiRequest.h"
-#include <util/global.h>
+#include <mpi.h>
 
 namespace Util {
 namespace Mpi {

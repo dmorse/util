@@ -9,8 +9,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <util/global.h>
-#include <complex>
+#include <mpi.h>
 
 namespace Util {
 namespace Mpi {
