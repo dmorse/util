@@ -19,7 +19,6 @@
 #include "signal/SignalTest.h"
 #include "space/SpaceTestComposite.h"
 #include "misc/MiscTestComposite.h"
-//#include "boundary/BoundaryTestComposite.h"
 
 #ifdef  UTIL_MPI
 #include "param/mpi/MpiParamTestComposite.h"
