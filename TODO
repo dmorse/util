@@ -1,6 +1,4 @@
 - Modify patterns.mk to simplify makefile includes
 
-- After checking for usage, remove boundary and ensembles
-
 - Consider moving space/ and crystal/ to simp as well.
 
