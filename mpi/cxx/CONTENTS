@@ -1,0 +1,42 @@
+
+The files in this directory implements a variant of the MPI 1.2 
+C++ bindings. Development of this variant of the MPI C++ bindings
+was motivated by the fact that the C++ bindings were officially
+deprecated in MPI 2.2, and slated for removal in MPI 3. Because
+these bindings are used throughout the Util and Simpatico 
+packages, inclusion of this code is intended to provide a path
+for these packages to become independent of any implementation
+provided by an MPI library, since the availability of such an
+implemetation is no longer guaranteed. 
+
+All of the code in this directory that was derived from the 
+implementation of the C++ bindings provided in the Open MPI
+(ompi) package, starting from corresponding files in the 
+ompi/ompi/mpi/cxx directory of an ompi source code repository 
+that was cloned from the github server in March 2018. A list 
+of copyright holders for the ompi source is given in the file 
+named ompiCopyright in the same directory as this file. 
+
+The ompi source code for the C++ bindings  was modified by:
+
+- Changing the namespace name MPI (which is specified in 
+  the MPI 1.2 standard) to the name Util::Mpi.
+
+- Modifying the code format and names of some internal 
+  variables so as to follow conventions used in Util.
+
+- Removing functions and constants that were not simple
+  wrappers around standard C MPI functions or constants,
+  and that depended on other non-standard ompi functions.
+
+The name of the enclosing namespace was changed to allow a 
+user to select this local implementation by changing the 
+MPI:: namespace qualifier to Mpi:: or Util::Mpi:: throughout 
+any code that uses the C++ MPI binding.
+
+For the moment (early 2018) the "MPI::" namespace name 
+is still used throughout the Util and Simpatico source 
+code outside of this subdirectory, thus relying on C++
+bindings provided by an MPI library. The plan is to 
+switch over to use of "Mpi::", perhaps defined by a 
+preprocessor if and when this becomes necessary.

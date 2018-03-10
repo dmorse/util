@@ -2,18 +2,9 @@
 util_mpi_=util/mpi/MpiFileIo.cpp 
 
 ifdef UTIL_MPI
-util_mpi_+=\
-    util/mpi/MpiDatatype.cpp \
-    util/mpi/MpiGroup.cpp \
-    util/mpi/MpiOp.cpp \
-    util/mpi/MpiStatus.cpp \
-    util/mpi/MpiRequest.cpp \
-    util/mpi/MpiPrequest.cpp \
-    util/mpi/MpiComm.cpp \
-    util/mpi/MpiIntracomm.cpp \
-    util/mpi/MpiIntercomm.cpp \
-    util/mpi/MpiConstants.cpp \
-    util/mpi/MpiFunctions.cpp \
+include $(SRC_DIR)/util/mpi/cxx/sources.mk
+util_mpi_ += $(util_mpi_cxx_)
+util_mpi_+= \
     util/mpi/MpiTraits.cpp \
     util/mpi/MpiLogger.cpp \
     util/mpi/MpiSendRecv.cpp \
