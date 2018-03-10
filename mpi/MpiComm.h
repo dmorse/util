@@ -14,6 +14,7 @@
 #include "MpiGroup.h"
 #include "MpiRequest.h"
 #include "MpiPrequest.h"
+#include "MpiErrhandler.h"
 #include "MpiOp.h"
 #include <mpi.h>
 
@@ -22,7 +23,6 @@ namespace Mpi {
 
    class Op;
    class Intercomm;
-   class Errhandler;
 
    class Comm
    {

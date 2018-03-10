@@ -7,6 +7,7 @@
 
 #include "MpiIntraComm.h"
 #include "MpiInterComm.h"
+#include "MpiInfo.h"
 
 namespace Util {
 namespace Mpi {
@@ -68,7 +69,6 @@ namespace Mpi {
    // Process Creation and Management
    //
 
-   #if 0
    Intercomm
    Intracomm::Accept(const char* port_name,
                      const Info& info,
@@ -170,7 +170,6 @@ namespace Mpi {
      delete[] array_of_mpi_info;
      return newcomm;
    }
-   #endif
 
 }
 }

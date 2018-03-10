@@ -491,7 +491,6 @@
      MPI_Abort(mpiComm_, errorcode);
    }
 
-   #if 0
    //  These C++ bindings are for MPI-2.
    //  The MPI-1.2 functions called below are all
    //  going to be deprecated and replaced in MPI-2.
@@ -515,5 +514,6 @@
    {
      (void) MPI_Comm_call_errhandler(mpiComm_, errorcode);
    }
+   #if 0
    #endif
 

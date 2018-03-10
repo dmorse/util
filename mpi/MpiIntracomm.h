@@ -115,6 +115,12 @@ namespace Mpi {
                                const Info array_of_info[], int root,
                                int array_of_errcodes[]);
 
+
+   private:
+   
+      MPI_Info *
+      convert_info_to_mpi_info(int p_nbr, const Info p_info_tbl[]);
+
    };
 
 #include "MpiIntracomm_inln.h"
