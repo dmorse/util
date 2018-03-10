@@ -84,7 +84,7 @@
         // Call the underlying MPI function rather than simply returning
         // status.mpiStatus_ because we may have to invoke the generalized
         // request query function
-        (void)MPI_Request_get_status(mpiRequest_, &flag, MPI_STATUS_IGNORE);
+        MPI_Request_get_status(mpiRequest_, &flag, MPI_STATUS_IGNORE);
         return (bool)(flag);
    }
 

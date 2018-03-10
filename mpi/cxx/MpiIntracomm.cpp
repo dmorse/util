@@ -48,7 +48,7 @@ namespace Mpi {
                        int remote_leader, int tag) const
    {
      MPI_Comm newintercomm;
-     (void)MPI_Intercomm_create(mpiComm_, local_leader, peer_comm,
+     MPI_Intercomm_create(mpiComm_, local_leader, peer_comm,
                     remote_leader, tag, &newintercomm);
      return newintercomm;
    }
@@ -63,7 +63,7 @@ namespace Mpi {
        int_periods[i] = (int) periods[i];
 
      MPI_Comm newcomm;
-     (void)MPI_Cart_create(mpiComm_, ndims, const_cast<int *>(dims),
+     MPI_Cart_create(mpiComm_, ndims, const_cast<int *>(dims),
                  int_periods, (int)reorder, &newcomm);
      delete [] int_periods;
      return newcomm;
@@ -74,7 +74,7 @@ namespace Mpi {
                        const int edges[], bool reorder) const
    {
      MPI_Comm newcomm;
-     (void)MPI_Graph_create(mpiComm_, nnodes, const_cast<int *>(index),
+     MPI_Graph_create(mpiComm_, nnodes, const_cast<int *>(index),
                             const_cast<int *>(edges), (int)reorder, &newcomm);
      return newcomm;
    }
@@ -90,7 +90,7 @@ namespace Mpi {
                      int root) const
    {
      MPI_Comm newcomm;
-     (void) MPI_Comm_accept(const_cast<char *>(port_name), info, root, mpiComm_,
+     MPI_Comm_accept(const_cast<char *>(port_name), info, root, mpiComm_,
                 &newcomm);
      return newcomm;
    }
@@ -102,7 +102,7 @@ namespace Mpi {
                       int root) const
    {
      MPI_Comm newcomm;
-     (void) MPI_Comm_connect(const_cast<char *>(port_name), info, root, mpiComm_,
+     MPI_Comm_connect(const_cast<char *>(port_name), info, root, mpiComm_,
                  &newcomm);
      return newcomm;
    }
@@ -114,7 +114,7 @@ namespace Mpi {
                     int root) const
    {
      MPI_Comm newcomm;
-     (void) MPI_Comm_spawn(const_cast<char *>(command), const_cast<char **>(argv), maxprocs,
+     MPI_Comm_spawn(const_cast<char *>(command), const_cast<char **>(argv), maxprocs,
                info, root, mpiComm_, &newcomm,
                (int *)MPI_ERRCODES_IGNORE);
      return newcomm;
@@ -127,7 +127,7 @@ namespace Mpi {
                                 int root, int array_of_errcodes[]) const
    {
      MPI_Comm newcomm;
-     (void) MPI_Comm_spawn(const_cast<char *>(command), const_cast<char **>(argv), maxprocs,
+     MPI_Comm_spawn(const_cast<char *>(command), const_cast<char **>(argv), maxprocs,
                            info, root, mpiComm_, &newcomm,
                array_of_errcodes);
      return newcomm;

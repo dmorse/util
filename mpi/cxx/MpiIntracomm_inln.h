@@ -40,9 +40,10 @@
 
    inline void
    Intracomm::Scan(const void *sendbuf, void *recvbuf, int count,
-        const Datatype & datatype, const Op& op) const
+                   const Datatype & datatype, const Op& op) const
    {
-      MPI_Scan(const_cast<void *>(sendbuf), recvbuf, count, datatype, op, mpiComm_);
+      MPI_Scan(const_cast<void *>(sendbuf), recvbuf, 
+               count, datatype, op, mpiComm_);
    }
 
    inline void
@@ -50,7 +51,8 @@
                      const Datatype & datatype,
                      const Op& op) const
    {
-      MPI_Exscan(const_cast<void *>(sendbuf), recvbuf, count, datatype, op, mpiComm_);
+      MPI_Exscan(const_cast<void *>(sendbuf), recvbuf, 
+                 count, datatype, op, mpiComm_);
    }
 
    inline Intracomm
@@ -81,9 +83,9 @@
    inline Intracomm
    Intracomm::Split(int color, int key) const
    {
-     MPI_Comm newcomm;
-     (void)MPI_Comm_split(mpiComm_, color, key, &newcomm);
-     return newcomm;
+      MPI_Comm newcomm;
+      MPI_Comm_split(mpiComm_, color, key, &newcomm);
+      return newcomm;
    }
 
 

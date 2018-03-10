@@ -31,11 +31,11 @@ namespace Mpi {
       MPI_Request* mpi_requests = new MPI_Request[count];
       int i;
       for (i=0; i < count; i++) {
-        mpi_requests[i] = array_of_requests[i];
+         mpi_requests[i] = array_of_requests[i];
       }
-      (void) MPI_Startall(count, mpi_requests);
+      MPI_Startall(count, mpi_requests);
       for (i=0; i < count; i++) {
-        array_of_requests[i].mpiRequest_ = mpi_requests[i] ;
+         array_of_requests[i].mpiRequest_ = mpi_requests[i] ;
       }
       delete [] mpi_requests;
    }

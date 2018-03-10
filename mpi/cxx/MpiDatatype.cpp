@@ -30,9 +30,7 @@ namespace Mpi {
 
    void
    Datatype::Free()
-   {
-      (void)MPI_Type_free(&mpiDatatype_);
-   }
+   {  MPI_Type_free(&mpiDatatype_); }
   
    void
    Datatype::Pack(const void* inbuf, int incount,

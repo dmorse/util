@@ -15,16 +15,18 @@ namespace Mpi {
 
    int Status::Get_count(const Datatype& datatype) const
    {
-     int count;
-     (void)MPI_Get_count(const_cast<MPI_Status*>(&mpiStatus_), datatype, &count);
-     return count;
+      int count;
+      MPI_Get_count(const_cast<MPI_Status*>(&mpiStatus_), datatype, 
+                    &count);
+      return count;
    }
 
    int Status::Get_elements(const Datatype& datatype) const
    {
-     int count;
-     (void)MPI_Get_elements(const_cast<MPI_Status*>(&mpiStatus_), datatype, &count);
-     return count;
+      int count;
+      MPI_Get_elements(const_cast<MPI_Status*>(&mpiStatus_), datatype, 
+                       &count);
+      return count;
    }
 
    void Status::Set_elements(const Datatype& datatype, int count)

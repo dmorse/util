@@ -27,7 +27,8 @@
    Comm::Send(const void *buf, int count,
            const Datatype & datatype, int dest, int tag) const
    {
-      MPI_Send(const_cast<void *>(buf), count, datatype, dest, tag, mpiComm_);
+      MPI_Send(const_cast<void *>(buf), count, datatype, dest, tag, 
+               mpiComm_);
    }
 
    inline void
@@ -75,7 +76,7 @@
             const Datatype & datatype, int dest, int tag) const
    {
       MPI_Request request;
-      (void)MPI_Isend(const_cast<void *>(buf), count, datatype,
+      MPI_Isend(const_cast<void *>(buf), count, datatype,
                       dest, tag, mpiComm_, &request);
       return request;
    }
@@ -131,111 +132,108 @@
    inline bool
    Comm::Iprobe(int source, int tag) const
    {
-     int t;
-     (void)MPI_Iprobe(source, tag, mpiComm_, &t, MPI_STATUS_IGNORE);
-     return bool(t);
+      int t;
+      MPI_Iprobe(source, tag, mpiComm_, &t, MPI_STATUS_IGNORE);
+      return bool(t);
    }
 
    inline void
    Comm::Probe(int source, int tag, Status & status) const
    {
-     (void)MPI_Probe(source, tag, mpiComm_, &status.mpiStatus_);
+      MPI_Probe(source, tag, mpiComm_, &status.mpiStatus_);
    }
 
    inline void
    Comm::Probe(int source, int tag) const
    {
-     (void)MPI_Probe(source, tag, mpiComm_, MPI_STATUS_IGNORE);
+      MPI_Probe(source, tag, mpiComm_, MPI_STATUS_IGNORE);
    }
 
    inline Prequest
    Comm::Send_init(const void *buf, int count,
                 const Datatype & datatype, int dest, int tag) const
    {
-     MPI_Request request;
-     (void)MPI_Send_init(const_cast<void *>(buf), count, datatype,
+      MPI_Request request;
+      MPI_Send_init(const_cast<void *>(buf), count, datatype,
                  dest, tag, mpiComm_, &request);
-     return request;
+      return request;
    }
 
    inline Prequest
    Comm::Bsend_init(const void *buf, int count,
                  const Datatype & datatype, int dest, int tag) const
    {
-     MPI_Request request;
-     (void)MPI_Bsend_init(const_cast<void *>(buf), count, datatype,
-                  dest, tag, mpiComm_, &request);
-     return request;
+      MPI_Request request;
+      MPI_Bsend_init(const_cast<void *>(buf), count, datatype,
+                           dest, tag, mpiComm_, &request);
+      return request;
    }
 
    inline Prequest
    Comm::Ssend_init(const void *buf, int count,
                  const Datatype & datatype, int dest, int tag) const
    {
-     MPI_Request request;
-     (void)MPI_Ssend_init(const_cast<void *>(buf), count, datatype,
-                  dest, tag, mpiComm_, &request);
-     return request;
+      MPI_Request request;
+      MPI_Ssend_init(const_cast<void *>(buf), count, datatype,
+                           dest, tag, mpiComm_, &request);
+      return request;
    }
 
    inline Prequest
    Comm::Rsend_init(const void *buf, int count,
                  const Datatype & datatype, int dest, int tag) const
    {
-     MPI_Request request;
-     (void)MPI_Rsend_init(const_cast<void *>(buf), count,  datatype,
-                  dest, tag, mpiComm_, &request);
-     return request;
+      MPI_Request request;
+      MPI_Rsend_init(const_cast<void *>(buf), count,  datatype,
+                           dest, tag, mpiComm_, &request);
+      return request;
    }
 
    inline Prequest
    Comm::Recv_init(void *buf, int count,
                 const Datatype & datatype, int source, int tag) const
    {
-     MPI_Request request;
-     (void)MPI_Recv_init(buf, count, datatype, source,
-                 tag, mpiComm_, &request);
-     return request;
+      MPI_Request request;
+      MPI_Recv_init(buf, count, datatype, source,
+                          tag, mpiComm_, &request);
+      return request;
    }
 
    inline void
    Comm::Sendrecv(const void *sendbuf, int sendcount,
-               const Datatype & sendtype, int dest, int sendtag,
-               void *recvbuf, int recvcount,
-               const Datatype & recvtype, int source,
-               int recvtag, Status & status) const
+                  const Datatype & sendtype, int dest, int sendtag,
+                  void *recvbuf, int recvcount,
+                  const Datatype & recvtype, int source,
+                  int recvtag, Status & status) const
    {
-     (void)MPI_Sendrecv(const_cast<void *>(sendbuf), sendcount,
-                sendtype,
-                dest, sendtag, recvbuf, recvcount,
-                recvtype,
-                source, recvtag, mpiComm_, &status.mpiStatus_);
+      MPI_Sendrecv(const_cast<void *>(sendbuf), sendcount,
+                         sendtype, dest, sendtag, recvbuf, recvcount,
+                         recvtype, source, recvtag, 
+                         mpiComm_, &status.mpiStatus_);
    }
 
    inline void
    Comm::Sendrecv(const void *sendbuf, int sendcount,
-               const Datatype & sendtype, int dest, int sendtag,
-               void *recvbuf, int recvcount,
-               const Datatype & recvtype, int source,
-               int recvtag) const
+                  const Datatype & sendtype, int dest, int sendtag,
+                  void *recvbuf, int recvcount,
+                  const Datatype & recvtype, int source,
+                  int recvtag) const
    {
-     (void)MPI_Sendrecv(const_cast<void *>(sendbuf), sendcount,
-                sendtype,
-                dest, sendtag, recvbuf, recvcount,
-                recvtype,
-                source, recvtag, mpiComm_, MPI_STATUS_IGNORE);
+      MPI_Sendrecv(const_cast<void *>(sendbuf), sendcount,
+                         sendtype, dest, sendtag, recvbuf, recvcount,
+                         recvtype, source, recvtag, mpiComm_, 
+                         MPI_STATUS_IGNORE);
    }
 
    inline void
    Comm::Sendrecv_replace(void *buf, int count,
-                   const Datatype & datatype, int dest,
-                   int sendtag, int source,
-                   int recvtag, Status & status) const
+                          const Datatype & datatype, int dest,
+                          int sendtag, int source,
+                          int recvtag, Status & status) const
    {
       MPI_Sendrecv_replace(buf, count, datatype, dest,
                            sendtag, source, recvtag,
-                           mpiComm_,
-                           &status.mpiStatus_);
+                           mpiComm_, &status.mpiStatus_);
    }
 
    inline void
@@ -281,16 +279,14 @@
    Comm::Compare(const Comm & comm1,
               const Comm & comm2)
    {
-     int result;
-     (void)MPI_Comm_compare(comm1, comm2, &result);
-     return result;
+      int result;
+      MPI_Comm_compare(comm1, comm2, &result);
+      return result;
    }
 
    inline void
    Comm::Free(void)
-   {
-       (void)MPI_Comm_free(&mpiComm_);
-   }
+   {  MPI_Comm_free(&mpiComm_); }
 
    inline bool
    Comm::Is_inter() const
@@ -306,16 +302,12 @@
 
    inline void
    Comm::Barrier() const
-   {
-      (void)MPI_Barrier(mpiComm_);
-   }
+   {  MPI_Barrier(mpiComm_); }
 
    inline void
    Comm::Bcast(void *buffer, int count,
                     const Datatype& datatype, int root) const
-   {
-      MPI_Bcast(buffer, count, datatype, root, mpiComm_);
-   }
+   {  MPI_Bcast(buffer, count, datatype, root, mpiComm_); }
 
    inline void
    Comm::Gather(const void *sendbuf, int sendcount,
@@ -527,13 +519,9 @@
 
    inline void
    Comm::Set_errhandler(const Errhandler& errhandler)
-   {
-      MPI_Comm_set_errhandler(mpiComm_, errhandler);
-   }
+   {  MPI_Comm_set_errhandler(mpiComm_, errhandler); }
 
    inline void
    Comm::Call_errhandler(int errorcode) const
-   {
-     (void) MPI_Comm_call_errhandler(mpiComm_, errorcode);
-   }
+   {  MPI_Comm_call_errhandler(mpiComm_, errorcode); }
 

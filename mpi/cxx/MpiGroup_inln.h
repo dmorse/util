@@ -75,7 +75,7 @@
    Group Group::Difference(const Group &group1, const Group &group2)
    {
       MPI_Group newgroup;
-      (void)MPI_Group_difference(group1, group2, &newgroup);
+      MPI_Group_difference(group1, group2, &newgroup);
       return newgroup;
    }
 
