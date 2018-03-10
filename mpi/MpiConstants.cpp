@@ -11,7 +11,8 @@
 #include "MpiIntracomm.h"
 #include "MpiRequest.h"
 #include "MpiOp.h"
-//#include "MpiErrhandler.h"
+#include "MpiErrhandler.h"
+#include "MpiInfo.h"
 
 namespace Util {
 namespace Mpi {
@@ -99,10 +100,10 @@ namespace Mpi {
    const Datatype      DATATYPE_NULL = MPI_DATATYPE_NULL;
    Request             REQUEST_NULL = MPI_REQUEST_NULL;
    const Op            OP_NULL = MPI_OP_NULL;
-   //const Errhandler  ERRHANDLER_NULL;
+   const Errhandler    ERRHANDLER_NULL;
+   const Info          INFO_NULL = MPI_INFO_NULL;
    //const File        FILE_NULL = MPI_FILE_NULL;
    //const Win         WIN_NULL = MPI_WIN_NULL;
-   //const Info        INFO_NULL = MPI_INFO_NULL;
    
    // constants specifying empty or ignored input
    const char**       ARGV_NULL = (const char**) MPI_ARGV_NULL;

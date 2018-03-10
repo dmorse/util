@@ -514,6 +514,4 @@
    {
      (void) MPI_Comm_call_errhandler(mpiComm_, errorcode);
    }
-   #if 0
-   #endif
 

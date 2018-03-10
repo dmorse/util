@@ -109,12 +109,10 @@ namespace Mpi {
    static const int MAX_PORT_NAME = MPI_MAX_PORT_NAME;
    static const int MAX_OBJECT_NAME = MPI_MAX_OBJECT_NAME;
   
-   #if 0 
    // Error-handling specifiers
    extern const Errhandler  ERRORS_ARE_FATAL;
    extern const Errhandler  ERRORS_RETURN;
    extern const Errhandler  ERRORS_THROW_EXCEPTIONS;
-   #endif
    
    // Elementary datatypes (C / C++)
    extern const Datatype CHAR;
