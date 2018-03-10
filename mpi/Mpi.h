@@ -14,11 +14,13 @@
 #include "MpiComm.h"
 #include "MpiIntraComm.h"
 #include "MpiInterComm.h"
-#include "MpiInterComm.h"
+//#include "MpiCartComm.h"
+//#include "MpiGraphComm.h"
 #include "MpiStatus.h"
 #include "MpiOp.h"
-//#include "MpiInfo.h"
-//#include "MpiErrhandler.h"
+#include "MpiErrhandler.h"
+#include "MpiInfo.h"
 #include "MpiConstants.h"
+#include "MpiFunctions.h"
 
 #endif
