@@ -1,2 +1,4 @@
 
-- Add CartComm and GraphComm
+- Consider whether to add MPI::Exception
+
+- Consider behavior of pure virtual Comm::Clone() function

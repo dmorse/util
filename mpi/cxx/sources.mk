@@ -11,6 +11,8 @@ util_mpi_cxx_+=\
     util/mpi/cxx/MpiPrequest.cpp \
     util/mpi/cxx/MpiComm.cpp \
     util/mpi/cxx/MpiIntracomm.cpp \
+    util/mpi/cxx/MpiCartcomm.cpp \
+    util/mpi/cxx/MpiGraphcomm.cpp \
     util/mpi/cxx/MpiIntercomm.cpp \
     util/mpi/cxx/MpiConstants.cpp \
     util/mpi/cxx/MpiFunctions.cpp 

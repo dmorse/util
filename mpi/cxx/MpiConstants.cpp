@@ -38,7 +38,7 @@ namespace Mpi {
    // static void* const BOTTOM = (void*) MPI_BOTTOM;
    // static void* const IN_PLACE = (void*) MPI_IN_PLACE;
 
-   #if 0   
+   #if 0 // Errhandler const constructors call ompi_mpi_errors_... functions
    // Error-handling specifiers
    const Errhandler  ERRORS_ARE_FATAL((MPI_Errhandler)&(ompi_mpi_errors_are_fatal));
    const Errhandler  ERRORS_RETURN((MPI_Errhandler)&(ompi_mpi_errors_return));

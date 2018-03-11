@@ -14,7 +14,7 @@
 #include "MpiComm.h"
 #include "MpiIntraComm.h"
 #include "MpiInterComm.h"
-//#include "MpiCartComm.h"
+#include "MpiCartComm.h"
 //#include "MpiGraphComm.h"
 #include "MpiStatus.h"
 #include "MpiOp.h"
