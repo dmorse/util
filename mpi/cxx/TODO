@@ -2,3 +2,6 @@
 - Consider whether to add MPI::Exception
 
 - Consider behavior of pure virtual Comm::Clone() function
+
+- Consider type of MPI::COMM_NULL. Can we initialize MPI::Comm 
+  with MPI_COMM_NULL by default?
