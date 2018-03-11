@@ -40,34 +40,64 @@ namespace Mpi {
    class Op;
    class Intercomm;
 
+   /**
+   * Base class for MPI communicators.
+   *
+   * Implemented as a wrapper class for an MPI_Comm communicator handle.
+   */
    class Comm
    {
 
    public:
-   
-      // Default constructor.
+
+      /**   
+      * Default constructor.
+      *
+      * Internal MPI_COMM initialized to MPI_COMM_NULL by default. 
+      */
       Comm();
-   
-      // Copy constructor.
+  
+      /**
+      * Copy constructor.
+      * 
+      * \param data Mpi::Comm communicator to be copied.
+      */
       Comm(const Comm& data);
-   
-      // Copy construction from an MPI_Comm
+  
+      /** 
+      * Copy construction from an MPI_Comm
+      * 
+      * \param data MPI_comm communicator handle to be copied.
+      */
       Comm(MPI_Comm data);
 
-      // Destructor
+      /**
+      * Destructor.
+      *
+      * Note: Does not free the enclosed MPI_Comm C handle. 
+      */
       virtual ~Comm();
-   
-      // Implicit conversion to MPI_Comm
-      operator MPI_Comm() const 
-      {  return mpiComm_; }
+  
+      /** 
+      * Conversion to MPI_Comm C handle.
+      */
+      operator MPI_Comm() const;
    
       // Comparison operators
+  
+      /**
+      * Equality comparison.
+      *
+      * \param data other Comm to which to compare
+      */ 
+      bool operator == (const Comm& data) const;
    
-      inline bool operator == (const Comm& data) const {
-      return (bool) (mpiComm_ == data.mpiComm_); }
-   
-      inline bool operator != (const Comm& data) const {
-      return (bool) !(*this == data);}
+      /**
+      * Inequality comparison.
+      *
+      * \param data other Comm to which to compare
+      */ 
+      bool operator != (const Comm& data) const;
    
       // Groups, Contexts, and Communicators
    
@@ -77,13 +107,13 @@ namespace Mpi {
    
       virtual int Get_rank() const;
    
-      static int Compare(const Comm & comm1, const Comm & comm2);
-   
-      virtual Comm& Clone() const = 0;
+      virtual bool Is_inter() const;
    
       virtual void Free(void);
    
-      virtual bool Is_inter() const;
+      virtual Comm& Clone() const;
+   
+      static int Compare(const Comm & comm1, const Comm & comm2);
    
       // Point-to-Point Send and Receive
    

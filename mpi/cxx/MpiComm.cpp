@@ -27,25 +27,6 @@
 namespace Util {
 namespace Mpi {
 
-   // Default constructor.
-   Comm::Comm()
-     : mpiComm_(MPI_COMM_NULL)
-   { }
-   
-   // Copy constructor.
-   Comm::Comm(const Comm& data)
-    : mpiComm_(data.mpiComm_)
-   { }
-   
-   // Copy construction from an MPI_Comm
-   Comm::Comm(MPI_Comm data)
-    : mpiComm_(data)
-   { }
-   
-   // Destructor
-   Comm::~Comm() 
-   { }
-   
    Intercomm Comm::Get_parent()
    {
       MPI_Comm parent;
@@ -59,6 +40,15 @@ namespace Mpi {
       MPI_Comm_join((int) fd, &newComm);
       return newComm;
    }
+
+   Comm& Comm::Clone() const
+   {
+      MPI_Comm newcomm;
+      MPI_Comm_dup(mpiComm_, &newcomm);
+      Comm* dup = new Comm(newcomm);
+      return *dup;
+   }
+
 }
 }
 

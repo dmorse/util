@@ -21,6 +21,48 @@
 * ompiCopyright in the same directory as this file. 
 */
 
+   // Construction and destruction
+
+   // Default constructor.
+   inline
+   Comm::Comm()
+     : mpiComm_(MPI_COMM_NULL)
+   { }
+   
+   // Copy constructor.
+   inline
+   Comm::Comm(const Comm& data)
+    : mpiComm_(data.mpiComm_)
+   { }
+   
+   // Copy construction from an MPI_Comm
+   inline
+   Comm::Comm(MPI_Comm data)
+    : mpiComm_(data)
+   { }
+   
+   // Destructor
+   inline
+   Comm::~Comm() 
+   { }
+   
+   // Conversion to MPI_Comm C handle.
+   inline
+   Comm::operator MPI_Comm() const 
+   {  return mpiComm_; }
+
+   // Comparison operators
+  
+   // Equality comparison.
+   inline 
+   bool Comm::operator == (const Comm& data) const 
+   {  return (bool) (mpiComm_ == data.mpiComm_); } 
+
+   // Inequality comparison.
+   inline 
+   bool Comm::operator != (const Comm& data) const 
+   {  return (bool) !(*this == data); }
+   
    // Point-to-Point Send and Receive
 
    inline void
@@ -33,23 +75,23 @@
 
    inline void
    Comm::Recv(void *buf, int count, const Datatype & datatype,
-           int source, int tag, Status & status) const
+              int source, int tag, Status & status) const
    {
       MPI_Recv(buf, count, datatype,
                source, tag, mpiComm_, &status.mpiStatus_);
    }
 
-   inline void
-   Comm::Recv(void *buf, int count, const Datatype & datatype,
-                       int source, int tag) const
+   inline
+   void Comm::Recv(void *buf, int count, const Datatype & datatype,
+                   int source, int tag) const
    {
       MPI_Recv(buf, count, datatype, source,
               tag, mpiComm_, MPI_STATUS_IGNORE);
    }
 
-   inline void
-   Comm::Bsend(const void *buf, int count,
-            const Datatype & datatype, int dest, int tag) const
+   inline
+   void Comm::Bsend(const void *buf, int count,
+                    const Datatype & datatype, int dest, int tag) const
    {
       MPI_Bsend(const_cast<void *>(buf), count, datatype,
              dest, tag, mpiComm_);
@@ -462,9 +504,7 @@
 
    inline void
    Comm::Disconnect()
-   {
-      MPI_Comm_disconnect(&mpiComm_);
-   }
+   {  MPI_Comm_disconnect(&mpiComm_); }
 
 
    //
@@ -473,15 +513,11 @@
 
    inline void
    Comm::Get_name(char* comm_name, int& resultlen) const
-   {
-      MPI_Comm_get_name(mpiComm_, comm_name, &resultlen);
-   }
+   {  MPI_Comm_get_name(mpiComm_, comm_name, &resultlen); }
 
    inline void
    Comm::Set_name(const char* comm_name)
-   {
-      MPI_Comm_set_name(mpiComm_, const_cast<char *>(comm_name));
-   }
+   {  MPI_Comm_set_name(mpiComm_, const_cast<char *>(comm_name)); }
 
    //
    //Process Topologies
@@ -501,9 +537,7 @@
 
    inline void
    Comm::Abort(int errorcode)
-   {
-     MPI_Abort(mpiComm_, errorcode);
-   }
+   {  MPI_Abort(mpiComm_, errorcode); }
 
    //  These C++ bindings are for MPI-2.
    //  The MPI-1.2 functions called below are all

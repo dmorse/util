@@ -29,22 +29,7 @@
 namespace Util {
 namespace Mpi {
 
-   // Default constructor.
-   Intracomm::Intracomm()
-    : Comm()
-   {}
-
-   // Copy constructor
-   Intracomm::Intracomm(const Intracomm& data)
-    : Comm(data.mpiComm_)
-   {}
-
-   // Copy from Comm
-   Intracomm::Intracomm(const Comm& data)
-    : Comm(data)
-   {}
-
-   // Create and intercommunicator
+   // Create an Intercommunicator
    Intercomm
    Intracomm::Create_intercomm(int local_leader,
                                const Comm& peer_comm,
@@ -77,7 +62,7 @@ namespace Mpi {
    // Create a Graph communicator
    Graphcomm
    Intracomm::Create_graph(int nnodes, const int index[],
-                       const int edges[], bool reorder) const
+                           const int edges[], bool reorder) const
    {
       MPI_Comm newcomm;
       MPI_Graph_create(mpiComm_, nnodes, const_cast<int *>(index),

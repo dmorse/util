@@ -50,16 +50,14 @@ namespace Mpi {
       // Copy from MPI_Comm
       Intracomm(MPI_Comm data);
 
-      // assignment
-      Intracomm& operator=(const Intracomm& data)
-      {  mpiComm_ = data.mpiComm_; return *this; }
+      // Assignment
+      Intracomm& operator = (const Intracomm& data);
 
-      Intracomm& operator=(const Comm& data)
-      {  mpiComm_ = data; return *this; }
+      // Assign from Comm (base class)
+      Intracomm& operator = (const Comm& data);
 
       // Assign from MPI_Comm
-      Intracomm& operator=(const MPI_Comm& data) {
-        mpiComm_ = data; return *this; }
+      Intracomm& operator = (const MPI_Comm& data);
 
       // Collective Communication
 

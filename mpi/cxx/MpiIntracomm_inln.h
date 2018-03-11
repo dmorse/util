@@ -20,6 +20,25 @@
 * file named ompiCopyright in the same directory as this file. 
 */
 
+   // Default constructor.
+   inline
+   Intracomm::Intracomm()
+    : Comm()
+   {}
+
+   // Copy constructor
+   inline
+   Intracomm::Intracomm(const Intracomm& data)
+    : Comm(data.mpiComm_)
+   {}
+
+   // Copy from Comm
+   inline
+   Intracomm::Intracomm(const Comm& data)
+    : Comm(data)
+   {}
+
+   // Copy from MPI_Comm
    inline
    Intracomm::Intracomm(MPI_Comm data) 
    {
@@ -36,6 +55,30 @@
       } else {
          mpiComm_ = data;
       }
+   }
+
+   // Assignment
+   inline
+   Intracomm& Intracomm::operator = (const Intracomm& data)
+   {  
+      mpiComm_ = data.mpiComm_; 
+      return *this; 
+   }
+
+   // Assign from Comm
+   inline
+   Intracomm& Intracomm::operator = (const Comm& data)
+   {  
+      mpiComm_ = data; 
+      return *this; 
+   }
+
+   // Assign from MPI_Comm
+   inline
+   Intracomm& Intracomm::operator = (const MPI_Comm& data) 
+   { 
+      mpiComm_ = data; 
+      return *this; 
    }
 
    inline void
