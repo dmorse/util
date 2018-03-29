@@ -30,30 +30,58 @@ namespace Util
    public:
 
       /**
-      * Allocate a C array.
+      * Allocate a C++ array.
       *
-      * Allocates a Data array of size elements, assigns ptr the
-      * address of the first element. 
+      * Uses new to allocates a Data array of size elements, assigns ptr 
+      * the address of the first element. 
+      * 
+      * \param ptr reference to pointer (output)
+      * \param size number of elements
       */
       template <typename Data>
       static void allocate(Data*& ptr, size_t size);
 
       /**
-      * Allocate a C array.
+      * Deallocate a C++ array.
       *
-      * Allocates a Data array of size elements, assigns ptr the
-      * address of the first element. 
+      * Uses free to deallocate a Data array of size elements.
+      * 
+      * \param ptr reference to pointer (intput, ptr = 0 on output)
+      * \param size number of elements in existing array
       */
       template <typename Data>
       static void deallocate(Data*& ptr, size_t size);
 
       /**
-      * Return number of times allocated was called.
+      * Reallocate a C++ array.
+      *
+      * This function calls allocate to allocate a new array, copies 
+      * all existing elements and deallocates old and calls deallocate 
+      * to free the old array. On outputs, ptr is the address of the
+      * new array.
+      *
+      * Precondition: On input, newSize > oldSize.
+      *
+      * \param ptr reference to pointer (input/output)
+      * \param oldSize number of elements in existing array
+      * \param newSize number of elements in new array
+      */
+      template <typename Data>
+      static void reallocate(Data*& ptr, size_t oldSize, size_t newSize);
+
+      /**
+      * Return number of times allocate() was called.
+      *
+      * Each call to reallocate() also increments nAllocate(), because 
+      * allocate() is called internally. 
       */
       static int nAllocate();
 
       /**
-      * Return number of times deallocate was called.
+      * Return number of times deallocate() was called.
+      *
+      * Each call to reallocate() also increments nDeallocate(), because 
+      * deallocate() is called internally. 
       */
       static int nDeallocate();
 
@@ -123,14 +151,35 @@ namespace Util
    template <typename Data>
    void Memory::deallocate(Data*& ptr, size_t size)
    {
-      if (ptr) {
-         delete [] ptr;
-         ptr = 0;
-         total_ -= size*sizeof(Data);
-         ++nDeallocate_;
-      } else {
-         UTIL_THROW("Attempt to de-allocate null pointer");
+      // Preconditions
+      UTIL_CHECK(ptr);
+      UTIL_CHECK(size > 0);
+
+      delete [] ptr;
+      ptr = 0;
+      total_ -= size*sizeof(Data);
+      ++nDeallocate_;
+   }
+
+   /*
+   * Re-allocate a C array (allocate and copy).
+   */
+   template <typename Data>
+   void Memory::reallocate(Data*& ptr, size_t oldSize, size_t newSize)
+   {
+      UTIL_CHECK(ptr);
+      UTIL_CHECK(oldSize > 0);
+      UTIL_CHECK(newSize > 0);
+      UTIL_CHECK(newSize > oldSize);
+
+      Data* newPtr = 0;
+      allocate(newPtr, newSize);
+      for (size_t i = 0; i < oldSize; ++i) {
+         newPtr[i] = ptr[i];
       }
+      Data* oldPtr = ptr;
+      ptr = newPtr;
+      deallocate(oldPtr, oldSize);
    }
 
 } 
