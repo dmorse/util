@@ -12,10 +12,12 @@ using namespace Util;
 class MemoryTest : public UnitTest 
 {
 
+   int mem0_;
+
 public:
 
    void setUp()
-   {};
+   {  mem0_ = Memory::total(); };
 
    void tearDown()
    {};
@@ -23,7 +25,6 @@ public:
    void testAllocate() 
    {
       printMethod(TEST_FUNC);
-      int m0 = Memory::total();
 
       double* ptr = 0;
       int n = 100;
@@ -31,18 +32,17 @@ public:
       for (int i = 0; i < n; ++i) {
          ptr[i] = 0.1 + (double)(i);
       }
-      TEST_ASSERT(Memory::total() == m0 + n*sizeof(double));
+      TEST_ASSERT(Memory::total() == mem0_ + n*sizeof(double));
       for (int i = 0; i < n; ++i) {
          TEST_ASSERT(eq(ptr[i], double(i) + 0.1));
       }
       Memory::deallocate(ptr, n);
-      TEST_ASSERT(Memory::total() == m0);
+      TEST_ASSERT(Memory::total() == mem0_);
    }
 
    void testReallocate() 
    {
       printMethod(TEST_FUNC);
-      int m0 = Memory::total();
 
       double* ptr = 0;
       int n = 100;
@@ -50,16 +50,17 @@ public:
       for (int i = 0; i < n; ++i) {
          ptr[i] = 0.1 + (double)(i);
       }
-      TEST_ASSERT(Memory::total() == m0 + n*sizeof(double));
+      TEST_ASSERT(Memory::total() == mem0_ + n*sizeof(double));
       double* old = ptr;
-      Memory::reallocate(ptr, n, n + 20);
+      int m = n + 20;
+      Memory::reallocate(ptr, n, m);
       for (int i = 0; i < n; ++i) {
          TEST_ASSERT(eq(ptr[i], double(i) + 0.1));
       }
       TEST_ASSERT(old != ptr); 
-      TEST_ASSERT(Memory::total() == m0 + (n+20)*sizeof(double));
-      Memory::deallocate(ptr, n+20);
-      TEST_ASSERT(Memory::total() == m0);
+      TEST_ASSERT(Memory::total() == mem0_ + m*sizeof(double));
+      Memory::deallocate(ptr, m);
+      TEST_ASSERT(Memory::total() == mem0_);
    }
 
 };
