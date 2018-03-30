@@ -167,19 +167,21 @@ namespace Util
    template <typename Data>
    void Memory::reallocate(Data*& ptr, size_t oldSize, size_t newSize)
    {
-      UTIL_CHECK(ptr);
-      UTIL_CHECK(oldSize > 0);
       UTIL_CHECK(newSize > 0);
+      UTIL_CHECK(oldSize >= 0);
       UTIL_CHECK(newSize > oldSize);
 
       Data* newPtr = 0;
       allocate(newPtr, newSize);
-      for (size_t i = 0; i < oldSize; ++i) {
-         newPtr[i] = ptr[i];
+      if (oldSize > 0) {
+         UTIL_CHECK(ptr);
+         for (size_t i = 0; i < oldSize; ++i) {
+            newPtr[i] = ptr[i];
+         }
+         Data* oldPtr = ptr;
+         deallocate(oldPtr, oldSize);
       }
-      Data* oldPtr = ptr;
       ptr = newPtr;
-      deallocate(oldPtr, oldSize);
    }
 
 } 

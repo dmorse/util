@@ -41,8 +41,6 @@
 # installed in root/scripts/python and the makeDep bash script is installed
 # in root/bin. 
 
-# 4) It makes a copy of the util/boundary/Boundary.h file, which contains 
-# a typedef.
 #------------------------------------------------------------------------
 
 # Change directory to ROOT directory
@@ -56,9 +54,6 @@ cp src/util/.config/configure src/configure
 
 # Copy util namespace configuration file
 cp src/util/config.mk_r src/util/config.mk
-
-# Copy typedef for the class that defines boundary conditions
-cp src/util/boundary/Boundary.h_r src/util/boundary/Boundary.h
 
 # Copy the makeDep dependency-maker script into the bin directory
 if [ ! -d bin ]; then
