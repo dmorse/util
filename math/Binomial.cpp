@@ -44,6 +44,14 @@ namespace Util
       }
    }
 
+   void Binomial::clear()
+   {  
+      if (coeffs_.capacity() > 0) {
+         coeffs_.deallocate(); 
+      }
+      maxN_ = -1;
+   }
+
    int Binomial::coeff(int n, int m) 
    {
       UTIL_CHECK(n >= 0);

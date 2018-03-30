@@ -36,6 +36,7 @@ void GArrayTest::setUp()
 void GArrayTest::testConstructor()
 {
    printMethod(TEST_FUNC);
+   TEST_ASSERT(Memory::total() == 0);
    {
       GArray<int> v;
       TEST_ASSERT(v.capacity() == 0);

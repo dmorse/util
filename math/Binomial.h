@@ -39,6 +39,11 @@ namespace Util
       static void setup(int nMax);
      
       /**
+      * Release all static memory.
+      */ 
+      static void clear();
+     
+      /**
       * Return coefficient "n choose m", or C(n, m) = n!/(m!(n-m)!).
       *
       * Algorithm: Returns precomputed value C(n,m) if already known. 

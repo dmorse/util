@@ -5,6 +5,7 @@
 #include <test/UnitTestRunner.h>
 
 #include <util/math/Binomial.h>
+#include <util/misc/Memory.h>
 
 #include <fstream>
 
@@ -19,12 +20,13 @@ public:
    {}
 
    void tearDown()
-   {}
+   {  Binomial::clear(); }
 
   
    void testSetup()
    {
       printMethod(TEST_FUNC);
+      TEST_ASSERT(Memory::total() == 0);
       Binomial::setup(4);
    } 
 
@@ -55,6 +57,7 @@ public:
    void testCoeff2()
    {
       printMethod(TEST_FUNC);
+      TEST_ASSERT(Memory::total() == 0);
       Binomial::setup(2);
       Binomial::setup(4);
       TEST_ASSERT(Binomial::coeff(0, 0) == 1);

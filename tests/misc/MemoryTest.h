@@ -23,43 +23,43 @@ public:
    void testAllocate() 
    {
       printMethod(TEST_FUNC);
+      int m0 = Memory::total();
 
       double* ptr = 0;
       int n = 100;
-      TEST_ASSERT(Memory::total() == 0);
       Memory::allocate(ptr, n);
       for (int i = 0; i < n; ++i) {
          ptr[i] = 0.1 + (double)(i);
       }
-      TEST_ASSERT(Memory::total() == n*sizeof(double));
+      TEST_ASSERT(Memory::total() == m0 + n*sizeof(double));
       for (int i = 0; i < n; ++i) {
          TEST_ASSERT(eq(ptr[i], double(i) + 0.1));
       }
       Memory::deallocate(ptr, n);
-      TEST_ASSERT(Memory::total() == 0);
+      TEST_ASSERT(Memory::total() == m0);
    }
 
    void testReallocate() 
    {
       printMethod(TEST_FUNC);
+      int m0 = Memory::total();
 
       double* ptr = 0;
       int n = 100;
-      TEST_ASSERT(Memory::total() == 0);
       Memory::allocate(ptr, n);
       for (int i = 0; i < n; ++i) {
          ptr[i] = 0.1 + (double)(i);
       }
-      TEST_ASSERT(Memory::total() == n*sizeof(double));
+      TEST_ASSERT(Memory::total() == m0 + n*sizeof(double));
       double* old = ptr;
       Memory::reallocate(ptr, n, n + 20);
       for (int i = 0; i < n; ++i) {
          TEST_ASSERT(eq(ptr[i], double(i) + 0.1));
       }
       TEST_ASSERT(old != ptr); 
-      TEST_ASSERT(Memory::total() == (n+20)*sizeof(double));
+      TEST_ASSERT(Memory::total() == m0 + (n+20)*sizeof(double));
       Memory::deallocate(ptr, n+20);
-      TEST_ASSERT(Memory::total() == 0);
+      TEST_ASSERT(Memory::total() == m0);
    }
 
 };

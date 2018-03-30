@@ -6,6 +6,7 @@
 
 #include <util/math/Rational.h>
 #include <util/math/CardinalBSpline.h>
+#include <util/misc/Memory.h>
 
 #include <fstream>
 
@@ -20,7 +21,7 @@ public:
    {}
 
    void tearDown()
-   {}
+   {  Binomial::clear(); }
   
    void testConstructor()
    {
@@ -73,6 +74,7 @@ public:
    void testSum() 
    {
      printMethod(TEST_FUNC);
+     TEST_ASSERT(Memory::total() == 0);
 
      CardinalBSpline s4(4);
      double shift = 0.0;

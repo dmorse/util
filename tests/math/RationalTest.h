@@ -5,6 +5,7 @@
 #include <test/UnitTestRunner.h>
 
 #include <util/math/Rational.h>
+#include <util/misc/Memory.h>
 
 #include <fstream>
 
@@ -27,6 +28,7 @@ public:
       Rational r;
       TEST_ASSERT(r.num() == 0);
       TEST_ASSERT(r.den() == 1);
+      TEST_ASSERT(Memory::total() == 0);
    } 
 
    void testNumDenConstructor1()
@@ -235,6 +237,7 @@ public:
       TEST_ASSERT((d/7)*(7/d) == 1);
       a = d / 7;
       TEST_ASSERT(a == c);
+      TEST_ASSERT(Memory::total() == 0);
    } 
 
 };

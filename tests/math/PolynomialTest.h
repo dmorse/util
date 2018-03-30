@@ -7,6 +7,7 @@
 #include <util/math/Rational.h>
 #include <util/math/Polynomial.h>
 #include <util/containers/DArray.h>
+#include <util/misc/Memory.h>
 
 #include <fstream>
 
@@ -21,11 +22,12 @@ public:
    {}
 
    void tearDown()
-   {}
+   {  Binomial::clear(); }
 
    void testDefaultConstructor()
    {
       printMethod(TEST_FUNC);
+      TEST_ASSERT(Memory::total() == 0);
       Polynomial<Rational> r(12);
       TEST_ASSERT(r.degree() == -1);
       TEST_ASSERT(r.capacity() == 12);

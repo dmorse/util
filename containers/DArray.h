@@ -18,9 +18,9 @@ namespace Util
    /**
    * Dynamically allocatable contiguous array template.
    *
-   * A DArray wraps a dynamically allocated C Array. Unlike an STL
-   * std::vector, a DArray cannot be resized after it is allocated.
-   * Addresses of elements thus remain constant until de-allocation.
+   * A DArray wraps a dynamically allocated C Array, and stores the 
+   * size of the array. A DArray can be allocated, deallocated or
+   * reallocated (i.e., resized and moved) by member functions.j
    *
    * The Array<Data> base class provides bounds checking when compiled
    * in debug mode. 
@@ -81,6 +81,16 @@ namespace Util
       * \throw Exception if the DArray is not allocated.
       */
       void deallocate();
+
+      /**
+      * Reallocate the underlying C array and copy to new location.
+      *
+      * The new capacity, given by the capacity parameter, must be 
+      * greater than the existing array capacity.
+      *
+      * \param capacity
+      */
+      void reallocate(int capacity);
 
       /**
       * Return true if the DArray has been allocated, false otherwise.
@@ -213,6 +223,23 @@ namespace Util
       }
       Memory::deallocate<Data>(data_, capacity_);
       capacity_ = 0;
+   }
+
+   /*
+   * Reallocate and copy the underlying C array.
+   */
+   template <class Data>
+   void DArray<Data>::reallocate(int capacity)
+   {
+      UTIL_CHECK(capacity >= 0);
+      if (capacity == capacity_) return;
+      UTIL_CHECK(capacity > capacity_);
+      if (isAllocated()) {
+         Memory::reallocate<Data>(data_, capacity_, capacity);
+      } else {
+         Memory::allocate<Data>(data_, capacity);
+      }
+      capacity_ = capacity;
    }
 
    /*
