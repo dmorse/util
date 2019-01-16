@@ -32,7 +32,7 @@ public:
       for (int i = 0; i < n; ++i) {
          ptr[i] = 0.1 + (double)(i);
       }
-      TEST_ASSERT(Memory::total() == mem0_ + n*sizeof(double));
+      TEST_ASSERT(Memory::total() == mem0_ + n*int(sizeof(double)));
       for (int i = 0; i < n; ++i) {
          TEST_ASSERT(eq(ptr[i], double(i) + 0.1));
       }
@@ -50,7 +50,7 @@ public:
       for (int i = 0; i < n; ++i) {
          ptr[i] = 0.1 + (double)(i);
       }
-      TEST_ASSERT(Memory::total() == mem0_ + n*sizeof(double));
+      TEST_ASSERT(Memory::total() == mem0_ + n*int(sizeof(double)));
       double* old = ptr;
       int m = n + 20;
       Memory::reallocate(ptr, n, m);
@@ -58,7 +58,7 @@ public:
          TEST_ASSERT(eq(ptr[i], double(i) + 0.1));
       }
       TEST_ASSERT(old != ptr); 
-      TEST_ASSERT(Memory::total() == mem0_ + m*sizeof(double));
+      TEST_ASSERT(Memory::total() == mem0_ + m*int(sizeof(double)));
       Memory::deallocate(ptr, m);
       TEST_ASSERT(Memory::total() == mem0_);
    }
