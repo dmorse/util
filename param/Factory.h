@@ -140,7 +140,7 @@ namespace Util
       *
       * \param communicator MPI Intra-communicator to use for input
       */
-      void setIoCommunicator(MPI_Comm& communicator);
+      void setIoCommunicator(MPI_Comm communicator);
 
       /**
       * Does this factory have a param communicator?
@@ -178,7 +178,7 @@ namespace Util
    * Set the param communicator.
    */
    template <typename Data>
-   void Factory<Data>::setIoCommunicator(MPI_Comm& communicator)
+   void Factory<Data>::setIoCommunicator(MPI_Comm communicator)
    {
       if (paramFileIo_.hasIoCommunicator()) {
          if (&paramFileIo_.ioCommunicator() != &communicator) {

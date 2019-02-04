@@ -51,7 +51,7 @@ namespace Util
       /**
       * Constructor.
       */
-      MpiLogger(MPI_Comm& comm = MPI_COMM_WORLD);
+      MpiLogger(MPI_Comm comm = MPI_COMM_WORLD);
 
       /**
       * Begin logging block.
@@ -67,7 +67,7 @@ namespace Util
    private:
 
       /// Pointer to the  communicator.
-      MPI_Comm* communicatorPtr_;
+      MPI_Comm communicator_;
 
       /// Mpi processor rank.
       int rank_;

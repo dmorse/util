@@ -132,7 +132,7 @@ namespace Util
       * \param comm   MPI communicator
       * \param source rank of processor from which data is sent.
       */
-      void recv(MPI_Comm& comm, int source);
+      void recv(MPI_Comm comm, int source);
       #endif
 
       /**

@@ -71,7 +71,7 @@ namespace Util
    /*
    * Send a block.
    */
-   void MemoryOArchive::send(MPI_Comm& comm, int dest)
+   void MemoryOArchive::send(MPI_Comm comm, int dest)
    {
       int  comm_size;
       MPI_Comm_size(comm, &comm_size);
@@ -96,7 +96,7 @@ namespace Util
    /*
    * Send a block (nonblocking)
    */
-   void MemoryOArchive::iSend(MPI_Comm& comm, MPI_Request& req, int dest)
+   void MemoryOArchive::iSend(MPI_Comm comm, MPI_Request& req, int dest)
    {
       int  comm_size;
       MPI_Comm_size(comm, &comm_size);

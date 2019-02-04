@@ -53,7 +53,7 @@ namespace Util
    {  return max_; }
 
    #ifdef UTIL_MPI
-   int Memory::max(MPI_Comm& communicator)
+   int Memory::max(MPI_Comm communicator)
    { 
       int maxGlobal;
       int maxLocal = max_;

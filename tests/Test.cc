@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
    try {
 
       #ifdef UTIL_MPI
-      MPI_Init();
+      MPI_Init(argc, argv);
       Vector::commitMpiType();
       IntVector::commitMpiType();
       #endif 

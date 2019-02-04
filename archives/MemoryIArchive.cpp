@@ -130,7 +130,7 @@ namespace Util
    /*
    * Receive a block.
    */
-   void MemoryIArchive::recv(MPI_Comm& comm, int source)
+   void MemoryIArchive::recv(MPI_Comm comm, int source)
    {
       int myRank;
       MPI_Comm_rank(comm, &myRank);

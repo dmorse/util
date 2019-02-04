@@ -1,34 +1,18 @@
 #include "ExceptionTest.h"
-#include "MiscTestComposite.h"
+//#include "MiscTestComposite.h"
 //#include "ioUtilTest.h"
 //#include "SetableTest.h"
 //#include "BitTest.h"
 
-int main() 
+int main(int argc, char** argv) 
 {
 
    #ifdef UTIL_MPI
-   MPI_Init();
-   #endif
-
-   #if 0
-   TEST_RUNNER(ExceptionTest) test1;
-   test1.run();
+   MPI_Init(&argc, &argv);
    #endif
 
    MiscTestComposite test;
    test.run();
-
-   #if 0
-   TEST_RUNNER(ioUtilTest) test2;
-   test2.run();
-
-   TEST_RUNNER(SetableTest) test3;
-   test3.run();
-
-   TEST_RUNNER(BitTest) test4;
-   test4.run();
-   #endif
 
    #ifdef UTIL_MPI
    MPI_Finalize();

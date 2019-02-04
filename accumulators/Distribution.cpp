@@ -197,7 +197,7 @@ namespace Util
    /*
    * Reduce (add) distributions from multiple MPI processors.
    */
-   void Distribution::reduce(MPI_Comm& communicator, int root)
+   void Distribution::reduce(MPI_Comm communicator, int root)
    {
       int rank;
       MPI_Comm_rank(communicator, &rank);
