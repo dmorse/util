@@ -30,7 +30,9 @@ public:
       MpiLogger logger;
       logger.begin();
 
-      std::cout << "I am processor " << communicator().Get_rank() << std::endl;
+      int rank;
+      MPI_Comm_rank(communicator(), &rank);
+      std::cout << "I am processor " << rank << std::endl;
 
       logger.end();
    }

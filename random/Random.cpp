@@ -69,14 +69,17 @@ namespace Util
       // If seed  == 0, replace with random seed from clock.
       if (seed_ == 0) {
          SeedType temp;
-         //temp = static_cast<SeedType>(std::time(0)); 
          timeval time;
          gettimeofday(&time, NULL);
          temp = time.tv_sec + 1123*time.tv_usec;
          #ifdef UTIL_MPI
-         if (MPI::Is_initialized()) {
-            SeedType rank = MPI::COMM_WORLD.Get_rank();
-            temp += rank*(31 + time.tv_usec);
+         int isInitialized;
+         MPI_Initialized(&isInitialized); 
+         if (isInitialized) {
+            int rank;
+            MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+            SeedType seedRank = rank;
+            temp += seedRank*(31 + time.tv_usec);
          }
          #endif
          engine_.seed(temp);

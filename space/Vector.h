@@ -449,7 +449,7 @@ namespace Util
    class MpiTraits<Vector>
    {
    public:
-      static MPI::Datatype type;   ///< MPI Datatype
+      static MPI_Datatype type;   ///< MPI Datatype
       static bool hasType;         ///< Is the MPI type initialized?
    };
    #endif

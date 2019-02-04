@@ -15,7 +15,16 @@ namespace Util
    /*
    * Constructor.
    */
-   MpiLogger::MpiLogger(MPI::Intracomm& comm)
+   MpiLogger::MpiLogger()
+    : communicatorPtr_(&MPI_COMM_WORLD),
+      rank_(-1),
+      size_(-1)
+   {}
+
+   /*
+   * Constructor.
+   */
+   MpiLogger::MpiLogger(MPI_Comm& comm)
     : communicatorPtr_(&comm),
       rank_(-1),
       size_(-1)
@@ -25,9 +34,9 @@ namespace Util
    */
    void MpiLogger::begin()
    {
-      communicatorPtr_->Barrier();
-      rank_ = communicatorPtr_->Get_rank();
-      size_ = communicatorPtr_->Get_size();
+      MPI_Barrier(*communicatorPtr_);
+      MPI_Comm_rank(*communicatorPtr_, &rank_);
+      MPI_Comm_size(*communicatorPtr_, &size_);
       int data;
       if (rank_ > 0) {
          recv<int>(*communicatorPtr_, data, rank_ - 1, 0);
@@ -45,7 +54,7 @@ namespace Util
       if (rank_ < size_ - 1) {
          send<int>(*communicatorPtr_, rank_, rank_ + 1, 0);
       }
-      communicatorPtr_->Barrier();
+      MPI_Barrier(*communicatorPtr_);
    }
 
 }

@@ -94,11 +94,11 @@ namespace Util
    * \param tag  user-defined integer identifier for message
    */
    template <typename T>
-   void send(MPI::Comm& comm, T& data, int dest, int tag)
+   void send(MPI_Comm comm, T& data, int dest, int tag)
    {
       if (!MpiTraits<T>::hasType)
          UTIL_THROW("No committed MPI type in send<T>");
-      comm.Send(&data, 1, MpiTraits<T>::type, dest, tag); 
+         MPI_Send(&data, 1, MpiTraits<T>::type, dest, tag, comm); 
    }
   
    /**
@@ -113,11 +113,13 @@ namespace Util
    * \param tag    user-defined integer identifier for message
    */
    template <typename T>
-   void recv(MPI::Comm& comm, T& data, int source, int tag)
+   void recv(MPI_Comm comm, T& data, int source, int tag)
    {  
-      if (!MpiTraits<T>::hasType)
+      if (!MpiTraits<T>::hasType) {
          UTIL_THROW("No committed MPI type in recv<T>");
-      comm.Recv(&data, 1, MpiTraits<T>::type, source, tag); 
+      }
+      MPI_Status status;
+      MPI_Recv(&data, 1, MpiTraits<T>::type, source, tag, comm, &status); 
    }
   
    /**
@@ -131,11 +133,11 @@ namespace Util
    * \param root   MPI rank of root (sending) processor in comm
    */
    template <typename T>
-   void bcast(MPI::Intracomm& comm, T& data, int root)
+   void bcast(MPI_Comm comm, T& data, int root)
    {  
       if (!MpiTraits<T>::hasType)
          UTIL_THROW("No committed MPI type in bcast<T>");
-      comm.Bcast(&data, 1, MpiTraits<T>::type, root); 
+         MPI_Bcast(&data, 1, MpiTraits<T>::type, root, comm); 
    }
 
    // C Array partial specializations
@@ -153,10 +155,10 @@ namespace Util
    * \param tag    user-defined integer identifier for this message
    */
    template <typename T>
-   void send(MPI::Comm& comm, T* array, int count, int dest, int tag)
+   void send(MPI_Comm comm, T* array, int count, int dest, int tag)
    {  
       if (MpiTraits<T>::hasType) {
-         comm.Send(array, count, MpiTraits<T>::type, dest, tag); 
+         MPI_Send(array, count, MpiTraits<T>::type, dest, tag, comm); 
       } else { 
          // Try send<T> by element, in case of explicit specialization.
          // If there is no specialization or type, send<T> throws.
@@ -179,10 +181,11 @@ namespace Util
    * \param tag    user-defined integer identifier for this message
    */
    template <typename T>
-   void recv(MPI::Comm& comm, T* array, int count, int source, int tag)
+   void recv(MPI_Comm comm, T* array, int count, int source, int tag)
    {  
       if (MpiTraits<T>::hasType) {
-         comm.Recv(array, count, MpiTraits<T>::type, source, tag); 
+         MPI_Status status;
+         MPI_Recv(array, count, MpiTraits<T>::type, source, tag, comm, &status); 
       } else {
          // Try recv<T> by element, in case of explicit specialization.
          // If there is no specialization or type, recv<T> throws.
@@ -204,10 +207,10 @@ namespace Util
    * \param root   MPI rank of root (sending) processor in comm
    */
    template <typename T>
-   void bcast(MPI::Intracomm& comm, T* array, int count, int root)
+   void bcast(MPI_Comm comm, T* array, int count, int root)
    {  
       if (MpiTraits<T>::hasType) {
-         comm.Bcast(array, count, MpiTraits<T>::type, root); 
+         MPI_Bcast(array, count, MpiTraits<T>::type, root, comm); 
       } else {
          // Try bcast<T> by element, in case of explicit specialization.
          // If there is no specialization or type, bcast<T> throws.
@@ -232,7 +235,7 @@ namespace Util
    * \param tag    user-defined integer identifier for this message
    */
    template <typename T>
-   void send(MPI::Comm& comm, DArray<T>& array, int count, int dest, int tag)
+   void send(MPI_Comm comm, DArray<T>& array, int count, int dest, int tag)
    {  
       // Preconditions
       if (!(array.isAllocated())) {
@@ -243,7 +246,7 @@ namespace Util
       }
 
       if (MpiTraits<T>::hasType) {
-         comm.Send(&array[0], count, MpiTraits<T>::type, dest, tag); 
+         MPI_Send(&array[0], count, MpiTraits<T>::type, dest, tag, comm); 
       } else {
          // Try send<T> by element, in case of explicit specialization.
          // If there is no specialization or type, send<T> throws.
@@ -266,7 +269,7 @@ namespace Util
    * \param tag    user-defined integer identifier for this message
    */
    template <typename T>
-   void recv(MPI::Comm& comm, DArray<T>& array, int count, int source, int tag)
+   void recv(MPI_Comm comm, DArray<T>& array, int count, int source, int tag)
    {  
       // Preconditions
       if (!(array.isAllocated())) {
@@ -275,9 +278,10 @@ namespace Util
       if (count > array.capacity()) {
          UTIL_THROW("Error: Logical size count > DArray capacity");
       }
-
+ 
       if (MpiTraits<T>::hasType) {
-         comm.Recv(&array[0], count, MpiTraits<T>::type, source, tag); 
+         MPI_Status status;
+         MPI_Recv(&array[0], count, MpiTraits<T>::type, source, tag, comm, &status); 
       } else {
          // Try recv<T> by element, in case of explicit specialization.
          // If there is no specialization or type, recv<T> throws.
@@ -299,7 +303,7 @@ namespace Util
    * \param root   MPI rank of root (sending) processor in comm
    */
    template <typename T>
-   void bcast(MPI::Intracomm& comm, DArray<T>& array, int count, int root)
+   void bcast(MPI_Comm comm, DArray<T>& array, int count, int root)
    {  
       // Preconditions
       if (!(array.isAllocated())) {
@@ -310,7 +314,7 @@ namespace Util
       }
 
       if (MpiTraits<T>::hasType) {
-         comm.Bcast(&array[0], count, MpiTraits<T>::type, root); 
+         MPI_Bcast(&array[0], count, MpiTraits<T>::type, root, comm); 
       } else {
          // try bcast<T> by element, in case of explicit specialization.
          // If there is no specialization or type, bcast<T> throws.
@@ -336,7 +340,7 @@ namespace Util
    * \param tag     user-defined integer identifier for this message
    */
    template <typename T>
-   void send(MPI::Comm& comm, DMatrix<T>& matrix, int m, int n, int dest, int tag)
+   void send(MPI_Comm comm, DMatrix<T>& matrix, int m, int n, int dest, int tag)
    {  
       // Preconditions
       if (!(matrix.isAllocated())) {
@@ -352,7 +356,7 @@ namespace Util
       if (MpiTraits<T>::hasType) {
          int mp = matrix.capacity1();
          int np = matrix.capacity2();
-         comm.Send(&matrix(0, 0), mp*np, MpiTraits<T>::type, dest, tag); 
+         MPI_Send(&matrix(0, 0), mp*np, MpiTraits<T>::type, dest, tag, comm); 
          // Note: This method sends the entire physical memory block.
       } else {
          // try send<T> by element, in case of explicit specialization.
@@ -380,7 +384,7 @@ namespace Util
    * \param tag     user-defined integer identifier for this message
    */
    template <typename T>
-   void recv(MPI::Comm& comm, DMatrix<T>& matrix, int m, int n, 
+   void recv(MPI_Comm comm, DMatrix<T>& matrix, int m, int n, 
              int source, int tag)
    {  
       // Preconditions
@@ -397,7 +401,8 @@ namespace Util
       if (MpiTraits<T>::hasType) {
          int mp = matrix.capacity1();
          int np = matrix.capacity2();
-         comm.Recv(&matrix(0, 0), mp*np, MpiTraits<T>::type, source, tag); 
+         MPI_Status status;
+         MPI_Recv(&matrix(0, 0), mp*np, MpiTraits<T>::type, source, tag, comm, &status); 
          // Note: This method receives the entire physical memory block.
       } else {
          // try recv<T> by element, in case of explicit specialization.
@@ -424,7 +429,7 @@ namespace Util
    * \param root    MPI rank of root (sending) processor in comm
    */
    template <typename T>
-   void bcast(MPI::Intracomm& comm, DMatrix<T>& matrix, int m, int n, int root)
+   void bcast(MPI_Comm comm, DMatrix<T>& matrix, int m, int n, int root)
    {  
       // Preconditions
       if (!(matrix.isAllocated())) {
@@ -440,7 +445,7 @@ namespace Util
       if (MpiTraits<T>::hasType) {
          int mp = matrix.capacity1();
          int np = matrix.capacity2();
-         comm.Bcast(&matrix(0, 0), mp*np, MpiTraits<T>::type, root); 
+         MPI_Bcast(&matrix(0, 0), mp*np, MpiTraits<T>::type, root, comm); 
          // Note: This method receives the entire physical memory block.
       } else {
          // Try bcast<T> by element, in case of explicit specialization.
@@ -460,19 +465,19 @@ namespace Util
    * Explicit specialization of send for bool data.
    */ 
    template <>
-   void send<bool>(MPI::Comm& comm, bool& data, int dest, int tag);
+   void send<bool>(MPI_Comm comm, bool& data, int dest, int tag);
 
    /**
    * Explicit specialization of recv for bool data.
    */ 
    template <>
-   void recv<bool>(MPI::Comm& comm, bool& data, int source, int tag);
+   void recv<bool>(MPI_Comm comm, bool& data, int source, int tag);
 
    /**
    * Explicit specialization of bcast for bool data.
    */ 
    template <>
-   void bcast<bool>(MPI::Intracomm& comm, bool& data, int root);
+   void bcast<bool>(MPI_Comm comm, bool& data, int root);
 
    // std::string (explicit specializations)
  
@@ -480,19 +485,19 @@ namespace Util
    * Explicit specialization of send for std::string data.
    */ 
    template <> void 
-   send<std::string>(MPI::Comm& comm, std::string& data, int dest, int tag);
+   send<std::string>(MPI_Comm comm, std::string& data, int dest, int tag);
 
    /**
    * Explicit specialization of recv for std::string data.
    */ 
    template <> void 
-   recv<std::string>(MPI::Comm& comm, std::string& data, int source, int tag);
+   recv<std::string>(MPI_Comm comm, std::string& data, int source, int tag);
 
    /**
    * Explicit specialization of bcast for std::string data.
    */ 
    template <>
-   void bcast<std::string>(MPI::Intracomm& comm, std::string& data, int root);
+   void bcast<std::string>(MPI_Comm comm, std::string& data, int root);
 
 }
 #endif

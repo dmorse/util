@@ -35,13 +35,13 @@ namespace Util
    * \code
    *
    *    MyClass          object;
-   *    MPI::Datatype  MyClassMpi;
+   *    MPI_Datatype  MyClassMpi;
    *    MpiStructBuilder builder;
    *
    *    builder.setBase(&object)
-   *    builder.addMember(&object.x, MPI::DOUBLE, 3);
-   *    builder.addMember(&object.i, MPI::INT, 1);
-   *    builder.addMember(&object.j, MPI::INT, 1);
+   *    builder.addMember(&object.x, MPI_DOUBLE, 3);
+   *    builder.addMember(&object.i, MPI_INT, 1);
+   *    builder.addMember(&object.j, MPI_INT, 1);
    *    builder.commit(&MyClassMpi);
    *
    * \endcode
@@ -75,10 +75,10 @@ namespace Util
       * value of count=1 may be used for scalar members. 
       *
       * \param memberAddress  displacement of variable, in bytes.
-      * \param type           data type (MPI::INT, MPI::DOUBLE, etc.)
+      * \param type           data type (MPI_INT, MPI_DOUBLE, etc.)
       * \param count          number of contiguous variables (array count)
       */
-      void addMember(void* memberAddress, MPI::Datatype type, int count = 1);
+      void addMember(void* memberAddress, MPI_Datatype type, int count = 1);
    
       /**
       * Build and commit a user-defined MPI Struct datatype.
@@ -88,17 +88,17 @@ namespace Util
       *
       * \param newType new MPI datatype (on output).
       */
-      void commit(MPI::Datatype& newType);
+      void commit(MPI_Datatype& newType);
    
    private:
    
       static const int MaxNBlock = 20;      // Maximum allowed number of members
    
-      MPI::Aint     base_;                  // address of example object
-      MPI::Datatype types_[MaxNBlock];      // datatypes of members
-      MPI::Aint     addresses_[MaxNBlock];  // addresses of members
-      int           counts_[MaxNBlock];     // counts of members
-      int           nMember_;               // number of members added
+      MPI_Aint base_;                  // address of example object
+      MPI_Datatype types_[MaxNBlock];  // datatypes of members
+      MPI_Aint addresses_[MaxNBlock];  // addresses of members
+      int counts_[MaxNBlock];          // counts of members
+      int nMember_;                    // number of members added
    
    };
 }

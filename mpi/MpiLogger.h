@@ -30,7 +30,9 @@ namespace Util
    * \code
    *    MpiLogger logger;
    *    logger.begin();
-   *    std::cout << "Print from processor " << MPI::COMM_WORLD.Get_rank() << std::endl;
+   *    int rank;
+   *    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+   *    std::cout << "Print from processor " << rank << std::endl;
    *    logger.endl();
    * \endcode
    */
@@ -40,9 +42,16 @@ namespace Util
    public:
 
       /**
+      * Default constructor.
+      * 
+      * Sets communicator to MPI_COMM_WORLD.
+      */
+      MpiLogger();
+
+      /**
       * Constructor.
       */
-      MpiLogger(MPI::Intracomm& comm = MPI::COMM_WORLD);
+      MpiLogger(MPI_Comm& comm = MPI_COMM_WORLD);
 
       /**
       * Begin logging block.
@@ -58,7 +67,7 @@ namespace Util
    private:
 
       /// Pointer to the  communicator.
-      MPI::Intracomm* communicatorPtr_;
+      MPI_Comm* communicatorPtr_;
 
       /// Mpi processor rank.
       int rank_;

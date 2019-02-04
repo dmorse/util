@@ -24,7 +24,7 @@ namespace Util
    protected:
       MpiTraitsNoType(){};
       ~MpiTraitsNoType(){}; 
-      static const MPI::Datatype type;   ///< MPI Datatype (dummy - unused)
+      static const MPI_Datatype type;   ///< MPI Datatype (dummy - unused)
       static const bool hasType;         ///< Is the MPI type initialized?
    };
 
@@ -50,7 +50,7 @@ namespace Util
    class MpiTraits<char>
    {  
    public: 
-      static const MPI::Datatype type;   ///< MPI Datatype
+      static const MPI_Datatype type;   ///< MPI Datatype
       static const bool hasType;         ///< Is the MPI type initialized?
    };
 
@@ -61,7 +61,7 @@ namespace Util
    class MpiTraits<unsigned char>
    {  
    public: 
-      static const MPI::Datatype type;   ///< MPI Datatype
+      static const MPI_Datatype type;   ///< MPI Datatype
       static const bool hasType;         ///< Is the MPI type initialized?
    };
 
@@ -72,7 +72,7 @@ namespace Util
    class MpiTraits<short>
    {  
    public: 
-      static const MPI::Datatype type;   ///< MPI Datatype
+      static const MPI_Datatype type;   ///< MPI Datatype
       static const bool hasType;         ///< Is the MPI type initialized?
    };
 
@@ -83,7 +83,7 @@ namespace Util
    class MpiTraits<int>
    {  
    public: 
-      static const MPI::Datatype type;   ///< MPI Datatype
+      static const MPI_Datatype type;   ///< MPI Datatype
       static const bool hasType;         ///< Is the MPI type initialized?
    };
 
@@ -94,7 +94,7 @@ namespace Util
    class MpiTraits<long>
    {  
    public: 
-      static const MPI::Datatype type;   ///< MPI Datatype
+      static const MPI_Datatype type;   ///< MPI Datatype
       static const bool hasType;         ///< Is the MPI type initialized?
    };
 
@@ -105,7 +105,7 @@ namespace Util
    class MpiTraits<unsigned short>
    {  
    public: 
-      static const MPI::Datatype type;   ///< MPI Datatype
+      static const MPI_Datatype type;   ///< MPI Datatype
       static const bool hasType;         ///< Is the MPI type initialized?
    };
 
@@ -116,7 +116,7 @@ namespace Util
    class MpiTraits<unsigned int>
    {  
    public: 
-      static const MPI::Datatype type;  ///< MPI Datatype
+      static const MPI_Datatype type;  ///< MPI Datatype
       static const bool hasType;        ///< Is the MPI type initialized?
    };
 
@@ -127,7 +127,7 @@ namespace Util
    class MpiTraits<unsigned long>
    {  
    public: 
-      static const MPI::Datatype type;  ///< MPI Datatype
+      static const MPI_Datatype type;  ///< MPI Datatype
       static const bool hasType;        ///< Is the MPI type initialized?
    };
 
@@ -138,7 +138,7 @@ namespace Util
    class MpiTraits<float>
    {  
    public: 
-      static const MPI::Datatype type;  ///< MPI Datatype
+      static const MPI_Datatype type;  ///< MPI Datatype
       static const bool hasType;        ///< Is the MPI type initialized?
    };
 
@@ -149,7 +149,7 @@ namespace Util
    class MpiTraits<double>
    {  
    public: 
-      static const MPI::Datatype type; ///< MPI Datatype
+      static const MPI_Datatype type; ///< MPI Datatype
       static const bool hasType;       ///< Is the MPI type initialized?
    };
 
@@ -160,7 +160,7 @@ namespace Util
    class MpiTraits<long double>
    {  
    public: 
-      static const MPI::Datatype type;  ///< MPI Datatype 
+      static const MPI_Datatype type;  ///< MPI Datatype 
       static const bool hasType;        ///< Is the MPI type initialized?
    };
 
@@ -171,7 +171,7 @@ namespace Util
    class MpiTraits<bool>
    {  
    public: 
-      static const MPI::Datatype type;  ///< MPI Datatype
+      static const MPI_Datatype type;  ///< MPI Datatype
       static const bool hasType;        ///< Is the MPI type initialized?
    };
 
@@ -183,7 +183,7 @@ namespace Util
    class MpiTraits< std::complex<float> >
    {  
    public: 
-      static const MPI::Datatype type;  ///< MPI Datatype
+      static const MPI_Datatype type;  ///< MPI Datatype
       static const bool hasType;        ///< Is the MPI type initialized?
    };
 
@@ -194,7 +194,7 @@ namespace Util
    class MpiTraits< std::complex<double> >
    {  
    public: 
-      static const MPI::Datatype type;  ///< MPI Datatype
+      static const MPI_Datatype type;  ///< MPI Datatype
       static const bool hasType;        ///< Is the MPI type initialized?
    };
 
@@ -205,7 +205,7 @@ namespace Util
    class MpiTraits< std::complex<long double> >
    {  
    public: 
-      static const MPI::Datatype type; ///< MPI Datatype
+      static const MPI_Datatype type; ///< MPI Datatype
       static const bool hasType;       ///< Is the MPI type initialized?
    };
    #endif
@@ -218,7 +218,7 @@ namespace Util
    class MpiTraits<wchar_t>
    {  
    public: 
-      static const MPI::Datatype type;  ///< MPI Datatype
+      static const MPI_Datatype type;  ///< MPI Datatype
       static const bool hasType;        ///< Is the MPI type initialized?
    };
    #endif

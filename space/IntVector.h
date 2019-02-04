@@ -443,7 +443,7 @@ namespace Util
    template <> class MpiTraits<IntVector> 
    {  
    public:  
-      static MPI::Datatype type;    ///< MPI Datatype
+      static MPI_Datatype type;    ///< MPI Datatype
       static bool hasType;          ///< Is the MPI type initialized?
    };
    #endif

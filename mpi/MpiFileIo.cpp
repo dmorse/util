@@ -18,7 +18,7 @@ namespace Util
    MpiFileIo::MpiFileIo() 
     : isIoProcessor_(true)
       #ifdef UTIL_MPI
-      , communicatorPtr_(0)
+      , hasCommunicator_(false)
       #endif
    {}
 
@@ -28,15 +28,19 @@ namespace Util
    MpiFileIo::MpiFileIo(const MpiFileIo& other) 
     : isIoProcessor_(other.isIoProcessor_)
       #ifdef UTIL_MPI
-      , communicatorPtr_(other.communicatorPtr_)
+      , communicator_(other.communicator_)
+      , hasCommunicator_(other.hasCommunicator_)
       #endif
    {}
 
    #ifdef UTIL_MPI
-   void MpiFileIo::setIoCommunicator(MPI::Intracomm& communicator)
+   void MpiFileIo::setIoCommunicator(MPI_Comm communicator)
    {
-      communicatorPtr_ = &communicator; 
-      if (communicator.Get_rank() == 0) {
+      communicator_ = communicator; 
+      hasCommunicator_ = true;
+      int rank;
+      MPI_Comm_rank(communicator, &rank);
+      if (rank == 0) {
          isIoProcessor_ = true;
       } else {
          isIoProcessor_ = false;
@@ -44,8 +48,8 @@ namespace Util
    }
 
    void MpiFileIo::clearCommunicator()
-   {  
-      communicatorPtr_ = 0; 
+   {
+      hasCommunicator_ = false; 
       isIoProcessor_  = true;
    }
    #endif

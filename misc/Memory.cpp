@@ -53,11 +53,11 @@ namespace Util
    {  return max_; }
 
    #ifdef UTIL_MPI
-   int Memory::max(MPI::Intracomm& communicator)
+   int Memory::max(MPI_Comm& communicator)
    { 
       int maxGlobal;
       int maxLocal = max_;
-      communicator.Allreduce(&maxLocal, &maxGlobal, 1, MPI::INT, MPI::MAX);
+      MPI_Allreduce(&maxLocal, &maxGlobal, 1, MPI_INT, MPI_MAX, communicator);
       return maxGlobal;
    }
    #endif

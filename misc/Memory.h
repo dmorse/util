@@ -101,7 +101,7 @@ namespace Util
       /**
       * Return max for any processor in communicator.
       */
-      static int max(MPI::Intracomm& communicator);
+      static int max(MPI_Comm& communicator);
       #endif
 
       /**

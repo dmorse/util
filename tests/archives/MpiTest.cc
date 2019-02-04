@@ -4,11 +4,11 @@
 
 int main() 
 {
-   MPI::Init();
+   MPI_Init();
    
    TEST_RUNNER(MpiMemoryArchiveTest) test;
    test.run();
 
-   MPI::Finalize();
+   MPI_Finalize();
 }
 #endif

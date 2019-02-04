@@ -116,7 +116,7 @@ namespace Util
    /*
    * Initialize MPI Datatype.
    */
-   MPI::Datatype MpiTraits<Tensor>::type = MPI::BYTE;
+   MPI_Datatype MpiTraits<Tensor>::type = MPI_BYTE;
    bool MpiTraits<Tensor>::hasType = false;
 
    /*
@@ -132,7 +132,7 @@ namespace Util
          builder.setBase(&tensor);
          for (i = 0; i < Dimension; ++i) {
             for (j = 0; j < Dimension; ++j) {
-               builder.addMember(&tensor(i, j), MPI::DOUBLE);
+               builder.addMember(&tensor(i, j), MPI_DOUBLE);
             }
          }
          builder.commit(MpiTraits<Tensor>::type);

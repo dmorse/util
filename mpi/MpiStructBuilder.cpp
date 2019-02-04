@@ -16,18 +16,16 @@ namespace Util
    * Record address of a pointer to an instance of the class.
    */
    void MpiStructBuilder::setBase(void* objectAddress) 
-   { 
-      base_ = MPI::Get_address(objectAddress);
-   }
+   {  MPI_Get_address(objectAddress, &base_); }
 
    /* 
    * Add a member variable to the struct definition
    */
-   void MpiStructBuilder::addMember(void* memberAddress, MPI::Datatype type, int count)
+   void MpiStructBuilder::addMember(void* memberAddress, MPI_Datatype type, int count)
    {
-      addresses_[nMember_]  = MPI::Get_address(memberAddress);
-      types_[nMember_]      = type;
-      counts_[nMember_]     = count;
+      MPI_Get_address(memberAddress, &addresses_[nMember_]);
+      types_[nMember_] = type;
+      counts_[nMember_] = count;
       ++nMember_;
    }
 
@@ -36,14 +34,13 @@ namespace Util
    *
    * \param mpiType new MPI datatype (on output).
    */
-   void MpiStructBuilder::commit(MPI::Datatype& mpiType) 
+   void MpiStructBuilder::commit(MPI_Datatype& mpiType) 
    {
       for (int i = 0; i < nMember_; ++i) {
          addresses_[i] = addresses_[i] - base_;
       }
-      mpiType = 
-            MPI::Datatype::Create_struct(nMember_, counts_, addresses_, types_);
-      mpiType.Commit();
+      MPI_Type_create_struct(nMember_, counts_, addresses_, types_, &mpiType);
+      MPI_Type_commit(&mpiType);
    }
 
 }

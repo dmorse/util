@@ -71,10 +71,12 @@ namespace Util
    /*
    * Send a block.
    */
-   void MemoryOArchive::send(MPI::Intracomm& comm, int dest)
+   void MemoryOArchive::send(MPI_Comm& comm, int dest)
    {
-      int  comm_size = comm.Get_size();
-      int  myRank = comm.Get_rank();
+      int  comm_size;
+      MPI_Comm_size(comm, &comm_size);
+      int  myRank;
+      MPI_Comm_rank(comm, &myRank);
 
       // Preconditions
       if (dest > comm_size - 1 || dest < 0) {
@@ -87,17 +89,19 @@ namespace Util
       size_t  sendBytes = cursor_ - buffer_;
       size_t* sizePtr = (size_t*)buffer_;
       *sizePtr = sendBytes;
-      comm.Send(buffer_, sendBytes, MPI::UNSIGNED_CHAR, dest, 5);
+      MPI_Send(buffer_, sendBytes, MPI_UNSIGNED_CHAR, dest, 5, comm);
 
    }
 
    /*
    * Send a block (nonblocking)
    */
-   void MemoryOArchive::iSend(MPI::Intracomm& comm, MPI::Request& req, int dest)
+   void MemoryOArchive::iSend(MPI_Comm& comm, MPI_Request& req, int dest)
    {
-      int  comm_size = comm.Get_size();
-      int  myRank = comm.Get_rank();
+      int  comm_size;
+      MPI_Comm_size(comm, &comm_size);
+      int  myRank;
+      MPI_Comm_rank(comm, &myRank);
 
       // Preconditions
       if (dest > comm_size - 1 || dest < 0) {
@@ -110,7 +114,7 @@ namespace Util
       size_t  sendBytes = cursor_ - buffer_;
       size_t* sizePtr = (size_t*)buffer_;
       *sizePtr = sendBytes;
-      req = comm.Isend(buffer_, sendBytes, MPI::UNSIGNED_CHAR, dest, 5);
+      MPI_Isend(buffer_, sendBytes, MPI_UNSIGNED_CHAR, dest, 5, comm, &req);
    }
  
    #endif

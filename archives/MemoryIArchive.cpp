@@ -130,10 +130,12 @@ namespace Util
    /*
    * Receive a block.
    */
-   void MemoryIArchive::recv(MPI::Intracomm& comm, int source)
+   void MemoryIArchive::recv(MPI_Comm& comm, int source)
    {
-      int  myRank     = comm.Get_rank();
-      int  comm_size  = comm.Get_size();
+      int myRank;
+      MPI_Comm_rank(comm, &myRank);
+      int comm_size;
+      MPI_Comm_size(comm, &comm_size);
 
       // Preconditions
       if (source > comm_size - 1 || source < 0) {
@@ -144,7 +146,8 @@ namespace Util
       }
 
       size_t recvCapacity = capacity_ + sizeof(size_t);
-      comm.Recv(buffer_, recvCapacity, MPI::UNSIGNED_CHAR, source, 5);
+      MPI_Status status;
+      MPI_Recv(buffer_, recvCapacity, MPI_UNSIGNED_CHAR, source, 5, comm, &status);
 
       begin_ = buffer_ + sizeof(size_t);
       cursor_ = begin_;

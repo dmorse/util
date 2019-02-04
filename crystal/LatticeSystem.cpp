@@ -16,7 +16,7 @@ namespace Util
    /**
    * Initialize LatticeSystem:: MPI Datatype.
    */
-   MPI::Datatype MpiTraits<Util::LatticeSystem>::type = MPI::INT;
+   MPI_Datatype MpiTraits<Util::LatticeSystem>::type = MPI_INT;
    bool MpiTraits<Util::LatticeSystem>::hasType = true;
    #endif
 

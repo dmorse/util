@@ -88,11 +88,13 @@ namespace Util
    * Throws exception for code linked to MPI
    */
    void MpiThrow(Exception& e) {
-      if (MPI::Is_initialized()) {
+      int isInitialized;
+      MPI_Initialized(&isInitialized);
+      if (isInitialized) {
          std::cerr << e.message() << std::endl; 
          Log::file().flush(); 
          Log::close(); 
-         MPI::COMM_WORLD.Abort(65); 
+         MPI_Abort(MPI_COMM_WORLD, 65); 
       } else { 
          throw e; 
       } 

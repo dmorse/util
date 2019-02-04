@@ -9,13 +9,13 @@
 
 int main()
 {
-   MPI::Init();
+   MPI_Init();
    Vector::commitMpiType();
    IntVector::commitMpiType();
 
    MpiParamTestComposite runner;
    runner.run();
 
-   MPI::Finalize();
+   MPI_Finalize();
 }
 #endif

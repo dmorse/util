@@ -8,7 +8,7 @@ int main()
 {
 
    #ifdef UTIL_MPI
-   MPI::Init();
+   MPI_Init();
    #endif
 
    #if 0
@@ -31,7 +31,7 @@ int main()
    #endif
 
    #ifdef UTIL_MPI
-   MPI::Finalize();
+   MPI_Finalize();
    #endif
 
 }

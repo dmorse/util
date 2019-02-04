@@ -88,7 +88,7 @@ namespace Util
    /**
    * Initialize MPI Datatype.
    */
-   MPI::Datatype MpiTraits<Vector>::type = MPI::BYTE;
+   MPI_Datatype MpiTraits<Vector>::type = MPI_BYTE;
    bool MpiTraits<Vector>::hasType = false;
 
    /**
@@ -101,9 +101,9 @@ namespace Util
          Vector vector;
    
          builder.setBase(&vector);
-         builder.addMember(&vector[0], MPI::DOUBLE);
-         builder.addMember(&vector[1], MPI::DOUBLE);
-         builder.addMember(&vector[2], MPI::DOUBLE);
+         builder.addMember(&vector[0], MPI_DOUBLE);
+         builder.addMember(&vector[1], MPI_DOUBLE);
+         builder.addMember(&vector[2], MPI_DOUBLE);
          builder.commit(MpiTraits<Vector>::type);
          MpiTraits<Vector>::hasType = true;
       }

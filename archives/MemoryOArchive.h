@@ -109,7 +109,7 @@ namespace Util
       * \param comm  MPI communicator
       * \param dest  rank of processor to which data is sent
       */
-      void send(MPI::Intracomm& comm, int dest);
+      void send(MPI_Comm& comm, int dest);
 
       /**
       * Send packed data via MPI (non-blocking)
@@ -118,7 +118,7 @@ namespace Util
       * \param req   MPI request
       * \param dest  rank of processor to which data is sent
       */
-      void iSend(MPI::Intracomm& comm, MPI::Request& req, int dest);
+      void iSend(MPI_Comm& comm, MPI_Request& req, int dest);
       #endif
 
       /**

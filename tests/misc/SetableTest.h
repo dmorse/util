@@ -102,7 +102,7 @@ public:
       setable.set(3);
       TEST_ASSERT(setable.isSet());
       TEST_ASSERT(setable.value() == 3);
-      TEST_ASSERT(setable.isValid(MPI::COMM_WORLD));
+      TEST_ASSERT(setable.isValid(MPI_COMM_WORLD));
 
       setable.unset();
       TEST_ASSERT(!setable.isSet());

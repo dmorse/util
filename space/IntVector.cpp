@@ -83,7 +83,7 @@ namespace Util
 
    #ifdef UTIL_MPI
    // Initialize MpiTraits<IntVector>
-   MPI::Datatype MpiTraits<IntVector>::type = MPI::BYTE;
+   MPI_Datatype MpiTraits<IntVector>::type = MPI_BYTE;
    bool MpiTraits<IntVector>::hasType = false;
 
    /*
@@ -95,9 +95,9 @@ namespace Util
          MpiStructBuilder builder;
          IntVector vector;
          builder.setBase(&vector);
-         builder.addMember(&vector[0], MPI::INT);
-         builder.addMember(&vector[1], MPI::INT);
-         builder.addMember(&vector[2], MPI::INT);
+         builder.addMember(&vector[0], MPI_INT);
+         builder.addMember(&vector[1], MPI_INT);
+         builder.addMember(&vector[2], MPI_INT);
          builder.commit(MpiTraits<IntVector>::type);
          MpiTraits<IntVector>::hasType = true;
       }

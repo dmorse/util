@@ -8,7 +8,7 @@ using namespace Util;
 
 int main()
 {
-   MPI::Init();
+   MPI_Init();
    Vector::commitMpiType();
    IntVector::commitMpiType();
 
@@ -28,5 +28,5 @@ int main()
    //TEST_RUNNER(MpiLoggerTest) test4;
    //test3.run();
 
-   MPI::Finalize();
+   MPI_Finalize();
 }

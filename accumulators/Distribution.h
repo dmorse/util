@@ -144,7 +144,7 @@ namespace Util
       * \param communicator MPI communicator
       * \param root rank of MPI root processor for reduction
       */
-      void reduce(MPI::Intracomm& communicator, int root);
+      void reduce(MPI_Comm& communicator, int root);
       #endif
         
    protected:

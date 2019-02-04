@@ -145,7 +145,7 @@ namespace Util
       * The state is valid if the value of isSet is the
       * same on all processors.
       */
-      bool isValid(MPI::Intracomm& communicator) const;
+      bool isValid(MPI_Comm& communicator) const;
       #endif
 
    private:
@@ -160,11 +160,11 @@ namespace Util
 
    #ifdef UTIL_MPI
    template <typename T>
-   bool Setable<T>::isValid(MPI::Intracomm& communicator) const
+   bool Setable<T>::isValid(MPI_Comm& communicator) const
    {
       int isSet = (int)isSet_;
       int total = 0;
-      communicator.Allreduce(&isSet, &total, 1, MPI::INT, MPI::SUM);
+      communicator.Allreduce(&isSet, &total, 1, MPI_INT, MPI_SUM);
       int nproc = communicator.Get_size();
       if (isSet_ && total != nproc) {
          UTIL_THROW("Inconsistent settings");

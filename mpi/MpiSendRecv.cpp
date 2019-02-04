@@ -16,14 +16,14 @@ namespace Util
    // bool explicit specializations
  
    template <>
-   void send<bool>(MPI::Comm& comm, bool& data, int dest, int tag)
+   void send<bool>(MPI_Comm comm, bool& data, int dest, int tag)
    { 
       int value = data ? 1 : 0;
       send<int>(comm, value, dest, tag);
    }
 
    template <>
-   void recv<bool>(MPI::Comm& comm, bool& data, int source, int tag)
+   void recv<bool>(MPI_Comm comm, bool& data, int source, int tag)
    { 
       int value;
       recv<int>(comm, value, source, tag);
@@ -31,10 +31,11 @@ namespace Util
    }
 
    template <>
-   void bcast<bool>(MPI::Intracomm& comm, bool& data, int root)
+   void bcast<bool>(MPI_Comm comm, bool& data, int root)
    { 
       int value;
-      int rank = comm.Get_rank();
+      int rank;
+      MPI_Comm_rank(comm, &rank);
       if (rank == root) 
          value = data ? 1 : 0;
       bcast<int>(comm, value, root);
@@ -45,7 +46,7 @@ namespace Util
    // std::string explicit specializations
  
    template <>
-   void send<std::string>(MPI::Comm& comm, std::string& data, int dest, int tag)
+   void send<std::string>(MPI_Comm comm, std::string& data, int dest, int tag)
    { 
 
       // Send size of char C array
@@ -61,7 +62,7 @@ namespace Util
    }
 
    template <>
-   void recv<std::string>(MPI::Comm& comm, std::string& data, int source, int tag)
+   void recv<std::string>(MPI_Comm comm, std::string& data, int source, int tag)
    { 
 
       // Receive size of char C array
@@ -77,9 +78,10 @@ namespace Util
    }
 
    template <>
-   void bcast<std::string>(MPI::Intracomm& comm, std::string& data, int root)
+   void bcast<std::string>(MPI_Comm comm, std::string& data, int root)
    { 
-      int rank = comm.Get_rank();
+      int rank;
+      MPI_Comm_rank(comm, &rank);
       int count;
 
       // Broadcast string count

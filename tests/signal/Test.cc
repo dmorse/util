@@ -5,7 +5,7 @@ int main()
 {
 
    #ifdef UTIL_MPI
-   MPI::Init();
+   MPI_Init();
    #endif
 
    TEST_RUNNER(MethodFunctorTest) test1;
@@ -15,7 +15,7 @@ int main()
    test2.run();
 
    #ifdef UTIL_MPI
-   MPI::Finalize();
+   MPI_Finalize();
    #endif
 
 }
