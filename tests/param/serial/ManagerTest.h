@@ -142,8 +142,10 @@ TEST_ADD(ManagerTest, testCustomFactory)
 TEST_ADD(ManagerTest, testManager)
 TEST_ADD(ManagerTest, testFindFirst)
 TEST_ADD(ManagerTest, testManagerSubfactory)
+#ifndef UTIL_MPI
 TEST_ADD(ManagerTest, testManagerUnique1)
 TEST_ADD(ManagerTest, testManagerUnique2)
+#endif
 TEST_END(ManagerTest)
 
 #endif

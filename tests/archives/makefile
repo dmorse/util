@@ -6,6 +6,7 @@ include $(SRC_DIR)/util/sources.mk
 include $(SRC_DIR)/util/tests/archives/sources.mk
 
 TEST=util/tests/archives/Test
+#TEST=util/tests/archives/MpiTest
 
 all: $(util_tests_archives_OBJS) $(BLD_DIR)/$(TEST)
 
