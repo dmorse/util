@@ -78,71 +78,77 @@ void AverageTest::testSample()
 
 void AverageTest::testSerialize() 
 {
-   printMethod(TEST_FUNC);
-   printEndl();
-
-   readData();
-
-   MemoryOArchive u;
-   int size = memorySize(accumulator_);
-   u.allocate(size);
-
-   std::cout << size << std::endl;
-
-   u << accumulator_;
-   TEST_ASSERT(u.cursor() == u.begin() + size);
-
-   MemoryIArchive v;
-   v = u;
-
-   Average clone;
-   v >> clone;
-   TEST_ASSERT(v.cursor() == u.begin() + size);
-
-   clone.output(std::cout);
+   if (isIoProcessor()) {
+      printMethod(TEST_FUNC);
+      printEndl();
+   
+      readData();
+   
+      MemoryOArchive u;
+      int size = memorySize(accumulator_);
+      u.allocate(size);
+   
+      std::cout << size << std::endl;
+   
+      u << accumulator_;
+      TEST_ASSERT(u.cursor() == u.begin() + size);
+   
+      MemoryIArchive v;
+      v = u;
+   
+      Average clone;
+      v >> clone;
+      TEST_ASSERT(v.cursor() == u.begin() + size);
+   
+      clone.output(std::cout);
+   }
 }
 
 void AverageTest::testSerializeFile() 
 {
-   printMethod(TEST_FUNC);
-   printEndl();
-
-   readData();
-
-   BinaryFileOArchive u;
-   openOutputFile("tmp/AverageTestSerializeFile", u.file());
-   u << accumulator_;
-   u.file().close();
-
-   Average clone;
-   BinaryFileIArchive v;
-   openInputFile("tmp/AverageTestSerializeFile", v.file());
-   v >> clone;
-   v.file().close();
+   if (isIoProcessor()) {
+      printMethod(TEST_FUNC);
+      printEndl();
    
-   clone.output(std::cout);
+      readData();
+   
+      BinaryFileOArchive u;
+      openOutputFile("tmp/AverageTestSerializeFile", u.file());
+      u << accumulator_;
+      u.file().close();
+   
+      Average clone;
+      BinaryFileIArchive v;
+      openInputFile("tmp/AverageTestSerializeFile", v.file());
+      v >> clone;
+      v.file().close();
+      
+      clone.output(std::cout);
+   }
 }
 
 void AverageTest::testSaveLoad() 
 {
-   printMethod(TEST_FUNC);
-   printEndl();
-
-   readData();
-
-   BinaryFileOArchive u;
-   openOutputFile("tmp/AverageTestSaveLoad", u.file());
-   accumulator_.save(u);
-   u.file().close();
-
-   Average clone;
-   BinaryFileIArchive v;
-   openInputFile("tmp/AverageTestSaveLoad", v.file());
-   clone.load(v);
-   v.file().close();
- 
-   clone.writeParam(std::cout);
-   clone.output(std::cout);
+   if (isIoProcessor()) {
+      printMethod(TEST_FUNC);
+      printEndl();
+   
+      readData();
+   
+      BinaryFileOArchive u;
+      openOutputFile("tmp/AverageTestSaveLoad", u.file());
+      accumulator_.save(u);
+      u.file().close();
+   
+      Average clone;
+      BinaryFileIArchive v;
+      openInputFile("tmp/AverageTestSaveLoad", v.file());
+      clone.load(v);
+      v.file().close();
+    
+      clone.writeParam(std::cout);
+      clone.output(std::cout);
+   }
 }
 
 TEST_BEGIN(AverageTest)

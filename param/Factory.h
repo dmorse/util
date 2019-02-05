@@ -181,7 +181,7 @@ namespace Util
    void Factory<Data>::setIoCommunicator(MPI_Comm communicator)
    {
       if (paramFileIo_.hasIoCommunicator()) {
-         if (&paramFileIo_.ioCommunicator() != &communicator) {
+         if (paramFileIo_.ioCommunicator() != communicator) {
             UTIL_THROW("Attempt to modify Factory param communicator");
          }
       } else {

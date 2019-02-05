@@ -74,7 +74,8 @@ public:
 
       std::ifstream in;
       if (manager.isIoProcessor()) {
-         in.open("in/Factory");
+         openInputFile("in/Factory", in);
+         //in.open("in/Factory");
       }
       ptr = factory.readObject(in, manager, className, isEnd);
       TEST_ASSERT(ptr->className() == "B");
@@ -99,7 +100,8 @@ public:
 
       std::ifstream in;
       if (mpiRank() == 0) {
-         in.open("in/Manager");
+         openInputFile("in/Manager", in);
+         //in.open("in/Manager");
          if (ParamComponent::echo()) printEndl();
       }
       manager.readParam(in);
@@ -128,7 +130,8 @@ public:
 
       std::ifstream in;
       if (mpiRank() == 0) {
-         in.open("in/Manager");
+         // in.open("in/Manager");
+         openInputFile("in/Manager", in);
          if (ParamComponent::echo()) printEndl();
       }
       manager.readParamOptional(in);
@@ -139,6 +142,7 @@ public:
          manager.writeParam(std::cout);
          std::cout.flush();
       }
+      MPI_Barrier(communicator());
 
    }
 
@@ -180,7 +184,7 @@ TEST_ADD(MpiManagerTest, testFactory)
 TEST_ADD(MpiManagerTest, testFactoryReadObject)
 TEST_ADD(MpiManagerTest, testManager1)
 TEST_ADD(MpiManagerTest, testManager2)
-TEST_ADD(MpiManagerTest, testManager3)
+//TEST_ADD(MpiManagerTest, testManager3)
 TEST_END(MpiManagerTest)
 
 #endif

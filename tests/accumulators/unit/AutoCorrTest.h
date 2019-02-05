@@ -84,71 +84,77 @@ void AutoCorrTest::testSample()
 
 void AutoCorrTest::testSerialize() 
 {
-   printMethod(TEST_FUNC);
-   printEndl();
-
-   readData();
-
-   int size = memorySize(accumulator_);
-
-   MemoryOArchive u;
-   u.allocate(size);
-
-   std::cout << size << std::endl;
-
-   u << accumulator_;
-   TEST_ASSERT(u.cursor() == u.begin() + size);
-
-   MemoryIArchive v;
-   v = u;
-
-   AutoCorr<double, double> clone;
-   v & clone;
-
-   clone.output(std::cout);
+   if (isIoProcessor()) {
+      printMethod(TEST_FUNC);
+      printEndl();
+   
+      readData();
+   
+      int size = memorySize(accumulator_);
+   
+      MemoryOArchive u;
+      u.allocate(size);
+   
+      std::cout << size << std::endl;
+   
+      u << accumulator_;
+      TEST_ASSERT(u.cursor() == u.begin() + size);
+   
+      MemoryIArchive v;
+      v = u;
+   
+      AutoCorr<double, double> clone;
+      v & clone;
+   
+      clone.output(std::cout);
+   }
 }
 
 void AutoCorrTest::testSerializeFile() 
 {
-   printMethod(TEST_FUNC);
-   printEndl();
-
-   readData();
-
-   BinaryFileOArchive u;
-   openOutputFile("tmp/AutoCorrTestSerializeFile", u.file());
-   u << accumulator_;
-   u.file().close();
-
-   AutoCorr<double, double> clone;
-   BinaryFileIArchive v;
-   openInputFile("tmp/AutoCorrTestSerializeFile", v.file());
-   v >> clone;
-   v.file().close();
+   if (isIoProcessor()) {
+      printMethod(TEST_FUNC);
+      printEndl();
    
-   clone.output(std::cout);
+      readData();
+   
+      BinaryFileOArchive u;
+      openOutputFile("tmp/AutoCorrTestSerializeFile", u.file());
+      u << accumulator_;
+      u.file().close();
+   
+      AutoCorr<double, double> clone;
+      BinaryFileIArchive v;
+      openInputFile("tmp/AutoCorrTestSerializeFile", v.file());
+      v >> clone;
+      v.file().close();
+      
+      clone.output(std::cout);
+   }
 }
 
 void AutoCorrTest::testSaveLoad() 
 {
-   printMethod(TEST_FUNC);
-   printEndl();
-
-   readData();
-
-   BinaryFileOArchive u;
-   openOutputFile("tmp/AutoCorrTestSaveLoad", u.file());
-   accumulator_.save(u);
-   u.file().close();
-
-   AutoCorr<double, double> clone;
-   BinaryFileIArchive v;
-   openInputFile("tmp/AutoCorrTestSaveLoad", v.file());
-   clone.load(v);
-   v.file().close();
- 
-   clone.writeParam(std::cout);
-   clone.output(std::cout);
+   if (isIoProcessor()) {
+      printMethod(TEST_FUNC);
+      printEndl();
+   
+      readData();
+   
+      BinaryFileOArchive u;
+      openOutputFile("tmp/AutoCorrTestSaveLoad", u.file());
+      accumulator_.save(u);
+      u.file().close();
+   
+      AutoCorr<double, double> clone;
+      BinaryFileIArchive v;
+      openInputFile("tmp/AutoCorrTestSaveLoad", v.file());
+      clone.load(v);
+      v.file().close();
+    
+      clone.writeParam(std::cout);
+      clone.output(std::cout);
+   }
 }
 
 TEST_BEGIN(AutoCorrTest)

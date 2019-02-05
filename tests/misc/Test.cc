@@ -1,8 +1,9 @@
+#ifdef UTIL_MPI
+#define TEST_MPI
+#endif
+
+#include "MiscTestComposite.h"
 #include "ExceptionTest.h"
-//#include "MiscTestComposite.h"
-//#include "ioUtilTest.h"
-//#include "SetableTest.h"
-//#include "BitTest.h"
 
 int main(int argc, char** argv) 
 {

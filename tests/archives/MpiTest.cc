@@ -2,9 +2,9 @@
 #define TEST_MPI
 #include "MpiMemoryArchiveTest.h"
 
-int main() 
+int main(int argc, char** argv) 
 {
-   MPI_Init();
+   MPI_Init(&argc, &argv);
    
    TEST_RUNNER(MpiMemoryArchiveTest) test;
    test.run();

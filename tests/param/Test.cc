@@ -20,7 +20,7 @@ using namespace Util;
 TEST_COMPOSITE_BEGIN(ParamAllTestComposite)
 addChild(new ParamTestComposite, "serial/");
 #ifdef UTIL_MPI
-//addChild(new MpiParamTestComposite, "mpi/");
+addChild(new MpiParamTestComposite, "mpi/");
 #endif 
 TEST_COMPOSITE_END
 

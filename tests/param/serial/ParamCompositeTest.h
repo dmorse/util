@@ -363,38 +363,40 @@ public:
 
    void testReadSaveLoadWrite2() 
    {
-      printMethod(TEST_FUNC);
-
-      openInputFile("in/ParamComposite", file_);
-
-      ParamComponent::setEcho(true);
-      printEndl();
-
-      BComposite absent;
-      AComposite original;
-      absent.readParamOptional(file_);
-      original.readParam(file_);
-
-      // printEndl();
-      // original.writeParam(std::cout);
-
-      Serializable::OArchive oar;
-      openOutputFile("out/save1.bin", oar.file());
-      absent.saveOptional(oar);
-      original.save(oar);
-      oar.file().close();
-
-      BComposite absentClone;
-      AComposite clone;
-      Serializable::IArchive iar;
-      openInputFile("out/save1.bin", iar.file());
-      absentClone.loadOptional(iar);
-      clone.load(iar);
-
-      printEndl();
-      absentClone.writeParam(std::cout);
-      clone.writeParam(std::cout);
-      ParamComponent::setEcho(false);
+      if (isIoProcessor()) {
+         printMethod(TEST_FUNC);
+   
+         openInputFile("in/ParamComposite", file_);
+   
+         ParamComponent::setEcho(true);
+         printEndl();
+   
+         BComposite absent;
+         AComposite original;
+         absent.readParamOptional(file_);
+         original.readParam(file_);
+   
+         // printEndl();
+         // original.writeParam(std::cout);
+   
+         Serializable::OArchive oar;
+         openOutputFile("out/save1.bin", oar.file());
+         absent.saveOptional(oar);
+         original.save(oar);
+         oar.file().close();
+   
+         BComposite absentClone;
+         AComposite clone;
+         Serializable::IArchive iar;
+         openInputFile("out/save1.bin", iar.file());
+         absentClone.loadOptional(iar);
+         clone.load(iar);
+   
+         printEndl();
+         absentClone.writeParam(std::cout);
+         clone.writeParam(std::cout);
+         ParamComponent::setEcho(false);
+      }
    }
 
    void testMemoryArchiveSerialize() 

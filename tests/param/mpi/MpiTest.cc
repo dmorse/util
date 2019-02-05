@@ -7,9 +7,9 @@
 #include <util/space/Vector.h>
 #include <util/space/IntVector.h>
 
-int main()
+int main(int argc, char** argv)
 {
-   MPI_Init();
+   MPI_Init(&argc, &argv);
    Vector::commitMpiType();
    IntVector::commitMpiType();
 

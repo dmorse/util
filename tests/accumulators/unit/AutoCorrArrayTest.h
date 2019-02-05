@@ -96,71 +96,77 @@ void AutoCorrArrayTest::testSample()
 
 void AutoCorrArrayTest::testSerialize() 
 {
-   printMethod(TEST_FUNC);
-   printEndl();
-
-   readData();
-
-   int size = memorySize(accumulator_);
-
-   MemoryOArchive u;
-   u.allocate(size);
-
-   std::cout << size << std::endl;
-
-   u << accumulator_;
-   TEST_ASSERT(u.cursor() == u.begin() + size);
-
-   MemoryIArchive v;
-   v = u;
-
-   AutoCorrArray<double, double> clone;
-   v & clone;
-
-   clone.output(std::cout);
+   if (isIoProcessor()) {
+      printMethod(TEST_FUNC);
+      printEndl();
+   
+      readData();
+   
+      int size = memorySize(accumulator_);
+   
+      MemoryOArchive u;
+      u.allocate(size);
+   
+      std::cout << size << std::endl;
+   
+      u << accumulator_;
+      TEST_ASSERT(u.cursor() == u.begin() + size);
+   
+      MemoryIArchive v;
+      v = u;
+   
+      AutoCorrArray<double, double> clone;
+      v & clone;
+   
+      clone.output(std::cout);
+   }
 }
 
 void AutoCorrArrayTest::testSerializeFile() 
 {
-   printMethod(TEST_FUNC);
-   printEndl();
-
-   readData();
-
-   BinaryFileOArchive u;
-   openOutputFile("tmp/AutoCorrArrayTestSerializeFile", u.file());
-   u << accumulator_;
-   u.file().close();
-
-   AutoCorrArray<double, double> clone;
-   BinaryFileIArchive v;
-   openInputFile("tmp/AutoCorrArrayTestSerializeFile", v.file());
-   v >> clone;
-   v.file().close();
+   if (isIoProcessor()) {
+      printMethod(TEST_FUNC);
+      printEndl();
    
-   clone.output(std::cout);
+      readData();
+   
+      BinaryFileOArchive u;
+      openOutputFile("tmp/AutoCorrArrayTestSerializeFile", u.file());
+      u << accumulator_;
+      u.file().close();
+   
+      AutoCorrArray<double, double> clone;
+      BinaryFileIArchive v;
+      openInputFile("tmp/AutoCorrArrayTestSerializeFile", v.file());
+      v >> clone;
+      v.file().close();
+      
+      clone.output(std::cout);
+   }
 }
 
 void AutoCorrArrayTest::testSaveLoad() 
 {
-   printMethod(TEST_FUNC);
-   printEndl();
-
-   readData();
-
-   BinaryFileOArchive u;
-   openOutputFile("tmp/AutoCorrArrayTestSaveLoad", u.file());
-   accumulator_.save(u);
-   u.file().close();
-
-   AutoCorrArray<double, double> clone;
-   BinaryFileIArchive v;
-   openInputFile("tmp/AutoCorrArrayTestSaveLoad", v.file());
-   clone.load(v);
-   v.file().close();
- 
-   clone.writeParam(std::cout);
-   clone.output(std::cout);
+   if (isIoProcessor()) {
+      printMethod(TEST_FUNC);
+      printEndl();
+   
+      readData();
+   
+      BinaryFileOArchive u;
+      openOutputFile("tmp/AutoCorrArrayTestSaveLoad", u.file());
+      accumulator_.save(u);
+      u.file().close();
+   
+      AutoCorrArray<double, double> clone;
+      BinaryFileIArchive v;
+      openInputFile("tmp/AutoCorrArrayTestSaveLoad", v.file());
+      clone.load(v);
+      v.file().close();
+    
+      clone.writeParam(std::cout);
+      clone.output(std::cout);
+   }
 }
 
 

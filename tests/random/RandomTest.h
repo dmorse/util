@@ -167,42 +167,48 @@ public:
 
    }
 
-   void testBinarySerialize() {
-      printMethod(TEST_FUNC);
-
-      std::ifstream in;
-      openInputFile("in/Random", in);
-      if (ParamComponent::echo()) printEndl();
-      random->readParam(in);
-
-      // Pull random number to change state
-      for (int i=0; i < 20; i++) {
-         random->uniformInt(0, 255);
+   void testBinarySerialize() 
+   {
+      if (isIoProcessor()) {   
+         printMethod(TEST_FUNC);
+   
+         std::ifstream in;
+         openInputFile("in/Random", in);
+         if (ParamComponent::echo()) printEndl();
+         random->readParam(in);
+   
+         // Pull random number to change state
+         for (int i=0; i < 20; i++) {
+            random->uniformInt(0, 255);
+         }
+         BinaryFileOArchive oar;
+         openOutputFile("tmp/binary", oar.file());
+     
+         oar << *random;
+         oar.file().close();
+   
+         printEndl();
+         std::cout << random->uniformInt(0,255) << std::endl;
+         std::cout << random->uniformInt(0,255) << std::endl;
+         std::cout << random->uniformInt(0,255) << std::endl;
       }
-      BinaryFileOArchive oar;
-      openOutputFile("tmp/binary", oar.file());
-  
-      oar << *random;
-      oar.file().close();
-
-      printEndl();
-      std::cout << random->uniformInt(0,255) << std::endl;
-      std::cout << random->uniformInt(0,255) << std::endl;
-      std::cout << random->uniformInt(0,255) << std::endl;
    }
 
-   void testBinaryUnSerialize() {
-      printMethod(TEST_FUNC);
-
-      BinaryFileIArchive iar;
-      openInputFile("tmp/binary", iar.file());
-  
-      iar >> *random;
-
-      printEndl();
-      std::cout << random->uniformInt(0,255) << std::endl;
-      std::cout << random->uniformInt(0,255) << std::endl;
-      std::cout << random->uniformInt(0,255) << std::endl;
+   void testBinaryUnSerialize() 
+   {
+      if (isIoProcessor()) {   
+         printMethod(TEST_FUNC);
+   
+         BinaryFileIArchive iar;
+         openInputFile("tmp/binary", iar.file());
+     
+         iar >> *random;
+   
+         printEndl();
+         std::cout << random->uniformInt(0,255) << std::endl;
+         std::cout << random->uniformInt(0,255) << std::endl;
+         std::cout << random->uniformInt(0,255) << std::endl;
+      }
    }
 
 };

@@ -31,7 +31,7 @@ public:
       TEST_ASSERT(!fileIo().hasIoCommunicator());
       fileIo().setIoCommunicator(communicator());
       TEST_ASSERT(fileIo().hasIoCommunicator());
-      TEST_ASSERT(&fileIo().ioCommunicator() == &communicator());
+      TEST_ASSERT(fileIo().ioCommunicator() == communicator());
       fileIo().clearCommunicator();
       TEST_ASSERT(!fileIo().hasIoCommunicator());
    }
