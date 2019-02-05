@@ -16,7 +16,7 @@ namespace Util
    * Constructor.
    */
    MpiLogger::MpiLogger()
-    : communicator_(&MPI_COMM_WORLD),
+    : communicator_(MPI_COMM_WORLD),
       rank_(-1),
       size_(-1)
    {}
@@ -25,7 +25,7 @@ namespace Util
    * Constructor.
    */
    MpiLogger::MpiLogger(MPI_Comm comm)
-    : communicator_(&comm),
+    : communicator_(comm),
       rank_(-1),
       size_(-1)
    {}

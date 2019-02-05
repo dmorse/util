@@ -50,8 +50,10 @@ namespace Util
 
       /**
       * Constructor.
+      *  
+      * \param comm MPI communicator to use.
       */
-      MpiLogger(MPI_Comm comm = MPI_COMM_WORLD);
+      MpiLogger(MPI_Comm comm);
 
       /**
       * Begin logging block.
