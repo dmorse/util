@@ -16,7 +16,9 @@ TEST_COMPOSITE_ADD_UNIT(BeginEndTest);
 TEST_COMPOSITE_ADD_UNIT(ParameterTest);
 TEST_COMPOSITE_ADD_UNIT(ParamCompositeTest);
 TEST_COMPOSITE_ADD_UNIT(ManagerTest);
+//#ifndef UTIL_MPI
 //TEST_COMPOSITE_ADD_UNIT(TextCompositeTest);
+//#endif
 TEST_COMPOSITE_END
 
 #endif

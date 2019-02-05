@@ -1,8 +1,17 @@
-include $(SRC_DIR)/util/param/tests/serial/sources.mk
-include $(SRC_DIR)/util/param/tests/mpi/sources.mk
+#include $(SRC_DIR)/util/tests/param/serial/sources.mk
+#include $(SRC_DIR)/util/tests/param/mpi/sources.mk
 
-tests_param_util_SRCS=$(tests_param_util_serial_SRCS) \
-    $(tests_param_util_mpi_SRCS) 
+#util_tests_param_=\
+#    $(util_tests_param_serial_) \
+#    $(util_tests_param_mpi_) \
+#    util/tests/param/Test.cc 
 
-tests_param_util_OBJS=$(tests_param_util_SRCS:.cc=.o)
+util_tests_param_=util/tests/param/Test.cc 
+
+util_tests_param_SRCS=\
+     $(addprefix $(SRC_DIR)/, $(util_tests_param_))
+util_tests_param_OBJS=\
+     $(addprefix $(BLD_DIR)/, $(util_tests_param_:.cc=.o))
+util_tests_param_EXES=\
+     $(addprefix $(BLD_DIR)/, $(util_tests_param_:.cc=))
 

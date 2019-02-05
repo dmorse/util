@@ -12,7 +12,6 @@ int main()
    Vector::commitMpiType();
    IntVector::commitMpiType();
 
-   
    MpiTestComposite test;
    test.run();
 

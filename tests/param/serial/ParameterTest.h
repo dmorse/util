@@ -1312,37 +1312,55 @@ TEST_ADD(ParameterTest, testParamIntConstructor2)
 TEST_ADD(ParameterTest, testParamIntWrite)
 TEST_ADD(ParameterTest, testParamIntRead1)
 TEST_ADD(ParameterTest, testParamIntRead2)
+#ifndef UTIL_MPI
 TEST_ADD(ParameterTest, testParamIntReadSaveLoad)
+#endif
 TEST_ADD(ParameterTest, testParamDoubleWrite)
 TEST_ADD(ParameterTest, testParamDoubleRead)
+#ifndef UTIL_MPI
 TEST_ADD(ParameterTest, testParamDoubleReadSaveLoad)
+#endif
 TEST_ADD(ParameterTest, testParamStringWrite)
 TEST_ADD(ParameterTest, testParamStringRead1)
 TEST_ADD(ParameterTest, testParamStringRead2)
+#ifndef UTIL_MPI
 TEST_ADD(ParameterTest, testParamStringReadSaveLoad)
+#endif
 TEST_ADD(ParameterTest, testCArrayParamIntWrite)
 TEST_ADD(ParameterTest, testCArrayParamIntRead)
 TEST_ADD(ParameterTest, testCArrayParamDoubleWrite)
 TEST_ADD(ParameterTest, testCArrayParamDoubleRead)
+#ifndef UTIL_MPI
 TEST_ADD(ParameterTest, testCArrayParamDoubleReadSaveLoad)
+#endif
 TEST_ADD(ParameterTest, testDArrayParamIntWrite)
 TEST_ADD(ParameterTest, testDArrayParamIntRead)
 TEST_ADD(ParameterTest, testDArrayParamDoubleWrite)
 TEST_ADD(ParameterTest, testDArrayParamDoubleRead)
+#ifndef UTIL_MPI
 TEST_ADD(ParameterTest, testDArrayParamDoubleReadSaveLoad)
+#endif
 TEST_ADD(ParameterTest, testFArrayParamIntWrite)
 TEST_ADD(ParameterTest, testFArrayParamIntRead)
 TEST_ADD(ParameterTest, testFArrayParamDoubleWrite)
 TEST_ADD(ParameterTest, testFArrayParamDoubleRead)
+#ifndef UTIL_MPI
 TEST_ADD(ParameterTest, testFArrayParamDoubleReadSaveLoad)
+#endif
 TEST_ADD(ParameterTest, testCArray2DParamDoubleWrite)
+#ifndef UTIL_MPI
 TEST_ADD(ParameterTest, testCArray2DParamDoubleReadSaveLoad)
+#endif
 TEST_ADD(ParameterTest, testDMatrixParamDoubleWrite)
 TEST_ADD(ParameterTest, testDMatrixParamDoubleRead)
+#ifndef UTIL_MPI
 TEST_ADD(ParameterTest, testDMatrixParamDoubleReadSaveLoad)
+#endif
 TEST_ADD(ParameterTest, testDSymmMatrixParamDoubleWrite)
 TEST_ADD(ParameterTest, testDSymmMatrixParamDoubleRead)
+#ifndef UTIL_MPI
 TEST_ADD(ParameterTest, testDSymmMatrixParamDoubleReadSaveLoad)
+#endif
 TEST_END(ParameterTest)
 
 #endif
