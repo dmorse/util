@@ -6,7 +6,7 @@
 #include "MpiSendRecvTest.h"
 #include "MpiFileIoTest.h"
 #include "MpiLoaderTest.h"
-//#include "MpiLoggerTest.h"
+#include "MpiLoggerTest.h"
 
 using namespace Util;
 
@@ -15,6 +15,7 @@ TEST_COMPOSITE_BEGIN(MpiTestComposite)
 TEST_COMPOSITE_ADD_UNIT(MpiSendRecvTest)
 TEST_COMPOSITE_ADD_UNIT(MpiFileIoTest)
 TEST_COMPOSITE_ADD_UNIT(MpiLoaderTest)
+TEST_COMPOSITE_ADD_UNIT(MpiLoggerTest)
 
 TEST_COMPOSITE_END
 
