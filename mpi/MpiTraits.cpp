@@ -50,10 +50,10 @@ namespace Util
    const bool MpiTraits<bool>::hasType = false;
 
    #if 0
-   const MPI_Datatype MpiTraits<std::complex<float> >::type = MPI_CXX_FLOAT_COMPLEX; 
+   const MPI_Datatype MpiTraits<std::complex<float> >::type = MPI_FLOAT_COMPLEX; 
    const bool MpiTraits<std::complex<float> >::hasType = true;
 
-   const MPI_Datatype MpiTraits<std::complex<double> >::type = MPI_CXX_DOUBLE_COMPLEX; 
+   const MPI_Datatype MpiTraits<std::complex<double> >::type = MPI_DOUBLE_COMPLEX; 
    const bool MpiTraits<std::complex<double> >::hasType = true;
 
    const MPI_Datatype MpiTraits<std::complex<long double> >::type = MPI_LONG_DOUBLE_COMPLEX; 
