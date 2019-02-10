@@ -22,8 +22,10 @@
 cd ../..
 
 rm -f src/config.mk
+rm -f src/configure
 rm -f src/util/config.mk
 rm -f src/util/boundary/Boundary.h
 rm -fr bin
 rm -fr scripts
+rm -fr doc
 
