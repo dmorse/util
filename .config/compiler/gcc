@@ -1,0 +1,69 @@
+
+# -- Definitions for generic unix environment ---------
+#    (gcc compiler, mpicxx mpi wrapper)
+#
+# The definitions given below work for systems in which:
+#
+#   - All header files and libraries are placed in standard locations.
+#   - The command g++ is used to invoke the C++ compiler
+#   - Compiler options are compatible with those for the gcc compiler
+#   - A command named "mpicxx" is used to call the compiler for MPI files
+#
+# --------------------------------------------
+# Miscellaneous definitions
+
+# Path to search for header files (must include SRC_DIR)
+INCLUDES= -I$(SRC_DIR)
+
+# Compiler option to specify ANSI C++ standard
+ifdef UTIL_CXX11
+   CXX_STD = --std=c++11
+else
+   CXX_STD = --std=c++98
+endif
+
+# --------------------------------------------
+# Compiler used for serial programs 
+
+# Serial C++ compiler command
+CXX_SER=g++
+
+# Flags passed when debugging is enabled
+CXXFLAGS_SER_DEBUG= -Wall $(CXX_STD)
+
+# Flags passed when debugging is disabled (production code)
+CXXFLAGS_SER_FAST= -Wall $(CXX_STD) -O3 -ffast-math -Winline
+
+# Compiler flags used in unit tests
+TESTFLAGS= -Wall $(CXX_STD)
+
+# --------------------------------------------
+# Compiler and execution for parallel programs 
+
+# Parallel MPI C++ compiler command (or wrapper script)
+CXX_PAR=mpicxx
+
+# Flags passed when debugging is enabled
+CXXFLAGS_PAR_DEBUG= -Wall $(CXX_STD)
+
+# Flags passed when debugging is disabled
+CXXFLAGS_PAR_FAST= -Wall $(CXX_STD) -O3 -ffast-math -Winline
+
+# MPI execution command (followed by integer number of processors)
+MPIRUN=mpirun -np
+
+# --------------------------------------------
+# Linker / Loader 
+
+# Flags passed to compiler for linking and loading
+LDFLAGS=
+
+# --------------------------------------------
+# Archiver
+
+# Library archiver command (for creating static libraries)
+AR=ar
+
+# Flags (command line options) passed to archiver
+ARFLAGS=rcs
+

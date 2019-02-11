@@ -41,19 +41,48 @@
 # installed in root/scripts/python and the makeDep bash script is installed
 # in root/bin. 
 
-#------------------------------------------------------------------------
+#========================================================================
+# Set working directory to ROOT directory
 
-# Change directory to ROOT directory
-cd ../..
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null && pwd )"
+if [ "$SCRIPT_DIR" != "$PWD" ]; then
+   unset CDPATH
+   \cd $SCRIPT_DIR
+fi
+\cd ../../..
+echo "Resetting working directory to ROOT directory: $PWD"
+
+#=======================================================================
+# Choose file to use for compiler settings
+
+if [ "$#" -gt 0 ]; then
+  VARFILE=$1
+else
+  VARFILE="gcc"
+fi
+VARFILE="src/util/.config/compiler/$VARFILE"
+
+#=======================================================================
+# Setup src/ source file directory tree
+
+# Construct and install main configuration file src/config.mk
+sed -e "s|=PWD|=$PWD|" -e "s|=OWD|src|" src/util/.config/main_config.1 > src/temp
+cat src/temp "$VARFILE" src/util/.config/main_config.2 > src/config.mk
+rm src/temp
+
+# Note: Stream editor (sed) is used here to:
+#   - Set $(ROOT_DIR) to absolute path of directory from which this
+#      script is invoked (i.e., the simpatico root directory).
+#   - Set $(BLD_DIR) to absolute path to src/ directory (in-source-build)
 
 # Create main config.mk file and set the value of $(ROOT_DIR) and $(BLD_DIR)
-sed -e "s|=PWD|=$PWD|" -e "s|=OWD|src|" src/util/.config/src_config > src/config.mk
+# sed -e "s|=PWD|=$PWD|" -e "s|=OWD|src|" src/util/.config/src_config > src/config.mk
 
 # Copy util namespace configure script 
 cp src/util/.config/configure src/configure
 
-# Copy util namespace configuration file
-cp src/util/config.mk_r src/util/config.mk
+# Copy util namespace level configuration file
+cp src/util/.config/util_config src/util/config.mk
 
 # Copy the makeDep dependency-maker script into the bin directory
 if [ ! -d bin ]; then
@@ -79,4 +108,5 @@ fi
 if [ ! -d doc/manual ]; then
    mkdir doc/manual
 fi
-cp src/util/.config/doc/* doc/
+cp src/util/.config/doc/Doxyfile doc/
+cp src/util/.config/doc/makefile doc/
