@@ -11,6 +11,13 @@
 
 #ifdef UTIL_MPI
 #include <mpi.h>
+#if UTIL_MPI == 3
+#define UTIL_DOUBLE_COMPLEX MPI_CXX_DOUBLE_COMPLEX
+#define UTIL_FLOAT_COMPLEX MPI_CXX_FLOAT_COMPLEX
+#else
+#define UTIL_DOUBLE_COMPLEX MPI_DOUBLE_COMPLEX
+#define UTIL_FLOAT_COMPLEX MPI_FLOAT_COMPLEX
+#endif
 #endif
 
 //-----------------------------------------------------------------------------
