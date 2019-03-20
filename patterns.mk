@@ -24,6 +24,7 @@ LIBS=$(util_LIB)
 
 # Rule to compile *.cpp class source files in src/util
 $(BLD_DIR)/%.o:$(SRC_DIR)/%.cpp
+	@SDIR=$$(dirname "$@"); if [ ! -d "$$SDIR" ]; then mkdir -p "$$SDIR"; fi
 	$(CXX) $(INCLUDES) $(UTIL_DEFS) $(CXXFLAGS) -c -o $@ $<
 ifdef MAKEDEP
 	$(MAKEDEP) $(INCLUDES) $(UTIL_DEFS) $(CXXFLAGS) $(UTIL_CFGS) -S$(SRC_DIR) -B$(BLD_DIR) $<
