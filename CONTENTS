@@ -15,7 +15,6 @@ param          parameter file input and output
 math           mathematical constants and operations
 space          Cartesian vectors, tensors, and grids
 boundary       periodic boundary conditions
-crystal        crystallographic symmetry
 ensembles      statistical mechanical ensembles
 archives       serialization (similar to Boost serialization)
 random         random number generator
