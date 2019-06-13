@@ -10,14 +10,13 @@ include $(SRC_DIR)/util/accumulators/sources.mk
 include $(SRC_DIR)/util/archives/sources.mk
 include $(SRC_DIR)/util/xmltag/sources.mk
 include $(SRC_DIR)/util/space/sources.mk
-include $(SRC_DIR)/util/crystal/sources.mk
 
 util_=$(util_misc_) $(util_format_) \
     $(util_containers_) $(util_mpi_) \
     $(util_signal_) $(util_param_) $(util_math_) \
     $(util_random_) $(util_accumulators_) \
     $(util_archives_) $(util_xmltag_) \
-    $(util_space_) $(util_crystal_) \
+    $(util_space_)
 
 util_SRCS=\
      $(addprefix $(SRC_DIR)/, $(util_))

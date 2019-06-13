@@ -11,7 +11,6 @@
 #include "accumulators/unit/AccumulatorTestComposite.h"
 #include "archives/ArchiveTestComposite.h"
 #include "containers/ContainersTestComposite.h"
-#include "crystal/CrystalTestComposite.h"
 #include "format/FormatTest.h"
 #include "math/MathTestComposite.h"
 #include "param/serial/ParamTestComposite.h"
@@ -37,7 +36,6 @@ addChild(new ArchiveTestComposite, "archives/");
 addChild(new ContainersTestComposite, "containers/");
 addChild(new MathTestComposite, "math/");
 addChild(new AccumulatorTestComposite, "accumulators/unit/");
-addChild(new CrystalTestComposite, "crystal/");
 addChild(new TEST_RUNNER(RandomTest), "random/");
 addChild(new TEST_RUNNER(SignalTest), "signal/");
 addChild(new MiscTestComposite, "misc/");
