@@ -36,7 +36,6 @@ ifeq ($(BLD_DIR),$(SRC_DIR))
 	cd accumulators/unit; $(MAKE) clean
 	cd archives; $(MAKE) clean
 	cd containers; $(MAKE) clean
-	cd crystal; $(MAKE) clean
 	cd format; $(MAKE) clean
 	cd misc; $(MAKE) clean
 	cd param; $(MAKE) clean
