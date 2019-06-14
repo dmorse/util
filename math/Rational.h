@@ -250,13 +250,13 @@ namespace Util
       // Unary negation operation
       friend Rational operator - (Rational const & a);
 
-      #if 0
+      friend 
+      std::ostream & operator << (std::ostream& out, Rational const & rational);
+
+      #ifdef UTIL_CXX11
       friend 
       std::istream & operator >> (std::istream & in, Rational & rational);
       #endif
-
-      friend 
-      std::ostream & operator << (std::ostream& out, Rational const & rational);
 
    };
 
@@ -737,6 +737,19 @@ namespace Util
    * \return modified output stream
    */
    std::ostream& operator << (std::ostream& out, Rational const & rational);
+
+   #ifdef UTIL_CXX11
+   /**
+   * Input stream extractor for a Rational.
+   *
+   * Output elements of a rational to stream, without line breaks.
+   *
+   * \param in  input stream
+   * \param rational  Rational to be written to stream
+   * \return modified input stream
+   */
+   std::istream& operator >> (std::istream& in, Rational & rational);
+   #endif
 
    #ifdef UTIL_MPI
    /**
