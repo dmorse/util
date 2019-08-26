@@ -27,6 +27,8 @@ public:
 
    void testSubscript();
 
+   void testCArray();
+
    void testCopyConstructor();
 
    void testAssignment();
@@ -80,6 +82,22 @@ void DMatrixTest::testSubscript()
    TEST_ASSERT(v(1,0) == 4 );
    TEST_ASSERT(v(0,1) == 5 );
    TEST_ASSERT(v(1,1) == 6 );
+} 
+
+void DMatrixTest::testCArray()
+{
+   printMethod(TEST_FUNC);
+   DMatrix<int> v;
+   v.allocate(2,2);
+   v(0,0) = 3;
+   v(1,0) = 4;
+   v(0,1) = 5;
+   v(1,1) = 6;
+   int* u = v.cArray();
+   TEST_ASSERT(u[0] == 3);
+   TEST_ASSERT(u[1] == 5);
+   TEST_ASSERT(u[2] == 4);
+   TEST_ASSERT(u[3] == 6);
 } 
 
 void DMatrixTest::testCopyConstructor()
@@ -322,6 +340,7 @@ TEST_BEGIN(DMatrixTest)
 TEST_ADD(DMatrixTest, testConstructor)
 TEST_ADD(DMatrixTest, testAllocate)
 TEST_ADD(DMatrixTest, testSubscript)
+TEST_ADD(DMatrixTest, testCArray)
 TEST_ADD(DMatrixTest, testCopyConstructor)
 TEST_ADD(DMatrixTest, testAssignment)
 TEST_ADD(DMatrixTest, testBaseClassReference)

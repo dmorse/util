@@ -17,12 +17,13 @@ namespace Util
    * Two-dimensional array container template (abstract).
    *
    * An Matrix object A is a two-dimensional array in which the operator
-   * A(i,j) returns a reference to element j of row i.
+   * A(i, j) returns a reference to element in column j of row i.
    *
-   * The memory for a Matrix is stored in a single one-dimensional C array.
+   * The memory for a Matrix is stored in a single one-dimensional C array,
+   * in which each row is stored as a consecutive block.
    *
-   * Matrix is an abstract class because it cannot allocate memory.
-   * Concrete subclasses: DMatrix and FMatrix.
+   * Class Matrix is an abstract class because it cannot allocate memory.
+   * Concrete subclasses include DMatrix and FMatrix.
    *
    * \ingroup Matrix_Module
    */
@@ -66,6 +67,16 @@ namespace Util
       * \param  j  column index.
       */
       Data& operator() (int i, int j);
+
+      /**
+      * Return pointer to underlying one-dimensional C array.
+      */
+      Data* cArray();
+
+      /**
+      * Return pointer to const to underlying one-dimensional C array.
+      */
+      const Data* cArray() const;
 
    protected:
 
@@ -119,14 +130,14 @@ namespace Util
    {}
 
    /*
-   * Get number of rows.
+   * Get the number of rows.
    */
    template <typename Data>
    inline int Matrix<Data>::capacity1() const
    {  return capacity1_; }
 
    /*
-   * Get number of columns.
+   * Get the number of columns.
    */
    template <typename Data>
    inline int Matrix<Data>::capacity2() const
@@ -159,6 +170,20 @@ namespace Util
       assert(j < capacity2_);
       return *(data_ + i*capacity2_ + j);
    }
+
+   /*
+   * Get a pointer to the underlying one-dimensional C array.
+   */
+   template <typename Data>
+   inline Data* Matrix<Data>::cArray()
+   {  return data_; }
+
+   /*
+   * Get a pointer to const to the underlying one-dimensional C array.
+   */
+   template <typename Data>
+   inline const Data* Matrix<Data>::cArray() const
+   {  return data_; }
 
 }
 #endif
