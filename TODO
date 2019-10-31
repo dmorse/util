@@ -1,4 +1,4 @@
 - Modify patterns.mk to simplify makefile includes
 
-- Consider moving space/ and crystal/ to simp as well.
+- Consider moving space/ to simp as well.
 
