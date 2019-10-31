@@ -168,7 +168,6 @@ namespace Util
    void Memory::reallocate(Data*& ptr, size_t oldSize, size_t newSize)
    {
       UTIL_CHECK(newSize > 0);
-      UTIL_CHECK(oldSize >= 0);
       UTIL_CHECK(newSize > oldSize);
 
       Data* newPtr = 0;
