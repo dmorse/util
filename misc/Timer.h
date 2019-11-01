@@ -10,7 +10,11 @@
 
 #include <util/global.h>
 
+#ifdef UTIL_CXX11
+#include <chrono>
+#else
 #include <ctime>
+#endif
 
 namespace Util
 {
@@ -38,7 +42,7 @@ namespace Util
       /// Start the clock.
       void start();
 
-      /// Stop the clock, increment time.
+      /// Stop the clock, increment accumulated time.
       void stop();
       
       /// Set accumulated time to zero.
@@ -50,16 +54,25 @@ namespace Util
       /// Is the timer running?
       bool isRunning();
 
+      #ifdef UTIL_CXX11
+      using Clock = std::chrono::steady_clock;
+      using Duration = std::chrono::duration<double>;
+      using TimePoint = Clock::time_point;
+      #else
+      using Duration = double;
+      using TimePoint = clock_t;
+      #endif
+
    private:
 
       /// Accumulated time.
-      double time_;
+      Duration time_;
  
       /// Beginning of interval when Timer is running
-      double begin_;
+      TimePoint begin_;
  
       /// Is the timer running now? 
-      bool   isRunning_; 
+      bool  isRunning_; 
 
    };
 
@@ -67,9 +80,7 @@ namespace Util
    * Constructor
    */
    inline Timer::Timer()
-    : time_(0.0),
-      begin_(0.0),
-      isRunning_(false)
+    : isRunning_(false)
    {}
   
    /*
@@ -77,10 +88,15 @@ namespace Util
    */ 
    inline void Timer::start()
    {
-      if (isRunning_) 
+      if (isRunning_) {
          UTIL_THROW("Attempt to restart an active Timer");
+      }
       isRunning_ = true;
+      #ifdef UTIL_CXX11
+      begin_ = Clock::now();
+      #else
       begin_ = clock(); 
+      #endif
    }
    
    /*
@@ -88,11 +104,22 @@ namespace Util
    */ 
    inline void Timer::stop()
    {
-      double end = clock();
-      if (!isRunning_) 
+      TimePoint end;
+      #ifdef UTIL_CXX11
+      end = Clock::now();
+      #else
+      end = clock();
+      #endif
+      if (isRunning_) {
+         isRunning_ = false;
+      } else {
          UTIL_THROW("Attempt to stop an inactive Timer");
-      isRunning_ = false;
+      }
+      #ifdef UTIL_CXX11
+      time_ += end - begin_;
+      #else
       time_ += double(end - begin_)/double(CLOCKS_PER_SEC); 
+      #endif
    }
    
    /*
@@ -100,7 +127,11 @@ namespace Util
    */ 
    inline void Timer::clear()
    {
-      time_      = 0.0;
+      #ifdef UTIL_CXX11
+      time_  = Duration::zero();
+      #else
+      time_  = 0.0;
+      #endif
       isRunning_ = false;
    }
 
@@ -108,7 +139,13 @@ namespace Util
    * Get the current time.
    */ 
    inline double Timer::time()
-   {  return time_; }
+   {
+      #ifdef UTIL_CXX11
+      return time_.count();
+      #else
+      return time_;
+      #endif
+   }
 
    /*
    * Is this timer running?
