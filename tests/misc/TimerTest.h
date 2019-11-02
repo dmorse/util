@@ -72,12 +72,12 @@ public:
       long int i;
 
       // Accumulate time for one loop
-      now = Timer::Clock::now();
+      now = Timer::now();
       timer.start(now);
       for (i = 0; i < max; ++i) {
          j += 3;
       }
-      now = Timer::Clock::now();
+      now = Timer::now();
       timer.stop(now);
       std::cout << std::endl;
       std::cout << "Total loop time = " 
