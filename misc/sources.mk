@@ -7,6 +7,7 @@ util_misc_=\
     util/misc/initStatic.cpp \
     util/misc/Log.cpp \
     util/misc/Memory.cpp \
+    util/misc/Timer.cpp \
     util/misc/ioUtil.cpp 
 
 util_misc_SRCS=$(addprefix $(SRC_DIR)/, $(util_misc_))

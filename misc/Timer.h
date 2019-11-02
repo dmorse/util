@@ -36,34 +36,75 @@ namespace Util
    
    public:
 	
-      /// Constructor.
-      Timer();
-
-      /// Start the clock.
-      void start();
-
-      /// Stop the clock, increment accumulated time.
-      void stop();
-      
-      /// Set accumulated time to zero.
-      void clear();
-
-      /// Get the accumulated time, in seconds
-      double time();
-
-      /// Is the timer running?
-      bool isRunning();
-
       #ifdef UTIL_CXX11
       using Clock = std::chrono::steady_clock;
-      using Duration = std::chrono::duration<double>;
       using TimePoint = Clock::time_point;
       #else
-      using Duration = double;
       using TimePoint = clock_t;
       #endif
 
+      /**
+      * Default constructor.
+      */
+      Timer();
+
+      /**
+      * Start timing from an externally supplied time
+      *
+      * Set start time and set isRunning = true.
+      *
+      * \param begin starting TimePoint.
+      */
+      void start(TimePoint begin);
+
+      /**
+      * Start timing from now (internally computed).
+      *
+      * Set start time and set isRunning = true.
+      */
+      void start();
+
+      /**
+      * Stop the clock at an externally supplied time.
+      * 
+      * Increment accumulated time, set isRunning = false.
+      */
+      void stop(TimePoint end);
+     
+      /** 
+      * Stop the clock now (internally supplied).
+      *
+      * Increment accumulated time, set isRunning = false.
+      */
+      void stop();
+     
+      /**
+      * Is this Timer running?
+      */
+      bool isRunning();
+
+      /** 
+      * Reset accumulated time to zero.
+      */
+      void clear();
+
+      /**
+      * Return the accumulated time, in seconds.
+      */
+      double time();
+
+      /**
+      * Return current time point.
+      */
+      static TimePoint now();
+
    private:
+
+      #ifdef UTIL_CXX11
+      using Duration = std::chrono::duration<double>;
+      #else
+      using Duration = double;
+      #endif
 
       /// Accumulated time.
       Duration time_;
@@ -77,25 +118,54 @@ namespace Util
    };
 
    /**
-   * Constructor
+   * Return current time point (static function)
    */
-   inline Timer::Timer()
-    : isRunning_(false)
-   {}
-  
+   inline Timer::TimePoint Timer::now()
+   #ifdef UTIL_CXX11
+   {  return Clock::now(); }
+   #else
+   {  return clock(); }
+   #endif
+
    /*
-   * Start the timer.
+   * Start the timer with externally supplied time point.
    */ 
-   inline void Timer::start()
+   inline 
+   void Timer::start(TimePoint begin)
    {
       if (isRunning_) {
          UTIL_THROW("Attempt to restart an active Timer");
       }
       isRunning_ = true;
+      begin_ = begin;
+   }
+   
+   /*
+   * Start the timer.
+   */ 
+   inline 
+   void Timer::start()
+   {
+      if (isRunning_) {
+         UTIL_THROW("Attempt to restart an active Timer");
+      }
+      isRunning_ = true;
+      begin_ = Timer::now();
+   }
+   
+   /*
+   * Stop the timer at externally supplied time point.
+   */ 
+   inline void Timer::stop(TimePoint end)
+   {
+      if (!isRunning_) {
+         UTIL_THROW("Attempt to stop an inactive Timer");
+      }
+      isRunning_ = false;
       #ifdef UTIL_CXX11
-      begin_ = Clock::now();
+      time_ += end - begin_;
       #else
-      begin_ = clock(); 
+      time_ += double(end - begin_)/double(CLOCKS_PER_SEC); 
       #endif
    }
    
@@ -103,24 +173,7 @@ namespace Util
    * Stop the timer.
    */ 
    inline void Timer::stop()
-   {
-      TimePoint end;
-      #ifdef UTIL_CXX11
-      end = Clock::now();
-      #else
-      end = clock();
-      #endif
-      if (isRunning_) {
-         isRunning_ = false;
-      } else {
-         UTIL_THROW("Attempt to stop an inactive Timer");
-      }
-      #ifdef UTIL_CXX11
-      time_ += end - begin_;
-      #else
-      time_ += double(end - begin_)/double(CLOCKS_PER_SEC); 
-      #endif
-   }
+   {  stop(Timer::now()); }
    
    /*
    * Clear the timer.
@@ -133,18 +186,6 @@ namespace Util
       time_  = 0.0;
       #endif
       isRunning_ = false;
-   }
-
-   /*
-   * Get the current time.
-   */ 
-   inline double Timer::time()
-   {
-      #ifdef UTIL_CXX11
-      return time_.count();
-      #else
-      return time_;
-      #endif
    }
 
    /*
