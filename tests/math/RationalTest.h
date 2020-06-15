@@ -240,6 +240,49 @@ public:
       TEST_ASSERT(Memory::total() == 0);
    } 
 
+   #ifndef UTIL_MPI
+   void testStreamInserter()
+   {
+      printMethod(TEST_FUNC);
+      Rational a(3, -7);
+      std::cout << a << "  ";
+
+      Rational b(3, -1);
+      std::cout << b << "  ";
+
+      Rational c(-3, 1);
+      std::cout << c << "  ";
+
+      Rational d(-3, -1);
+      std::cout << d << "  ";
+   }
+   #endif
+
+   #ifdef UTIL_CXX11
+   void testStreamExtractor()
+   {
+      printMethod(TEST_FUNC);
+      Rational a;
+      std::ifstream file;
+      openInputFile("in/Rational", file);
+
+      file >> a;
+      // std::cout << a << std::endl;
+      TEST_ASSERT(a.num() == -3);
+      TEST_ASSERT(a.den() == 4);
+
+      file >> a;
+      // std::cout << a << std::endl;
+      TEST_ASSERT(a.num() == 5);
+      TEST_ASSERT(a.den() == 3);
+
+      file >> a;
+      // std::cout << a << std::endl;
+      TEST_ASSERT(a.num() == 3);
+      TEST_ASSERT(a.den() == 1);
+   }
+   #endif
+
 };
 
 TEST_BEGIN(RationalTest)
@@ -260,6 +303,12 @@ TEST_ADD(RationalTest, testAddSubtract)
 TEST_ADD(RationalTest, testMultiplyDivideAssignment)
 TEST_ADD(RationalTest, testMultiplyDivideIntAssignment)
 TEST_ADD(RationalTest, testMultiplyDivide)
+#ifndef UTIL_MPI
+TEST_ADD(RationalTest, testStreamInserter)
+#endif
+#ifdef UTIL_CXX11
+TEST_ADD(RationalTest, testStreamExtractor)
+#endif
 TEST_END(RationalTest)
 
 #endif
