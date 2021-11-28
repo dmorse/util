@@ -60,16 +60,14 @@ namespace Util
       */
       FArray(const FArray<Data, Capacity>& other);
    
+      // Default destructor is okay.
+
       /**
       * Assignment, element by element.
       *
-      * Capacity of LHS FArray must be >= size of RHS FArray.
-      *
-      * \param other the RHS FArray 
+      * \param other  the RHS FArray 
       */
-      FArray<Data, Capacity>& operator=(const FArray<Data, Capacity>& other);
-
-      // Default destructor is okay.
+      FArray<Data, Capacity>& operator = (FArray<Data, Capacity> const & other);
 
       /**
       * Return number of elements in this FArray.
@@ -162,12 +160,14 @@ namespace Util
    *\param other the FArray to be copied.
    */
    template <typename Data, int Capacity>
-   FArray<Data, Capacity>::FArray(const FArray<Data, Capacity>& other) 
+   FArray<Data, Capacity>::FArray(FArray<Data, Capacity> const & other) 
    {
       for (int i = 0; i < Capacity; ++i) {
          data_[i] = other.data_[i];
       }
    }
+
+   // Default destructor is okay.
 
    /*
    * Assignment, element by element.
@@ -178,7 +178,7 @@ namespace Util
    */
    template <typename Data, int Capacity>
    FArray<Data, Capacity>& 
-   FArray<Data, Capacity>::operator=(const FArray<Data, Capacity>& other) 
+   FArray<Data, Capacity>::operator=(FArray<Data, Capacity> const & other) 
    {
 
       // Check for self assignment
@@ -191,14 +191,12 @@ namespace Util
       return *this;
    }
 
-   // Default constructor is okay.
-
    /*
    * Return number of elements in this FArray.
    */
    template <typename Data, int Capacity>
    inline int FArray<Data, Capacity>::size() const
-   { return Capacity; }
+   {  return Capacity; }
 
    /*
    * Return number of elements in this FArray.
@@ -211,7 +209,8 @@ namespace Util
    * Set an ArrayIterator to the beginning of this Array.
    */
    template <typename Data, int Capacity>
-   inline void FArray<Data, Capacity>::begin(ArrayIterator<Data> &iterator)
+   inline 
+   void FArray<Data, Capacity>::begin(ArrayIterator<Data> &iterator)
    {
       iterator.setCurrent(data_);
       iterator.setEnd(data_ + Capacity);
@@ -221,8 +220,9 @@ namespace Util
    * Set a ConstArrayIterator to the beginning of this Array.
    */
    template <typename Data, int Capacity>
-   inline void 
-   FArray<Data, Capacity>::begin(ConstArrayIterator<Data> &iterator) const
+   inline 
+   void FArray<Data, Capacity>::begin(ConstArrayIterator<Data> &iterator) 
+   const
    {
       iterator.setCurrent(data_);
       iterator.setEnd(data_ + Capacity);
@@ -261,7 +261,7 @@ namespace Util
    * Return pointer to const to underlying C array.
    */
    template <typename Data, int Capacity>
-   const Data* FArray<Data, Capacity>::cArray() const
+   Data const * FArray<Data, Capacity>::cArray() const
    {  return data_; }
 
    /*
@@ -277,7 +277,7 @@ namespace Util
       }
    }
 
-   /**
+   /*
    * Packed size of FArray in a MemoryArchive, in bytes.
    */
    template <typename Data, int Capacity>

@@ -28,14 +28,13 @@ public:
 
 
    void tearDown()
-   {
-      delete random;
+   { 
+      delete random; 
    };
 
 
    void testReadParam() 
    {
-
       printMethod(TEST_FUNC);
 
       std::ifstream in;
@@ -127,7 +126,7 @@ public:
       double x;
 
       printMethod(TEST_FUNC);
-      printEndl();
+      if (verbose() > 1) printEndl();
 
       std::ifstream in;
       openInputFile("in/Random", in);
@@ -167,47 +166,52 @@ public:
 
    }
 
-   void testBinarySerialize() 
-   {
+   void testBinarySerialize() {
       if (isIoProcessor()) {   
          printMethod(TEST_FUNC);
    
+         // Read parameters from file
          std::ifstream in;
          openInputFile("in/Random", in);
          if (ParamComponent::echo()) printEndl();
          random->readParam(in);
    
-         // Pull random number to change state
+         // Pull 20 random numbers to change state
          for (int i=0; i < 20; i++) {
             random->uniformInt(0, 255);
          }
+   
+         // Write Random object to file
          BinaryFileOArchive oar;
-         openOutputFile("tmp/binary", oar.file());
-     
+         openOutputFile("out/binary", oar.file());
          oar << *random;
          oar.file().close();
    
-         printEndl();
-         std::cout << random->uniformInt(0,255) << std::endl;
-         std::cout << random->uniformInt(0,255) << std::endl;
-         std::cout << random->uniformInt(0,255) << std::endl;
-      }
-   }
-
-   void testBinaryUnSerialize() 
-   {
-      if (isIoProcessor()) {   
-         printMethod(TEST_FUNC);
+         // Extract 3 integers after writing to file
+         int a = random->uniformInt(0,255);
+         int b = random->uniformInt(0,255);
+         int c = random->uniformInt(0,255);
    
+         if (verbose() > 1) {
+            printEndl();
+            std::cout << a << std::endl;
+            std::cout << b << std::endl;
+            std::cout << c << std::endl;
+         }
+   
+         // Read new Random object from input file archive
          BinaryFileIArchive iar;
-         openInputFile("tmp/binary", iar.file());
-     
-         iar >> *random;
+         openInputFile("out/binary", iar.file());
+         Random* ranPtr = new Random;
+         iar >> *ranPtr;
+         iar.file().close();
    
-         printEndl();
-         std::cout << random->uniformInt(0,255) << std::endl;
-         std::cout << random->uniformInt(0,255) << std::endl;
-         std::cout << random->uniformInt(0,255) << std::endl;
+         // Extract 3 integers after reading from file, and compare
+         TEST_ASSERT(ranPtr->uniformInt(0,255) == a);
+         TEST_ASSERT(ranPtr->uniformInt(0,255) == b);
+         TEST_ASSERT(ranPtr->uniformInt(0,255) == c);
+   
+         delete ranPtr;
       }
    }
 
@@ -220,8 +224,6 @@ TEST_ADD(RandomTest, testGetInteger)
 TEST_ADD(RandomTest, testGaussian)
 TEST_ADD(RandomTest, testUnitVector)
 TEST_ADD(RandomTest, testBinarySerialize)
-TEST_ADD(RandomTest, testBinaryUnSerialize)
 TEST_END(RandomTest)
-
 
 #endif

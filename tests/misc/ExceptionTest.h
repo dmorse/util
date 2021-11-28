@@ -36,6 +36,7 @@ public:
                                  __FILE__, __LINE__, 1);
       exceptionPtr_->write(std::cout);
       delete exceptionPtr_;
+      std::cout << "Expected Exception message" << std::endl;
    }
 
    void testThrow1() 
@@ -48,6 +49,7 @@ public:
       }
       catch (Exception e) {
          e.write(std::cout);
+         std::cout << "Caught expected Exception" << std::endl;
       }
 
    }
@@ -57,12 +59,16 @@ public:
       printMethod(TEST_FUNC);
       printEndl();
 
+      bool success = false;
       try {
          UTIL_THROW("My message");
       }
       catch (Exception e) {
+         success = true;
          e.write(std::cout);
+         std::cout << "Caught expected Exception" << std::endl;
       }
+      TEST_ASSERT(success);
    }
 
    void testAssert() 
@@ -70,7 +76,15 @@ public:
       printMethod(TEST_FUNC);
       printEndl();
 
-      UTIL_ASSERT(1 == 2);
+      bool success = false;
+      try {
+         UTIL_ASSERT(1 == 2);
+      } 
+      catch (Exception e) {
+         success = true;
+         std::cout << "Caught expected Exception" << std::endl;
+      }
+      TEST_ASSERT(success);
    }
 
 };

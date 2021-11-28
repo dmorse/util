@@ -106,7 +106,7 @@ namespace Util
       /**
       * Assignment, private and not implemented.
       */
-      Matrix<Data>& operator = (const Matrix<Data>& other);
+      Matrix<Data>& operator = (Matrix<Data> const & other);
 
    };
 

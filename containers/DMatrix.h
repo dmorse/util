@@ -118,14 +118,14 @@ namespace Util
    * Assignment.
    */
    template <typename Data>
-   DMatrix<Data>& DMatrix<Data>::operator = (const DMatrix<Data>& other) 
+   DMatrix<Data>& DMatrix<Data>::operator = (DMatrix<Data> const & other) 
    {
       // Check for self assignment.
       if (this == &other) return *this;
 
       // Precondition
       if (other.data_ == 0) {
-         UTIL_THROW("RHS DMatrix must be allocated in assignment");
+         UTIL_THROW("RHS DMatrix must be allocated before assignment");
       }
 
       if (data_ == 0) {

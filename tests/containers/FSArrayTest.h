@@ -82,7 +82,6 @@ void FSArrayTest::testSerialize()
    FSArray<Data, Capacity> v;
 
    Data a(10, 10.1), b(20, 20.1), d(40, 40.1);
-   // Data c(30, 30.1), e(50, 50.1), f(60, 60.1);
   
    // Fill FSArray v
    v.append(a);

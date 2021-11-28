@@ -106,6 +106,7 @@ public:
          flags.setActualOrdered(actual);
       } catch (Exception e) {
          success = true;
+         std::cout << "Caught expected exception" << std::endl;
       }
       TEST_ASSERT(success);
    }
@@ -125,6 +126,7 @@ public:
          flags.setActualOrdered(actual);
       } catch (Exception e) {
          success = true;
+         std::cout << "Caught expected exception" << std::endl;
       }
       TEST_ASSERT(success);
    }

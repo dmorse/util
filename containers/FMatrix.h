@@ -26,14 +26,14 @@ namespace Util
    */
    template <typename Data, int M, int N>
    class FMatrix : public Matrix<Data>
-   { 
-   
+   {
+
       using Matrix<Data>::data_;
       using Matrix<Data>::capacity1_;
       using Matrix<Data>::capacity2_;
-   
-   public: 
-   
+
+   public:
+
       /**
       * Default constructor.
       */
@@ -42,7 +42,7 @@ namespace Util
       /**
       * Copy constructor.
       */
-      FMatrix(const FMatrix<Data, M, N>& other);
+      FMatrix(FMatrix<Data, M, N> const & other);
 
       /**
       * Destructor.
@@ -52,12 +52,12 @@ namespace Util
       /**
       * Assignment.
       */
-      FMatrix<Data, M, N>& operator = (const FMatrix<Data, M, N>& other);
+      FMatrix<Data, M, N>& operator = (FMatrix<Data, M, N> const & other);
 
       /**
       * Serialize an FMatrix to/from an Archive.
       *
-      * \param ar       archive 
+      * \param ar  archive
       * \param version  archive version id
       */
       template <class Archive>
@@ -65,28 +65,28 @@ namespace Util
 
    private:
 
-      /// 1D fixed size C array that holds elements of 2D array.   
+      /// 1D fixed size C array that holds elements of 2D array.
       Data fixedArray_[M*N];
-   
+
    };
 
    /*
    * Default constructor.
    */
    template <typename Data, int M, int N>
-   FMatrix<Data,M,N>::FMatrix() 
+   FMatrix<Data, M, N>::FMatrix()
      : Matrix<Data>()
    {
       data_ = fixedArray_;
       capacity1_ = M;
       capacity2_ = N;
    }
-   
+
    /*
    * Copy constructor.
    */
    template <typename Data, int M, int N>
-   FMatrix<Data,M,N>::FMatrix(const FMatrix<Data, M, N>& other) 
+   FMatrix<Data, M, N>::FMatrix(FMatrix<Data, M, N> const & other)
      : Matrix<Data>()
    {
       data_ = fixedArray_;
@@ -96,43 +96,44 @@ namespace Util
          fixedArray_[i] = other.fixedArray_[i];
       }
    }
-   
+
    /*
    * Destructor.
    */
    template <typename Data, int M, int N>
-   FMatrix<Data,M,N>::~FMatrix()
+   FMatrix<Data, M, N>::~FMatrix()
    {}
 
    /*
    * Assignment.
    */
    template <typename Data, int M, int N>
-   FMatrix<Data,M,N>& 
-   FMatrix<Data,M,N>::operator = (const FMatrix<Data, M, N>& other) 
+   FMatrix<Data, M, N>&
+   FMatrix<Data, M, N>::operator = (FMatrix<Data, M, N> const & other)
    {
-      //Check for self assignment
+      // Check for self assignment
       if (this == &other) return *this;
 
-      // Copy elements
+      // Copy all elements
       for (int i = 0; i < M*N; ++i) {
          fixedArray_[i] = other.fixedArray_[i];
       }
 
       return *this;
    }
-   
+
    /*
    * Serialize a FMatrix to/from an Archive.
    */
    template <class Data, int M, int N>
    template <class Archive>
-   void FMatrix<Data,M,N>::serialize(Archive& ar, const unsigned int version)
+   void 
+   FMatrix<Data, M, N>::serialize(Archive& ar, const unsigned int version)
    {
       for (int i = 0; i < M*N; ++i) {
          ar & fixedArray_[i];
       }
    }
 
-} 
+}
 #endif
