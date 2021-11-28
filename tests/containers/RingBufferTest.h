@@ -65,7 +65,6 @@ void RingBufferTest::testSubscript1()
    {
       RingBuffer<Data>  v;
       Data a(10, 10.1), b(20,20.1);
-      // Data  c(30,30.1), d(40,40.1), e(50,50.1), f(60,60.1);
    
       v.allocate(3);
       v.append(a);
@@ -122,11 +121,7 @@ void RingBufferTest::testSerialize1()
    printMethod(TEST_FUNC);
    {
       RingBuffer<Data>  v;
-      Data a(10, 10.1), b(20,20.1);
-      Data  d(40,40.1);
-
-      // Data c(30,30.1);
-      // Data e(50,50.1), f(60,60.1);
+      Data a(10, 10.1), b(20,20.1), d(40,40.1);
    
       // Fill RingBuffer v
       v.allocate(5);
@@ -182,10 +177,7 @@ void RingBufferTest::testSerialize2()
    printMethod(TEST_FUNC);
    {
       RingBuffer<Data>  v;
-      Data a(10, 10.1), b(20,20.1);
-      Data  d(40, 40.1);
-      // Data e(50,50.1), f(60,60.1);
-      // Data c(30,30.1);
+      Data a(10, 10.1), b(20,20.1), d(40,40.1);
 
       // Fill RingBuffer v
       v.allocate(5);
