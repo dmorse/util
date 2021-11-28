@@ -9,9 +9,8 @@
 */
 
 #include <util/containers/GArray.h>  // base class
-#include <util/containers/DArray.h>  // base class
 #include <util/math/Rational.h>      // default template argument
-#include <util/math/Binomial.h>      // default in implementation
+#include <util/math/Binomial.h>      // used in implementation
 #include <util/containers/DArray.h>  // used in implementation
 #include <util/global.h>
 
@@ -121,7 +120,7 @@ namespace Util
       *
       * \param a increment (input)
       */
-      Polynomial<T>& operator += (const Polynomial<T>& a);
+      Polynomial<T>& operator += (Polynomial<T> const & a);
 
       /**
       * Add a constant to this polynomial.
@@ -139,7 +138,7 @@ namespace Util
       *
       * \param a decrement (input)
       */
-      Polynomial<T>& operator -= (const Polynomial<T>& a);
+      Polynomial<T>& operator -= (Polynomial<T> const & a);
 
       /**
       * Subtract a constant from this polynomial.
@@ -175,7 +174,7 @@ namespace Util
       *
       * \param a increment (input)
       */
-      Polynomial<T>& operator *= (const Polynomial<T>& a);
+      Polynomial<T>& operator *= (Polynomial<T> const & a);
 
       //@}
       /// \name Mathematical Functions (return polynomials)
@@ -347,7 +346,7 @@ namespace Util
    * Addition assignment operator : add another polynomial to this one.
    */
    template <typename T>
-   Polynomial<T>& Polynomial<T>::operator += (const Polynomial<T>& a)
+   Polynomial<T>& Polynomial<T>::operator += (Polynomial<T> const & a)
    {
       if (a.size() > 0) {
          int min = a.size() > size() ? size() : a.size();
@@ -384,7 +383,7 @@ namespace Util
    * Subtract assignment operator : subtract another polynomial from this.
    */
    template <typename T>
-   Polynomial<T>& Polynomial<T>::operator -= (const Polynomial<T>& a)
+   Polynomial<T>& Polynomial<T>::operator -= (Polynomial<T> const & a)
    {
       if (a.size() > 0) {
          int min = a.size() > size() ? size() : a.size();
@@ -673,7 +672,7 @@ namespace Util
    * \return true if a != b
    */
    template <typename T>
-   bool operator == (Polynomial<T>& a, Polynomial<T>& b)
+   bool operator == (Polynomial<T> const & a, Polynomial<T> const & b)
    {
       if (a.size() != b.size()) return false;
       if (a.size() > 0) {
@@ -692,7 +691,7 @@ namespace Util
    * \return true if a != b
    */
    template <typename T>
-   bool operator != (Polynomial<T>& a, Polynomial<T>& b)
+   bool operator != (Polynomial<T> const & a, Polynomial<T> const & b)
    {  return !(a == b); }
 
    /**
