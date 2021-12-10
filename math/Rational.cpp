@@ -43,7 +43,7 @@ namespace Util
       // Extract numerator and denominator 
       if (hasSlash) {
          UTIL_CHECK(slashId > 0);
-         UTIL_CHECK(slashId < size - 1);
+         UTIL_CHECK((int)slashId < size - 1);
          int numSize = slashId;
          int denSize = size - slashId - 1;
          std::string numStr = word.substr(0, numSize);
