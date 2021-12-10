@@ -40,7 +40,7 @@ namespace Util
       using Clock = std::chrono::steady_clock;
       using TimePoint = Clock::time_point;
       #else
-      using TimePoint = clock_t;
+      typedef clock_t TimePoint;
       #endif
 
       /**
@@ -103,7 +103,7 @@ namespace Util
       #ifdef UTIL_CXX11
       using Duration = std::chrono::duration<double>;
       #else
-      using Duration = double;
+      typedef double Duration;
       #endif
 
       /// Accumulated time.

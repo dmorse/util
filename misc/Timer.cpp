@@ -10,7 +10,7 @@
 namespace Util
 {
 
-   /**
+   /*
    * Constructor
    */
    Timer::Timer()
