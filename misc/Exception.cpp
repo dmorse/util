@@ -75,7 +75,7 @@ namespace Util
    * Write message to stream.
    */
    void Exception::write(std::ostream &out)
-   {  out << message_; }
+   {  out << message_ << std::flush; }
 
    /*
    * Get message by reference
