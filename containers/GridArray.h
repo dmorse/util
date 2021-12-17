@@ -38,7 +38,7 @@ namespace Util
       /**
       * Copy constructor.
       */
-      GridArray(const GridArray<Data>& other);
+      GridArray(GridArray<Data> const & other);
 
       /**
       * Destructor.
@@ -50,7 +50,7 @@ namespace Util
       /**
       * Assignment.
       */
-      GridArray<Data>& operator = (const GridArray<Data>& other);
+      GridArray<Data>& operator = (GridArray<Data> const & other);
 
       // Initialization
 
@@ -59,7 +59,7 @@ namespace Util
       *
       * \param dimensions IntVector containing dimensions
       */
-      void allocate(const IntVector& dimensions);
+      void allocate(IntVector const & dimensions);
 
       /**
       * Serialize a GridArray to/from an Archive.
@@ -80,9 +80,9 @@ namespace Util
       /**
       * Get all dimensions of array as an IntVector.
       *
-      * \return IntVector containing the number of elements in each direction.
+      * \return IntVector containing number of elements in each direction.
       */
-      const IntVector& dimensions();
+      IntVector const & dimensions();
 
       /**
       * Get number of grid points along direction i.
@@ -110,7 +110,7 @@ namespace Util
       * \param  position integer position of a grid point
       * \return integer rank of specified grid point
       */
-      int rank(const IntVector& position) const;
+      int rank(IntVector const & position) const;
 
       /**
       * Is this 1D coordinate in range?
@@ -164,7 +164,7 @@ namespace Util
       *
       * \param rank 1D array index of element
       */
-      const Data& operator[] (int rank) const;
+      Data const & operator[] (int rank) const;
 
       /**
       * Return element by reference, indexed by 1D rank.
@@ -178,14 +178,14 @@ namespace Util
       *
       * \param position IntVector of coordinates.
       */
-      const Data& operator() (const IntVector& position) const;
+      Data const & operator() (IntVector const & position) const;
 
       /**
       * Return element by reference, indexed by IntVector position.
       *
       * \param position IntVector of coordinates.
       */
-      Data& operator() (const IntVector& position);
+      Data& operator() (IntVector const & position);
 
       /*
       * Return pointer to underlying 1D C-array.
@@ -239,7 +239,7 @@ namespace Util
    * Copy constructor.
    */
    template <typename Data>
-   GridArray<Data>::GridArray(const GridArray<Data>& other)
+   GridArray<Data>::GridArray(GridArray<Data> const & other)
     : data_(0),
       offsets_(),
       dimensions_(),
@@ -269,7 +269,8 @@ namespace Util
    * Assignment.
    */
    template <typename Data>
-   GridArray<Data>& GridArray<Data>::operator = (const GridArray<Data>& other)
+   GridArray<Data>& 
+   GridArray<Data>::operator= (GridArray<Data> const & other)
    {
       // Check for self assignment.
       if (this == &other) {
@@ -309,7 +310,7 @@ namespace Util
    * Set dimensions and allocate memory.
    */
    template <typename Data>
-   void GridArray<Data>::allocate(const IntVector& dimensions)
+   void GridArray<Data>::allocate(IntVector const & dimensions)
    {
       if (isAllocated()) {
          UTIL_THROW("Attempt to re-allocate a GridArray");
@@ -354,7 +355,7 @@ namespace Util
    * Get IntVector of dimensions.
    */
    template <typename Data>
-   inline const IntVector& GridArray<Data>::dimensions()
+   inline IntVector const & GridArray<Data>::dimensions()
    {  return dimensions_; }
 
    /*
@@ -376,7 +377,7 @@ namespace Util
    */
    template <typename Data>
    #ifdef UTIL_DEBUG
-   int GridArray<Data>::rank(const IntVector& position) const
+   int GridArray<Data>::rank(IntVector const & position) const
    {
       int result = 0;
       int i;
@@ -391,7 +392,7 @@ namespace Util
       return result;
    }
    #else
-   inline int GridArray<Data>::rank(const IntVector& position) const
+   inline int GridArray<Data>::rank(IntVector const & position) const
    {
       return (position[0]*offsets_[0] + position[1]*offsets_[1] + position[2]);
    }
@@ -478,7 +479,7 @@ namespace Util
    * Return element by const reference, indexed by 1D rank.
    */
    template <typename Data>
-   inline const Data& GridArray<Data>::operator[] (int rank) const
+   inline Data const & GridArray<Data>::operator[] (int rank) const
    {  return *(data_ + rank); }
 
    /*
@@ -493,21 +494,22 @@ namespace Util
    */
    template <typename Data>
    inline
-   const Data& GridArray<Data>::operator() (const IntVector& position) const
+   Data const & GridArray<Data>::operator() (IntVector const & position) 
+   const
    {  return *(data_ + rank(position)); }
 
    /*
    * Return element by reference, indexed by IntVector of coordinates
    */
    template <typename Data>
-   inline Data& GridArray<Data>::operator() (const IntVector& position)
+   inline Data& GridArray<Data>::operator() (IntVector const & position)
    {  return *(data_ + rank(position)); }
 
    /*
    * Return pointer to underlying 1D C-array.
    */
    template <typename Data>
-   inline Data* GridArray<Data>::data() 
+   inline Data * GridArray<Data>::data() 
    {  return data_;}
 
    /*

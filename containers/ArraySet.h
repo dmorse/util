@@ -74,7 +74,7 @@ namespace Util
       * \param array    associated C array of Data objects
       * \param capacity number of elements in the array
       */
-      void allocate(const Data* array, int capacity);
+      void allocate(Data const * array, int capacity);
   
       /**
       * Associate with an Array container and allocate required memory.
@@ -83,7 +83,7 @@ namespace Util
       *
       * \param array associated Array<Data> container
       */
-      void allocate(const Array<Data>& array);
+      void allocate(Array<Data> const & array);
   
       /// \name Mutators
       //@{
@@ -108,7 +108,7 @@ namespace Util
       *
       * \param data array element to be added.
       */
-      void remove(const Data& data);
+      void remove(Data const & data);
 
       /**
       * Pop the topmost from the set.
@@ -141,7 +141,7 @@ namespace Util
       * \param  data array element of interest.
       * \return current index of pointer to element within this ArraySet.
       */
-      int index(const Data& data) const;
+      int index(Data const & data) const;
 
       /**
       * Return true if the ArraySet is initialized, false otherwise.
@@ -169,13 +169,13 @@ namespace Util
       int* tags_;
    
       // Return the array index in data_ of a Data* pointer
-      int id(const Data *ptr) const;
+      int id(Data const* ptr) const;
 
       /// Copy constructor, declared private to prohibit copying.
-      ArraySet(const ArraySet&);
+      ArraySet(ArraySet const &);
 
       /// Assignment, declared private to prohibit assignment.
-      ArraySet& operator = (const ArraySet&);
+      ArraySet& operator = (ArraySet const &);
 
    }; 
 
@@ -207,7 +207,7 @@ namespace Util
    * Create an association with a C array, and allocate required memory.
    */
    template <typename Data>
-   void ArraySet<Data>::allocate(const Data* array, int capacity) 
+   void ArraySet<Data>::allocate(Data const * array, int capacity) 
    {
 
       // Preconditions
@@ -234,7 +234,7 @@ namespace Util
    * Create association with an Array, and allocate required memory.
    */
    template <typename Data>
-   void ArraySet<Data>::allocate(const Array<Data>& array) 
+   void ArraySet<Data>::allocate(Array<Data> const & array) 
    {  allocate(&array[0], array.capacity()); }
 
    /*
@@ -265,7 +265,7 @@ namespace Util
    * Remove a specific element from the set.
    */
    template <typename Data>
-   void ArraySet<Data>::remove(const Data& data)
+   void ArraySet<Data>::remove(Data const & data)
    {
       const Data* const ptr = &data;
 
@@ -332,7 +332,7 @@ namespace Util
    * a negative value -1 if the element is not in the set.
    */
    template <typename Data>
-   int ArraySet<Data>::index(const Data& data) const
+   int ArraySet<Data>::index(Data const & data) const
    {
       const Data* const ptr = &data;
       if (ptr < data_ || ptr >= data_ + capacity_) {
@@ -420,7 +420,7 @@ namespace Util
    // Private inline function
 
    template <typename Data>
-   inline int ArraySet<Data>::id(const Data *ptr) const
+   inline int ArraySet<Data>::id(Data const * ptr) const
    {  return int(ptr - data_); }
 
 } 

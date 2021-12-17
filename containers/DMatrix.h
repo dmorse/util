@@ -38,14 +38,14 @@ namespace Util
       /**
       * Copy constructor.
       */
-      DMatrix(const DMatrix<Data>& other);
+      DMatrix(DMatrix<Data> const & other);
 
       /**
       * Assignment.
       *
       * \throw Exception if LHS and RHS dimensions do not match.
       */
-      DMatrix<Data>& operator= (const DMatrix<Data>& other);
+      DMatrix<Data>& operator= (DMatrix<Data> const & other);
 
       /**
       * Destructor.
@@ -99,7 +99,7 @@ namespace Util
    * Copy constructor.
    */
    template <typename Data>
-   DMatrix<Data>::DMatrix(const DMatrix<Data>& other) 
+   DMatrix<Data>::DMatrix(DMatrix<Data> const & other) 
      : Matrix<Data>()
    {
       // Precondition

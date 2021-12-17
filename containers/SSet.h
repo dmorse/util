@@ -57,14 +57,14 @@ namespace Util
       *
       *\param other the SSet to be copied.
       */
-      SSet(const SSet<Data, Capacity>& other);
+      SSet(SSet<Data, Capacity> const & other);
 
       /**
       * Assignment, element by element.
       *
       * \param other the rhs SSet 
       */
-      SSet<Data, Capacity>& operator=(const SSet<Data, Capacity>& other);
+      SSet<Data, Capacity>& operator=(SSet<Data, Capacity> const & other);
 
       /**
       * Destructor.
@@ -90,7 +90,7 @@ namespace Util
       *
       * \param data object to be removed.
       */
-      void remove(const Data& data);
+      void remove(Data const & data);
 
       /**
       * Set logical size to zero and nullify all elements.
@@ -112,7 +112,7 @@ namespace Util
       *
       * \param  data object of interest.
       */
-      bool isElement(const Data& data) const;
+      bool isElement(Data const & data) const;
 
       /**
       * Return the current index of an object within the set, if any.
@@ -126,7 +126,7 @@ namespace Util
       * \param  data object of interest.
       * \return current index of pointer to element within this SSet.
       */
-      int index(const Data& data) const;
+      int index(Data const & data) const;
 
       /**
       * Set a PArrayIterator to the beginning of this Array.
@@ -156,7 +156,7 @@ namespace Util
       * \param i array index
       * \return const reference to element i
       */
-      const Data& operator[] (int i) const;
+      Data const & operator[] (int i) const;
 
    protected:
 
@@ -182,7 +182,7 @@ namespace Util
    * Copy constructor, copy all pointers.
    */
    template<typename Data, int Capacity>
-   SSet<Data, Capacity>::SSet(const SSet<Data, Capacity>& other) 
+   SSet<Data, Capacity>::SSet(SSet<Data, Capacity> const & other) 
    {
 
       // Copy pointer values
@@ -206,7 +206,7 @@ namespace Util
    */
    template <typename Data, int Capacity>
    SSet<Data, Capacity>& 
-   SSet<Data, Capacity>::operator=(const SSet<Data, Capacity>& other) 
+   SSet<Data, Capacity>::operator=(SSet<Data, Capacity> const & other) 
    {
 
       // Check for self assignment
@@ -270,7 +270,9 @@ namespace Util
    * Set a PArrayIterator to the beginning of this Array.
    */
    template <typename Data, int Capacity>
-   inline void SSet<Data, Capacity>::begin(ConstPArrayIterator<Data> &iterator) const
+   inline 
+   void SSet<Data, Capacity>::begin(ConstPArrayIterator<Data> &iterator) 
+   const
    {
       iterator.setCurrent(const_cast<Data**>(ptrs_));
       iterator.setEnd(const_cast<Data**>(ptrs_ + size_));
@@ -291,7 +293,7 @@ namespace Util
    * Mimic C array subscripting.
    */
    template <typename Data, int Capacity>
-   inline const Data& SSet<Data, Capacity>::operator[] (int i) const
+   inline Data const & SSet<Data, Capacity>::operator[] (int i) const
    {
       assert(i < size_);
       assert(i >= 0 );
@@ -329,9 +331,9 @@ namespace Util
    * Remove an element from the set.
    */
    template <typename Data, int Capacity>
-   void SSet<Data, Capacity>::remove(const Data& data)
+   void SSet<Data, Capacity>::remove(Data const & data)
    {
-      const Data* const ptr = &data;
+      Data const * const ptr = &data;
       int   i;
       bool  found;
 
@@ -361,9 +363,9 @@ namespace Util
    * Return true if an object is in the set, false otherwise.
    */
    template <typename Data, int Capacity>
-   bool SSet<Data, Capacity>::isElement(const Data& data) const
+   bool SSet<Data, Capacity>::isElement(Data const & data) const
    {
-      const Data* const ptr = &data;
+      Data const * const ptr = &data;
       bool  found;
 
       // Search for element in set
@@ -382,9 +384,9 @@ namespace Util
    * or return -1 if the element is not in the set.
    */
    template <typename Data, int Capacity>
-   int SSet<Data, Capacity>::index(const Data& data) const
+   int SSet<Data, Capacity>::index(Data const & data) const
    {
-      const Data* const ptr = &data;
+      Data const * const ptr = &data;
       int   i;
       bool  found;
 

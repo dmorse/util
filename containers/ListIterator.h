@@ -49,7 +49,7 @@ namespace Util
       *
       * \param list parent List
       */
-      explicit ListIterator(const List<Data>& list)
+      explicit ListIterator(List<Data> const & list)
        : current_(0)
       { list.begin(*this); }
 
@@ -96,7 +96,7 @@ namespace Util
       *
       * \return const reference to the associated Data object
       */
-      const Data& operator* () const
+      Data const & operator* () const
       { return current_->data(); }
 
       /**
@@ -112,7 +112,7 @@ namespace Util
       *
       * \return pointer to associated Data object
       */
-      const Data * operator -> () const
+      Data const * operator -> () const
       { return &(current_->data()); }
 
       /**

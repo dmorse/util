@@ -97,12 +97,12 @@ namespace Util
       /**
       * Copy constructor, private to prohibit copy construction.
       */
-      PArray(const PArray<Data>& other);
+      PArray(PArray<Data> const & other);
 
       /**
       * Assignment, private to prohibit assignment.
       */
-      PArray<Data>& operator = (const PArray<Data>& other);
+      PArray<Data>& operator = (PArray<Data> const & other);
 
    };
 

@@ -65,7 +65,7 @@ namespace Util
       *
       * \param other another RArray<Data> for which this is an alias.
       */
-      RArray(const RArray<Data>& other) : 
+      RArray(RArray<Data> const & other) : 
          Array<Data>()
       {
          data_     = other.data_;
@@ -112,7 +112,7 @@ namespace Util
       /**
       * Assignment, private and not implemented to prohibit operation.
       */
-      RArray<Data>& operator=(const RArray<Data>& other);
+      RArray<Data>& operator=(RArray<Data> const & other);
    
    }; // end class RArray
 

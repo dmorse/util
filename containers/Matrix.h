@@ -58,7 +58,7 @@ namespace Util
       * \param  i  row index.
       * \param  j  column index.
       */
-      const Data& operator() (int i, int j) const;
+      Data const & operator() (int i, int j) const;
 
       /**
       * Return element (i,j) of matrix by reference.
@@ -76,7 +76,7 @@ namespace Util
       /**
       * Return pointer to const to underlying one-dimensional C array.
       */
-      const Data* cArray() const;
+      Data const * cArray() const;
 
    protected:
 
@@ -101,7 +101,7 @@ namespace Util
       /**
       * Copy constructor, private and not implemented.
       */
-      Matrix(const Matrix<Data>& other);
+      Matrix(Matrix<Data> const & other);
 
       /**
       * Assignment, private and not implemented.
@@ -147,7 +147,7 @@ namespace Util
    * Return element (i,j) of matrix by const reference.
    */
    template <typename Data>
-   inline const Data& Matrix<Data>::operator() (int i, int j) const
+   inline Data const & Matrix<Data>::operator() (int i, int j) const
    {
       assert(data_ != 0);
       assert(i >= 0);
@@ -182,7 +182,7 @@ namespace Util
    * Get a pointer to const to the underlying one-dimensional C array.
    */
    template <typename Data>
-   inline const Data* Matrix<Data>::cArray() const
+   inline Data const * Matrix<Data>::cArray() const
    {  return data_; }
 
 }

@@ -37,7 +37,7 @@ namespace Util
       /**
       * Copy constructor.
       */
-      Node(const Node<Data>& other)
+      Node(Node<Data> const & other)
        : prev_(other.prev_),
          next_(other.next_),
          list_(other.list_),
@@ -65,7 +65,7 @@ namespace Util
       *
       * \return Data object associated with this Node.
       */
-      const Data& data() const
+      Data const & data() const
       { return datum_; }
 
       /**

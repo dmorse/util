@@ -38,14 +38,14 @@ namespace Util
       *
       * \param other object to be copied.
       */
-      RingBuffer(const RingBuffer<Data>& other);
+      RingBuffer(RingBuffer<Data> const & other);
    
       /**
       * Assignment.
       *
       * \param other object to be assigned.
       */
-      RingBuffer& operator = (const RingBuffer<Data>& other);
+      RingBuffer& operator = (RingBuffer<Data> const & other);
    
       /**
       * Destructor.
@@ -99,7 +99,7 @@ namespace Util
       *
       * \param offset number of steps back in time (offset=0 is current value).
       */
-      const Data& operator [] (int offset) const;
+      Data const & operator [] (int offset) const;
 
       /**
       * Retrieve a value, a specified number of time steps ago.
@@ -152,7 +152,7 @@ namespace Util
    *\param other the RingBuffer to be copied.
    */
    template <class Data>
-   RingBuffer<Data>::RingBuffer(const RingBuffer<Data>& other) 
+   RingBuffer<Data>::RingBuffer(RingBuffer<Data> const & other) 
     : data_(0),
       capacity_(0),
       size_(0),
@@ -179,7 +179,7 @@ namespace Util
    */
    template <class Data>
    RingBuffer<Data>& 
-   RingBuffer<Data>::operator = (const RingBuffer<Data>& other) 
+   RingBuffer<Data>::operator = (RingBuffer<Data> const & other) 
    {
 
       // Check for self assignment
@@ -306,7 +306,7 @@ namespace Util
    */
    template <class Data>
    inline
-   const Data& RingBuffer<Data>::operator [] (int offset) const
+   Data const & RingBuffer<Data>::operator [] (int offset) const
    {
       if ( offset >= size_ )  {
          UTIL_THROW("offset >= size_");

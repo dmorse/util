@@ -58,7 +58,7 @@ namespace Util
       *
       *\param other the FArray to be copied.
       */
-      FArray(const FArray<Data, Capacity>& other);
+      FArray(FArray<Data, Capacity> const & other);
    
       // Default destructor is okay.
 
@@ -107,7 +107,7 @@ namespace Util
       * \param i array index
       * \return const reference to element i
       */
-      const Data& operator[] (int i) const;
+      Data const & operator[] (int i) const;
 
       /**
       * Return pointer to underlying C array.
@@ -117,7 +117,7 @@ namespace Util
       /**
       * Return pointer to const to underlying C array.
       */
-      const Data* cArray() const;
+      Data const * cArray() const;
 
       /**
       * Serialize a FArray to/from an Archive.
@@ -243,7 +243,7 @@ namespace Util
    * Mimic C array subscripting.
    */
    template <typename Data, int Capacity>
-   inline const Data& FArray<Data, Capacity>::operator[] (int i) const
+   inline Data const & FArray<Data, Capacity>::operator[] (int i) const
    {
       assert(i < Capacity);
       assert(i >= 0 );

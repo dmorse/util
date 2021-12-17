@@ -45,7 +45,7 @@ namespace Util
       *
       *\param other the DArray to be copied.
       */
-      DArray(const DArray<Data>& other);
+      DArray(DArray<Data> const & other);
 
       /**
       * Destructor.
@@ -64,7 +64,7 @@ namespace Util
       *
       * \param other the RHS DArray
       */
-      DArray<Data>& operator = (const DArray<Data>& other);
+      DArray<Data>& operator = (DArray<Data> const & other);
 
       /**
       * Allocate the underlying C array.
@@ -130,7 +130,7 @@ namespace Util
    *\param other the DArray to be copied.
    */
    template <class Data>
-   DArray<Data>::DArray(const DArray<Data>& other)
+   DArray<Data>::DArray(DArray<Data> const & other)
     : Array<Data>()
    {
       if (!other.isAllocated()) {
@@ -166,7 +166,7 @@ namespace Util
    * \param other the rhs DArray
    */
    template <class Data>
-   DArray<Data>& DArray<Data>::operator = (const DArray<Data>& other)
+   DArray<Data>& DArray<Data>::operator = (DArray<Data> const & other)
    {
       // Check for self assignment
       if (this == &other) return *this;

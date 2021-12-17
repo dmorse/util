@@ -49,7 +49,7 @@ namespace Util
       *
       *\param other the FSArray to be copied.
       */
-      FSArray(const FSArray<Data, Capacity>& other); 
+      FSArray(FSArray<Data, Capacity> const & other); 
    
       /**
       * Assignment, element by element.
@@ -58,7 +58,7 @@ namespace Util
       *
       * \param other the RHS FSArray 
       */
-      FSArray<Data, Capacity>& operator=(const FSArray<Data, Capacity>& other);
+      FSArray<Data, Capacity>& operator=(FSArray<Data, Capacity> const & other);
 
       /**
       * Destructor.
@@ -103,14 +103,14 @@ namespace Util
       * \param i array index
       * \return const reference to element i
       */
-      const Data& operator[] (int i) const;
+      Data const & operator[] (int i) const;
 
       /**
       * Append data to the end of the array.
       *
       * \param data Data to add to end of array.
       */
-      void append(const Data &data);
+      void append(Data const & data);
 
       /**
       * Set logical size to zero.
@@ -155,7 +155,7 @@ namespace Util
    *\param other the FSArray to be copied.
    */
    template <class Data, int Capacity>
-   FSArray<Data, Capacity>::FSArray(const FSArray<Data, Capacity>& other) 
+   FSArray<Data, Capacity>::FSArray(FSArray<Data, Capacity> const & other) 
    {
       size_  = other.size_;
       for (int i = 0; i < size_; ++i) {
@@ -172,7 +172,7 @@ namespace Util
    */
    template <class Data, int Capacity>
    FSArray<Data, Capacity>& 
-   FSArray<Data, Capacity>::operator=(const FSArray<Data, Capacity>& other) 
+   FSArray<Data, Capacity>::operator=(FSArray<Data, Capacity> const & other) 
    {
 
       // Check for self assignment
@@ -244,7 +244,7 @@ namespace Util
    * Mimic C array subscripting.
    */
    template <class Data, int Capacity>
-   const Data& FSArray<Data, Capacity>::operator[] (int i) const
+   Data const & FSArray<Data, Capacity>::operator[] (int i) const
    {
       assert(i < size_);
       assert(i >= 0);
@@ -255,7 +255,7 @@ namespace Util
    * Append data to the end of the array.
    */
    template <class Data, int Capacity>
-   inline void FSArray<Data, Capacity>::append(const Data &data) 
+   inline void FSArray<Data, Capacity>::append(Data const & data) 
    {
       if (size_ == Capacity) {
          UTIL_THROW("Attempt to add to full FSArray");

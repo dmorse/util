@@ -47,14 +47,14 @@ namespace Util
       *
       *\param other the GArray to be copied.
       */
-      GArray(const GArray<Data>& other);
+      GArray(GArray<Data> const & other);
    
       /**
       * Assignment, element by element.
       *
       * \param other the rhs GArray 
       */
-      GArray<Data>& operator = (const GArray<Data>& other);
+      GArray<Data>& operator = (GArray<Data> const & other);
 
       /**
       * Destructor.
@@ -120,7 +120,7 @@ namespace Util
       *
       * \param data Data object to be appended
       */
-      void append(const Data& data);
+      void append(Data const & data);
 
       /**
       * Resizes array so that it contains n elements.
@@ -152,7 +152,7 @@ namespace Util
       * \param i array index
       * \return const reference to element i
       */
-      const Data& operator[] (int i) const;
+      Data const & operator[] (int i) const;
 
       /**
       * Return physical capacity of array.
@@ -200,7 +200,7 @@ namespace Util
    * Allocates a new C-array and copies all elements.
    */
    template <typename Data>
-   GArray<Data>::GArray(const GArray<Data>& other) 
+   GArray<Data>::GArray(GArray<Data> const & other) 
     : data_(0),
       size_(0),
       capacity_(0)
@@ -236,7 +236,7 @@ namespace Util
    * Assignment, element by element.
    */
    template <typename Data>
-   GArray<Data>& GArray<Data>::operator = (const GArray<Data>& other) 
+   GArray<Data>& GArray<Data>::operator = (GArray<Data> const & other) 
    {
       // Check for self assignment
       if (this == &other) return *this;
@@ -303,7 +303,7 @@ namespace Util
    * Append an element to the end of the Array.
    */
    template <typename Data>
-   void GArray<Data>::append(const Data& data) 
+   void GArray<Data>::append(Data const & data) 
    {
       assert(size_ <= capacity_);
       if (size_ == capacity_) {
@@ -434,7 +434,7 @@ namespace Util
    * Mimic C array subscripting.
    */
    template <class Data>
-   inline const Data& GArray<Data>::operator[] (int i) const
+   inline Data const & GArray<Data>::operator[] (int i) const
    {
       assert(i >= 0);
       assert(i < size_);

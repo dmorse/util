@@ -42,7 +42,7 @@ namespace Util
       *
       *\param other the GPArray to be copied.
       */
-      GPArray(const GPArray<Data>& other);
+      GPArray(GPArray<Data> const & other);
    
       /**
       * Assignment, element by element.
@@ -53,7 +53,7 @@ namespace Util
       *
       * \param other the rhs GPArray 
       */
-      GPArray<Data>& operator=(const GPArray<Data>& other);
+      GPArray<Data>& operator=(GPArray<Data> const & other);
 
       /**
       * Destructor.
@@ -122,7 +122,7 @@ namespace Util
    *\param other the GPArray to be copied.
    */
    template <typename Data>
-   GPArray<Data>::GPArray(const GPArray<Data>& other) 
+   GPArray<Data>::GPArray(GPArray<Data> const & other) 
     : PArray<Data>()
    {
       assert(other.capacity_ >= other.size_);
@@ -157,7 +157,7 @@ namespace Util
    * Assignment, element by element.
    */
    template <typename Data>
-   GPArray<Data>& GPArray<Data>::operator=(const GPArray<Data>& other) 
+   GPArray<Data>& GPArray<Data>::operator=(GPArray<Data> const & other) 
    {
       // Check for self assignment
       if (this == &other) return *this;

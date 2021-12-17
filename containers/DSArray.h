@@ -42,7 +42,7 @@ namespace Util
       *
       *\param other the DSArray to be copied.
       */
-      DSArray(const DSArray< Data >& other);
+      DSArray(DSArray< Data > const & other);
 
       /**
       * Assignment, element by element.
@@ -51,7 +51,7 @@ namespace Util
       *
       * \param other the RHS DSArray
       */
-      DSArray<Data>& operator=(const DSArray<Data>& other);
+      DSArray<Data>& operator=(DSArray<Data> const & other);
 
       /**
       * Destructor.
@@ -73,7 +73,7 @@ namespace Util
       *
       * \param data Data to add to end of array.
       */
-      void append(const Data &data);
+      void append(Data const & data);
 
       /**
       * Modify logical size without modifying data.
@@ -131,7 +131,7 @@ namespace Util
       * \param i array index
       * \return const reference to element i
       */
-      const Data& operator[] (int i) const;
+      Data const & operator[] (int i) const;
 
       /**
       * Return physical capacity of array.
@@ -177,7 +177,7 @@ namespace Util
    * Copy constructor.
    */
    template <class Data>
-   DSArray<Data>::DSArray(const DSArray< Data >& other)
+   DSArray<Data>::DSArray(DSArray< Data > const & other)
     : data_(0),
       size_(0),
       capacity_(0)
@@ -201,7 +201,7 @@ namespace Util
    * Capacity of LHS DSArray must be zero or == capacity of RHS DSArray.
    */
    template <class Data>
-   DSArray<Data>& DSArray<Data>::operator=(const DSArray<Data>& other)
+   DSArray<Data>& DSArray<Data>::operator=(DSArray<Data> const & other)
    {
       // Check for self assignment
       if (this == &other) return *this;
@@ -331,7 +331,7 @@ namespace Util
    * Mimic C array subscripting.
    */
    template <class Data>
-   inline const Data& DSArray<Data>::operator[] (int i) const
+   inline Data const & DSArray<Data>::operator[] (int i) const
    {
       assert(i < size_);
       assert(i >= 0 );
@@ -342,7 +342,7 @@ namespace Util
    * Append data to the end of the array.
    */
    template <class Data>
-   inline void DSArray<Data>::append(const Data &data)
+   inline void DSArray<Data>::append(Data const & data)
    {
       if (size_ == capacity_) {
          UTIL_THROW("Attempt to add to full DSArray");

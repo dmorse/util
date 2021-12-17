@@ -62,7 +62,7 @@ namespace Util
       * \param  j column index.
       * \return element (i, j)
       */
-      const Data& operator() (int i, int j) const;
+      Data const & operator() (int i, int j) const;
 
       /**
       * Return element (i,j) of matrix by reference.
@@ -104,7 +104,7 @@ namespace Util
       *
       * Private and not implemented to prohibit copying.
       */
-      RaggedMatrix(const RaggedMatrix& other);
+      RaggedMatrix(RaggedMatrix const & other);
 
    }; 
 
@@ -147,7 +147,8 @@ namespace Util
    * Return element (i,j) of matrix by const reference.
    */
    template <typename Data>
-   inline const Data& RaggedMatrix<Data>::operator() (int i, int j) const
+   inline 
+   Data const & RaggedMatrix<Data>::operator() (int i, int j) const
    {
       assert(data_ != 0);
       assert(i >= 0);

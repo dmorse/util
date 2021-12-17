@@ -47,7 +47,7 @@ namespace Util
       /**
       * Allocate memory for a ragged matrix.
       */
-      void allocate(const DArray<int>& rowSizes);
+      void allocate(DArray<int> const & rowSizes);
 
       /**
       * Return true iff this DRaggedMatrix has been allocated.
@@ -87,7 +87,7 @@ namespace Util
    * Allocate memory and set row sizes.
    */
    template <typename Data>
-   void DRaggedMatrix<Data>::allocate(const DArray<int>& rowSizes)
+   void DRaggedMatrix<Data>::allocate(DArray<int> const & rowSizes)
    {
       if (data_ != 0) 
          UTIL_THROW("Attempt to re-allocate a RaggedMatrix");

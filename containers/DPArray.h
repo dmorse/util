@@ -38,7 +38,7 @@ namespace Util
       *
       *\param other the DPArray to be copied.
       */
-      DPArray(const DPArray<Data>& other);
+      DPArray(DPArray<Data> const & other);
    
       /**
       * Destructor.
@@ -57,7 +57,7 @@ namespace Util
       *
       * \param other the rhs DPArray 
       */
-      DPArray<Data>& operator=(const DPArray<Data>& other);
+      DPArray<Data>& operator=(DPArray<Data> const & other);
 
       /**
       * Allocate an array of pointers to Data.
@@ -110,7 +110,7 @@ namespace Util
    *\param other the DPArray to be copied.
    */
    template <typename Data>
-   DPArray<Data>::DPArray(const DPArray<Data>& other) 
+   DPArray<Data>::DPArray(DPArray<Data> const & other) 
     : PArray<Data>()
    {
       if (other.size_ > other.capacity_) {
@@ -138,7 +138,7 @@ namespace Util
    * Assignment, element by element.
    */
    template <typename Data>
-   DPArray<Data>& DPArray<Data>::operator=(const DPArray<Data>& other) 
+   DPArray<Data>& DPArray<Data>::operator=(DPArray<Data> const & other) 
    {
 
       // Check for self assignment

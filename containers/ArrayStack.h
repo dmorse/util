@@ -111,10 +111,10 @@ namespace Util
       int  size_; 
 
       /// Copy constructor, declared private to prohibit copying.
-      ArrayStack(const ArrayStack&);
+      ArrayStack(ArrayStack const &);
 
       /// Assignment operator, declared private to prohibit copying.
-      ArrayStack& operator = (const ArrayStack&);
+      ArrayStack& operator = (ArrayStack const &);
 
    }; 
 

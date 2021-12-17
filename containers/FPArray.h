@@ -54,7 +54,7 @@ namespace Util
       *
       *\param other the FPArray to be copied.
       */
-      FPArray(const FPArray<Data, Capacity>& other);
+      FPArray(FPArray<Data, Capacity> const & other);
 
       /**
       * Destructor.
@@ -66,7 +66,7 @@ namespace Util
       *
       * \param other the rhs FPArray 
       */
-      FPArray<Data, Capacity>& operator=(const FPArray<Data, Capacity>& other);
+      FPArray<Data, Capacity>& operator=(FPArray<Data, Capacity> const & other);
 
       /**
       * Append an element to the end of the array.
@@ -118,7 +118,7 @@ namespace Util
       * \param i array index
       * \return const reference to element i
       */
-      const Data& operator[] (int i) const;
+      Data const & operator[] (int i) const;
 
    protected:
 
@@ -144,7 +144,7 @@ namespace Util
    * Copy constructor, copy all pointers.
    */
    template<typename Data, int Capacity>
-   FPArray<Data, Capacity>::FPArray(const FPArray<Data, Capacity>& other) 
+   FPArray<Data, Capacity>::FPArray(FPArray<Data, Capacity> const & other) 
    {
 
       // Copy pointer values
@@ -168,7 +168,7 @@ namespace Util
    */
    template <typename Data, int Capacity>
    FPArray<Data, Capacity>& 
-   FPArray<Data, Capacity>::operator=(const FPArray<Data, Capacity>& other) 
+   FPArray<Data, Capacity>::operator=(FPArray<Data, Capacity> const & other) 
    {
 
       // Check for self assignment
@@ -259,7 +259,7 @@ namespace Util
    * \return const reference to element i
    */
    template <typename Data, int Capacity>
-   inline const Data& FPArray<Data, Capacity>::operator[] (int i) const
+   inline Data const & FPArray<Data, Capacity>::operator[] (int i) const
    {
       assert(i < size_);
       assert(i >= 0 );

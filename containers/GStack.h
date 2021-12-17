@@ -42,7 +42,7 @@ namespace Util
       *
       *\param other the GStack to be copied.
       */
-      GStack(const GStack<Data>& other);
+      GStack(GStack<Data> const & other);
    
       /**
       * Destructor.
@@ -61,7 +61,7 @@ namespace Util
       *
       * \param other the rhs GStack 
       */
-      GStack<Data>& operator=(const GStack<Data>& other);
+      GStack<Data>& operator=(GStack<Data> const & other);
 
       /**
       * Reserve memory for specified number of elements.
@@ -111,7 +111,7 @@ namespace Util
       /**
       * Return a const ref to the top element (don't pop).
       */
-      const Data& peek() const;
+      Data const & peek() const;
 
       /**
       * Return allocated size.
@@ -168,7 +168,7 @@ namespace Util
    *\param other the GStack to be copied.
    */
    template <typename Data>
-   GStack<Data>::GStack(const GStack<Data>& other) 
+   GStack<Data>::GStack(GStack<Data> const & other) 
     : ptrs_(0),
       capacity_(0),
       size_(0)
@@ -218,7 +218,7 @@ namespace Util
    * Assignment, element by element.
    */
    template <typename Data>
-   GStack<Data>& GStack<Data>::operator=(const GStack<Data>& other) 
+   GStack<Data>& GStack<Data>::operator=(GStack<Data> const & other) 
    {
       // Check for self assignment
       if (this == &other) return *this;
@@ -359,7 +359,7 @@ namespace Util
    * Return a const reference to the top element, without popping.
    */
    template <typename Data>
-   inline const Data& GStack<Data>::peek() const
+   inline Data const & GStack<Data>::peek() const
    {  return *ptrs_[size_-1]; }
 
    /*

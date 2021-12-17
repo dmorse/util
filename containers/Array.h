@@ -85,7 +85,7 @@ namespace Util
       * \param i array index
       * \return const reference to element i
       */
-      const Data& operator [] (int i) const;
+      Data const & operator [] (int i) const;
 
       /**
       * Return pointer to underlying C array.
@@ -95,7 +95,7 @@ namespace Util
       /**
       * Return pointer to const to underlying C array.
       */
-      const Data* cArray() const;
+      Data const * cArray() const;
 
    protected:
 
@@ -119,14 +119,14 @@ namespace Util
       *
       * Private and not implemented to prevent copy construction.
       */
-      Array(const Array& other);
+      Array(Array const & other);
 
       /**
       * Assignment operator. 
       *
       * Private and not implemented to prevent assignment.
       */
-      Array<Data>& operator = (const Array<Data>& other);
+      Array<Data>& operator = (Array<Data> const & other);
 
    };
 
@@ -193,7 +193,7 @@ namespace Util
    * Get an element by const reference (C-array subscripting)
    */
    template <typename Data>
-   inline const Data& Array<Data>::operator [] (int i) const
+   inline Data const & Array<Data>::operator [] (int i) const
    {
       assert(data_ != 0);
       assert(i >= 0 );
@@ -212,7 +212,7 @@ namespace Util
    * Get a pointer to const to the underlying C array.
    */
    template <typename Data>
-   inline const Data* Array<Data>::cArray() const
+   inline Data const * Array<Data>::cArray() const
    {  return data_; }
 
 }

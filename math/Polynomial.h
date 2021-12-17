@@ -310,7 +310,7 @@ namespace Util
    template <typename T>
    template <typename U>
    inline
-   Polynomial<T>& Polynomial<T>::operator = (const Polynomial<U>& other)
+   Polynomial<T>& Polynomial<T>::operator = (Polynomial<U> const & other)
    {
       setToZero();
       if (other.size() >= 0) {
@@ -450,7 +450,7 @@ namespace Util
    * Multiplication assignment operator : multiply this by a polynomial.
    */
    template <typename T>
-   Polynomial<T>& Polynomial<T>::operator *= (const Polynomial<T>& a)
+   Polynomial<T>& Polynomial<T>::operator *= (Polynomial<T> const & a)
    {
       // If this polynomial is zero (size == 0), do nothing. Otherwise:
       if (size() > 0) {
