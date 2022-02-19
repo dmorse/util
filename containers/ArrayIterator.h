@@ -11,18 +11,15 @@
 namespace Util
 {
 
-   //template <typename Data> class Array;
-   //template <typename Data, int Capacity> class FSArray;
-
    /**
    * Forward iterator for an Array or a C array.
    *
    * An ArrayIterator is an abstraction of a pointer, similar to an STL
-   * forward iterator. The * operator returns a reference to an associated 
-   * Data object, the -> operator returns a pointer to that object. The ++ 
+   * forward iterator. The * operator returns a reference to an associated
+   * Data object, the -> operator returns a pointer to that object. The ++
    * operator increments the current pointer by one array element.
    *
-   * Unlike an STL forward iterator, an ArrayIterator contains the address 
+   * Unlike an STL forward iterator, an ArrayIterator contains the address
    * of the end of the array. The isEnd() method can be used to test for
    * termination of a for or while loop. When isEnd() is true, the current
    * pointer is one past the end of the array, and thus the iterator has
@@ -42,9 +39,9 @@ namespace Util
    public:
 
       /**
-      * Default constructor.  
-      *  
-      * Constructs an uninitialized iterator.  
+      * Default constructor.
+      *
+      * Constructs an uninitialized iterator.
       */
       ArrayIterator()
        : current_(0),
@@ -54,7 +51,7 @@ namespace Util
       /**
       * Set the current pointer value.
       *
-      * \param ptr Pointer to current element of the array.
+      * \param ptr Pointer to current element of the array
       */
       void setCurrent(Data *ptr)
       {  current_ = ptr; }
@@ -62,7 +59,7 @@ namespace Util
       /**
       * Set the value of the end pointer.
       *
-      * \param ptr Pointer to one element past end of array.
+      * \param ptr Pointer to one element past last element of the array
       */
       void setEnd(Data *ptr)
       {  end_ = ptr; }
@@ -78,7 +75,7 @@ namespace Util
       /**
       * Is the current pointer not at the end of the array?
       *
-      * \return true if not at end, false otherwise.
+      * \return true if not at end, false otherwise
       */
       bool notEnd() const
       {  return (current_ != end_); }
@@ -86,16 +83,16 @@ namespace Util
       /**
       * Return a pointer to the current data.
       *
-      * \return true if at end, false otherwise.
+      * \return true if at end, false otherwise
       */
       Data* get() const
       {  return current_; }
 
       /// \name Operators
       //@{
-      
+
       /**
-      * Get a reference to the current Data.
+      * Return a reference to the current Data.
       *
       * \return reference to associated Data object
       */
@@ -103,7 +100,7 @@ namespace Util
       {  return *current_; }
 
       /**
-      * Provide a pointer to the current Data object.
+      * Return a pointer to the current Data object.
       *
       * \return const pointer to the Data object
       */
@@ -113,7 +110,7 @@ namespace Util
       /**
       * Increment the current pointer.
       *
-      * \return this ArrayIterator, after modification.
+      * \return this ArrayIterator, after modification
       */
       ArrayIterator<Data>& operator++ ()
       {
@@ -122,7 +119,7 @@ namespace Util
       }
 
       //@}
-      
+
    private:
 
       /// Pointer to the current element.
@@ -131,7 +128,7 @@ namespace Util
       /// Pointer to element one past last in the array.
       Data* end_;
 
-   }; 
+   };
 
-} 
+}
 #endif

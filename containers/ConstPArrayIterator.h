@@ -14,12 +14,12 @@ namespace Util
    /**
    * Forward iterator for a PArray.
    *
-   * An ConstPArrayIterator is an abstraction of a pointer, similar to an STL
+   * A ConstPArrayIterator is an abstraction of a pointer, similar to an STL
    * forward iterator. The * operator returns a reference to an associated 
    * Data object, the -> operator returns a pointer to that object. The ++ 
    * operator increments the current pointer by one array element.
    *
-   * Unlike an STL forward iterator, an ConstPArrayIterator contains the address 
+   * Unlike an STL forward iterator, a ConstPArrayIterator has the address 
    * of the end of the array. The isEnd() method can be used to test for
    * termination of a for or while loop. When isEnd() is true, the iterator
    * has no current value, and cannot be incremented further. The isEnd()
@@ -50,18 +50,18 @@ namespace Util
       /**
       * Set the current pointer value.
       *
-      * \param ptr Pointer to current element of array of Data* pointers.
+      * \param ptr Pointer to current element of array of Data* pointers
       */
       void setCurrent(Data** ptr)
       { 
          current_ =  ptr;
-         data_    = *ptr; 
+         data_ = *ptr; 
       }
 
       /**
       * Set the value of the end pointer.
       *
-      * \param ptr Pointer to one element past end of array of Data* pointers.
+      * \param ptr Pointer to one element past end of array of Data* pointers
       */
       void setEnd(Data** ptr)
       {  end_ = ptr; }
@@ -79,18 +79,18 @@ namespace Util
       /**
       * Is the current pointer at the end of the array.
       *
-      * \return true if at end, false otherwise.
+      * \return true if at end, false otherwise
       */
       bool isEnd() const
-      { return (current_ == end_); }
+      {  return (current_ == end_); }
 
       /**
       * Is the current pointer not at the end of the array?
       *
-      * \return true if not at end, false otherwise.
+      * \return true if not at end, false otherwise
       */
       bool notEnd() const
-      { return (current_ != end_); }
+      {  return (current_ != end_); }
 
       /**
       * Return a pointer to const current data.
@@ -98,7 +98,7 @@ namespace Util
       * \return true if at end, false otherwise.
       */
       const Data* get() const
-      { return data_; }
+      {  return data_; }
 
       /// \name Operators
       //@{
@@ -109,7 +109,7 @@ namespace Util
       * \return const reference to the Data object
       */
       const Data& operator* () const
-      { return *data_; }
+      {  return *data_; }
 
       /**
       * Provide a pointer to the current Data object.
@@ -122,7 +122,7 @@ namespace Util
       /**
       * Increment the current pointer.
       *
-      * \return this ConstPArrayIterator, after modification.
+      * \return this ConstPArrayIterator, after modification
       */
       ConstPArrayIterator<Data>& operator++ ()
       {
@@ -139,13 +139,13 @@ namespace Util
       
    private:
 
-      // Pointer to the current Data* pointer.
+      /// Pointer to the current Data* pointer.
       Data** current_;
 
-      // Pointer to one element one past last Data* pointer in the array.
+      /// Pointer to one element one past last Data* pointer in the array.
       Data** end_;
 
-      // Pointer to current Data object.
+      /// Pointer to current Data object.
       Data*  data_;
 
    };

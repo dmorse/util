@@ -19,7 +19,7 @@ namespace Util
    template <typename Data> class PArrayIterator;
 
    /**
-   * A container for pointers to a subset of elements of an associated array.
+   * A set of pointers to a subset of elements of an array.
    *
    * An ArraySet is a PArray that stores pointers to a subset of the
    * elements of an associated Array container or bare C array. Pointers 
@@ -111,10 +111,10 @@ namespace Util
       void remove(Data const & data);
 
       /**
-      * Pop the topmost from the set.
+      * Pop the topmost element from the set.
       *
-      * Popping the top element does not change the order of
-      * the remaining elements. 
+      * Popping the top element reduces the size but does not change 
+      * the order of the remaining elements. 
       */
       Data& pop();
 

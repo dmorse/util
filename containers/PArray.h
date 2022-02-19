@@ -24,6 +24,9 @@ namespace Util
    * Array<Data>. A PArray<Data> is not responsible for destroying the
    * associated Data objects.
    *
+   * A PArray<Data> object has a logical size and physical capacity. The
+   * logical size grows as pointers to objects are appended.
+   *
    * A PArray cannot be instantiated, because its constructor is protected.
    * PArray is a base class for DPArray and for ArraySet.
    *

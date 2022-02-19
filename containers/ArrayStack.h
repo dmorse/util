@@ -15,41 +15,45 @@ namespace Util
 {
 
    /**
-   * A stack of fixed capacity.
+   * A stack of fixed capacity, which stores pointers to elements.
    *
    * Pointers to elements are stored in an allocatable, non-resizable array.
+   * 
+   * One natural usage is as a stack of pointers to elements of an associated
+   * array of Data objects, for which the maximum number of distinct elements 
+   * is equal to the capacity of the associated array.
    *
    * \ingroup Pointer_Array_Module
    */
    template <typename Data>
    class ArrayStack
-   { 
+   {
 
-   public: 
-   
+   public:
+
       /**
       * Default constructor.
       */
       ArrayStack();
-   
+
       /**
       * Destructor.
       */
       virtual ~ArrayStack();
-    
+
       /**
       * Initialize and allocate required memory.
       *
-      * \param capacity maximum size of stack.
+      * \param capacity  maximum size of stack
       */
       void allocate(int capacity);
- 
+
       /// \name Mutators
       //@{
 
       /**
       * Push an element onto the Stack.
-      * 
+      *
       * \param data element to be added to stack.
       */
       void push(Data& data);
@@ -64,7 +68,7 @@ namespace Util
       //@}
       /// \name Accessors
       //@{
- 
+
       /**
       * Return capacity of the underlying array.
       *
@@ -75,7 +79,7 @@ namespace Util
       /**
       * Get the number of elements in the stack.
       */
-      int size() const; 
+      int size() const;
 
       /**
       * Return a reference to the top element (don't pop).
@@ -91,24 +95,24 @@ namespace Util
       * Return true if the ArrayStack is valid, or throw an exception.
       */
       bool isValid() const;
-   
+
       /**
       * Return true only if the ArrayStack has been allocated.
       */
       bool isAllocated() const;
-   
+
       //@}
 
    private:
 
-      // C array of pointers to elements of data_ array
+      /// C array of pointers to elements.
       Data **ptrs_;
-  
-      // Allocated size of ptrs_ array (maximum size of stack).
+
+      /// Allocated size of ptrs_ array (maximum physical size of stack).
       int  capacity_;
-  
-      // Size of stack.
-      int  size_; 
+
+      /// Logical size of stack.
+      int  size_;
 
       /// Copy constructor, declared private to prohibit copying.
       ArrayStack(ArrayStack const &);
@@ -116,20 +120,20 @@ namespace Util
       /// Assignment operator, declared private to prohibit copying.
       ArrayStack& operator = (ArrayStack const &);
 
-   }; 
+   };
 
 
-   /* 
+   /*
    * Default constructor.
    */
    template <typename Data>
    ArrayStack<Data>::ArrayStack()
-    : ptrs_(0),    
+    : ptrs_(0),
       capacity_(0),
       size_(0)
    {}
 
-   /* 
+   /*
    * Destructor.
    */
    template <typename Data>
@@ -139,12 +143,12 @@ namespace Util
          Memory::deallocate<Data*>(ptrs_, capacity_);
       }
    }
- 
-   /* 
+
+   /*
    * Allocate and initialize required memory.
    */
    template <typename Data>
-   void ArrayStack<Data>::allocate(int capacity) 
+   void ArrayStack<Data>::allocate(int capacity)
    {
       if (capacity <=0) {
          UTIL_THROW("Cannot allocate ArrayStack with capacity <= 0");
@@ -163,14 +167,14 @@ namespace Util
    }
 
    /*
-   * Return capacity of the associated Array.
+   * Return physical capacity of the associated Array.
    */
    template <typename Data>
    int ArrayStack<Data>::capacity() const
    {  return capacity_; }
 
    /*
-   * Get the current size.
+   * Return the current logical size.
    */
    template <typename Data>
    inline int ArrayStack<Data>::size() const
@@ -204,21 +208,21 @@ namespace Util
       return *ptr;
    }
 
-   /* 
+   /*
    * Return a reference to the top element, without popping.
    */
    template <typename Data>
    inline Data& ArrayStack<Data>::peek()
    {  return *ptrs_[size_-1]; }
 
-   /* 
+   /*
    * Return a const reference to the top element, without popping.
    */
    template <typename Data>
    inline const Data& ArrayStack<Data>::peek() const
    {  return *ptrs_[size_-1]; }
 
-   /* 
+   /*
    * Return true if valid, or throw an exception.
    */
    template <typename Data>
@@ -254,12 +258,12 @@ namespace Util
       return true;
    }
 
-   /* 
+   /*
    * Return true if the ArrayStack has been allocated, false otherwise.
    */
    template <typename Data>
    inline bool ArrayStack<Data>::isAllocated() const
    {  return (ptrs_ != 0); }
 
-} 
+}
 #endif

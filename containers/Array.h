@@ -35,7 +35,7 @@ namespace Util
 
    public:
 
-      // Protected default constructor
+      // Protected default constructor, to prohibit direct instantiation.
 
       // Private unimplemented copy constructor, to prohibit copying.
 
@@ -49,21 +49,27 @@ namespace Util
       /**
       * Return allocated size.
       *
-      * \return Number of elements allocated in array.
+      * \return number of elements allocated in array
       */
       int capacity() const;
 
       /**
       * Set an iterator to begin this Array.
       *
-      * \param iterator ArrayIterator, initialized on output. 
+      * On return, iterator points to the first element of the array, and
+      * the iterator end pointer is set to one past the last element.
+      *
+      * \param iterator ArrayIterator, initialized on output
       */
       void begin(ArrayIterator<Data>& iterator);
 
       /**
       * Set a const iterator to begin this Array.
       *
-      * \param iterator ConstArrayIterator, initialized on output. 
+      * On return, iterator points to the first element of the array, and
+      * the iterator end pointer is set to one past the last element.
+      *
+      * \param iterator ConstArrayIterator, initialized on output
       */
       void begin(ConstArrayIterator<Data>& iterator) const;
 
@@ -88,12 +94,12 @@ namespace Util
       Data const & operator [] (int i) const;
 
       /**
-      * Return pointer to underlying C array.
+      * Return a pointer to the underlying C array.
       */
       Data* cArray();
 
       /**
-      * Return pointer to const to underlying C array.
+      * Return pointer to const to the underlying C array.
       */
       Data const * cArray() const;
 
@@ -154,7 +160,7 @@ namespace Util
    {  return capacity_; }
 
    /*
-   * Set an ArrayIterator to the beginning of this Array.
+   * Set an ArrayIterator to begin this Array.
    */
    template <typename Data>
    inline void Array<Data>::begin(ArrayIterator<Data> &iterator)
@@ -166,7 +172,7 @@ namespace Util
    }
 
    /*
-   * Set a ConstArrayIterator to the beginning of this Array.
+   * Set a ConstArrayIterator to begin this Array.
    */
    template <typename Data>
    inline void Array<Data>::begin(ConstArrayIterator<Data> &iterator) const

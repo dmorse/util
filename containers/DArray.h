@@ -43,7 +43,7 @@ namespace Util
       *
       * Allocates new memory and copies all elements by value.
       *
-      *\param other the DArray to be copied.
+      * \param other the DArray to be copied
       */
       DArray(DArray<Data> const & other);
 
@@ -57,28 +57,31 @@ namespace Util
       /**
       * Assignment operator.
       *
-      * If this DArray is not allocated, allocates and copies all elements.
+      * Copies all elements. The other DArrray must be allocated. If this
+      * DArray is not allocated, the function allocates it before copying
+      * all elements.  If this and the other DArray are both allocated, 
+      * the capacities must be exactly equal on entry.
       *
-      * If this and the other DArray are both allocated, the capacities must
-      * be exactly equal. If so, this method copies all elements.
+      * \throw Exception if other DArray is not allocated
+      * \throw Exception if DArrays are allocated with unequal capacities
       *
-      * \param other the RHS DArray
+      * \param other  the other (RHS) DArray
       */
       DArray<Data>& operator = (DArray<Data> const & other);
 
       /**
       * Allocate the underlying C array.
       *
-      * \throw Exception if the DArray is already allocated.
+      * \throw Exception if the DArray is already allocated
       *
-      * \param capacity number of elements to allocate.
+      * \param capacity number of elements to allocate
       */
       void allocate(int capacity);
 
       /**
       * Dellocate the underlying C array.
       *
-      * \throw Exception if the DArray is not allocated.
+      * \throw Exception if the DArray is not allocated
       */
       void deallocate();
 
@@ -93,7 +96,7 @@ namespace Util
       void reallocate(int capacity);
 
       /**
-      * Return true if the DArray has been allocated, false otherwise.
+      * Return true if this DArray has been allocated, false otherwise.
       */
       bool isAllocated() const;
 
@@ -159,11 +162,6 @@ namespace Util
    * Assignment, element-by-element.
    *
    * This operator will allocate memory if not allocated previously.
-   *
-   * \throw Exception if other DArray is not allocated.
-   * \throw Exception if both DArrays are allocated with unequal capacities.
-   *
-   * \param other the rhs DArray
    */
    template <class Data>
    DArray<Data>& DArray<Data>::operator = (DArray<Data> const & other)
@@ -193,7 +191,7 @@ namespace Util
    /*
    * Allocate the underlying C array.
    *
-   * Throw an Exception if the DArray has already allocated.
+   * Throw an Exception if this DArray is already allocated.
    *
    * \param capacity number of elements to allocate.
    */

@@ -81,12 +81,12 @@ namespace Util
       /**
       * Advances the pointer to an added element without assigning a value.
       *
-      * This function advances the "last_" pointer to the newest element 
-      * but does not assign a value to the new element. Immediately after
-      * applying this function to a RingBuffer<T> named buffer, the 
+      * This function advances the pointer that identifies the the newest 
+      * element but does not assign a value to that element. Immediately 
+      * after applying this function to a RingBuffer<T> named buffer, the 
       * value of the most recently added element, buffer[0], is undefined.
       * A call to RingBuffer<T>::advance must be thus always be followed
-      * by code that assigns this new value. The simplest usage for a 
+      * by code that assigns this value. The simplest usage for a 
       * Ringbuffer<T> named buffer would thus be:
       * \code
       *   buffer.advance();
@@ -96,10 +96,10 @@ namespace Util
       * equivalent to buffer.append(value).
       *
       * Rationale: This is designed as an alternative to the append
-      * memmber function for cases in which type T is a large object, to
-      * to avoid the need to construct and assign a value to an object
-      * outside the buffer and then re-assign its value to an array
-      * array element inside the append function.
+      * memmber function for cases in which type T is a large object.
+      * This avoids the need to construct and assign a value to a T
+      * object outside the buffer which must then be re-assigned to 
+      * an array element inside the RingBuffer<T>::append function.
       */
       void advance();
 
