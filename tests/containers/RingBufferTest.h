@@ -30,6 +30,7 @@ public:
    void testAllocate();
    void testSubscript1();
    void testSubscript2();
+   void testSubscript3();
    void testSerialize1();
    void testSerialize2();
 
@@ -80,8 +81,31 @@ void RingBufferTest::testSubscript2()
    printMethod(TEST_FUNC);
    {
       RingBuffer<Data>  v;
+      Data a(10.0, 10.1), b(20.0, 20.1);
+   
+      v.allocate(3);
+      TEST_ASSERT(v.size() == 0);
+      v.advance();
+      TEST_ASSERT(v.size() == 1);
+      v[0] = a;
+      TEST_ASSERT(v.size() == 1);
+      v.append(b);
+      TEST_ASSERT(v.size() == 2);
+      TEST_ASSERT(real(v[0]) == 20.0);
+      TEST_ASSERT(imag(v[0]) == 20.1);
+      TEST_ASSERT(real(v[1]) == 10.0);
+      TEST_ASSERT(imag(v[1]) == 10.1);
+      TEST_ASSERT(v.size() == 2);
+   }
+   TEST_ASSERT(Memory::total() == memory_);
+}
+
+void RingBufferTest::testSubscript3()
+{
+   printMethod(TEST_FUNC);
+   {
+      RingBuffer<Data>  v;
       Data a(10, 10.1), b(20,20.1), c(30,30.1), d(40,40.1);
-      // Data e(50,50.1), f(60,60.1);
    
       v.allocate(3);
       v.append(a);
@@ -90,7 +114,8 @@ void RingBufferTest::testSubscript2()
       TEST_ASSERT(imag(v[1]) == 10.1);
       TEST_ASSERT(!v.isFull());
       TEST_ASSERT(v.size() == 2);
-      v.append(c);
+      v.advance();
+      v[0] = c;
       TEST_ASSERT(real(v[0]) == 30);
       TEST_ASSERT(imag(v[1]) == 20.1);
       TEST_ASSERT(real(v[2]) == 10);
@@ -234,6 +259,7 @@ TEST_ADD(RingBufferTest, testConstructor)
 TEST_ADD(RingBufferTest, testAllocate)
 TEST_ADD(RingBufferTest, testSubscript1)
 TEST_ADD(RingBufferTest, testSubscript2)
+TEST_ADD(RingBufferTest, testSubscript3)
 TEST_ADD(RingBufferTest, testSerialize1)
 TEST_ADD(RingBufferTest, testSerialize2)
 TEST_END(RingBufferTest)
