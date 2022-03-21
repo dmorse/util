@@ -102,12 +102,10 @@ namespace Util
     : PArray<Data>()
    {}
 
-   /**
+   /*
    * Copy constructor, copy pointers.
    *
    * Allocates a new Data* array and copies all pointer values.
-   *
-   *\param other the DPArray to be copied.
    */
    template <typename Data>
    DPArray<Data>::DPArray(DPArray<Data> const & other) 

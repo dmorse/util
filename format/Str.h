@@ -40,30 +40,53 @@ namespace Util
 
       /// \name Constructors
       //@{ 
-      
-      /// Default constructor.
+     
+      /** 
+      * Default constructor.
+      */
       Str();
 
-      /// Constructor, value only.
+      /**
+      * Constructor, set value only.
+      *
+      * \param value  value of the string
+      */
       explicit Str(std::string value);
 
-      /// Constructor, value and width.
+      /**
+      * Constructor, set value and width.
+      * 
+      * \param value  value of the string
+      * \param width  default width (minimum number of characters) 
+      */
       Str(std::string value, int width);
 
       //@}
       ///\name Mutators
       //@{
-      
+
+      /**
+      * Set the string value.
+      *
+      * \param value  value of the string
+      */      
       void setValue(std::string value);
 
+      /**
+      * Set the default width.
+      *
+      * \param width  default width (minimum number of characters) 
+      */      
       void setWidth(int width);
 
       //@}
       ///\name Accessors
       //@{
-      
+     
+      /// Return string value. 
       std::string value() const;
 
+      /// Return default string width.
       int width() const;
 
       //@}
@@ -71,7 +94,7 @@ namespace Util
    private:
 
       std::string value_;
-      int         width_;
+      int width_;
 
    //friends:
 

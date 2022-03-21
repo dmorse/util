@@ -160,12 +160,10 @@ namespace Util
       size_(0)
    {}
 
-   /**
+   /*
    * Copy constructor, copy pointers.
    *
    * Allocates a new Data* array and copies all pointer values.
-   *
-   *\param other the GStack to be copied.
    */
    template <typename Data>
    GStack<Data>::GStack(GStack<Data> const & other) 

@@ -39,37 +39,63 @@ namespace Util
 
       /// \name Constructors
       //@{ 
-      
-      /// Default constructor.
+     
+      /** 
+      * Default constructor.
+      */
       Bool();
 
-      /// Constructor, value only.
+      /**
+      * Constructor, set value.
+      *
+      * \param value  value of the variable
+      */
       explicit Bool(bool value);
 
-      /// Constructor, value and width.
+      /**
+      * Constructor, value and width.
+      *
+      * \param value  value of the variable
+      * \param width  output width (number of characters)
+      */
       Bool(bool value, int width);
 
       //@}
       ///\name Setters
       //@{
       
+      /**
+      * Set the value.
+      *
+      * \param value  value of the variable
+      */
       void setValue(bool value);
 
+      /**
+      * Set the output width.
+      *
+      * \param width output width (number of characters)
+      */
       void setWidth(int width);
 
       //@}
       ///\name Accessors
       //@{
-      
+     
+      /// Return value. 
       bool value();
 
+      /// Return default width (number of characters). 
       int width();
 
       //@}
       
    private:
 
+      /// Value.
       bool value_;
+
+      /// Output width (number of characters).
       int  width_;
 
    //friends:

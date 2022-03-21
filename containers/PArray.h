@@ -140,10 +140,8 @@ namespace Util
    inline int PArray<Data>::size() const
    {  return size_; }
 
-   /**
+   /*
    * Set an PArrayIterator to the beginning of this PArray.
-   *
-   * \param iterator PArrayIterator, initialized on output. 
    */
    template <typename Data>
    inline void PArray<Data>::begin(PArrayIterator<Data>& iterator) const
@@ -156,13 +154,12 @@ namespace Util
       }
    }
 
-   /**
+   /*
    * Set an ConstPArrayIterator to the beginning of this PArray.
-   *
-   * \param iterator ConstPArrayIterator, initialized on output. 
    */
    template <typename Data>
-   inline void PArray<Data>::begin(ConstPArrayIterator<Data>& iterator) const
+   inline 
+   void PArray<Data>::begin(ConstPArrayIterator<Data>& iterator) const
    {
       if (ptrs_ && size_ > 0) {
          iterator.setCurrent(ptrs_);
@@ -172,11 +169,8 @@ namespace Util
       }
    }
 
-   /**
+   /*
    * Subscript - return a reference.
-   *
-   * \param  i array index
-   * \return reference to element i
    */
    template <typename Data>
    inline Data& PArray<Data>::operator [] (int i) const

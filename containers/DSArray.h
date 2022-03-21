@@ -351,7 +351,7 @@ namespace Util
       ++size_;
    }
 
-   /**
+   /*
    * Modify logical size without modifying data.
    *
    * The size parameter must be non-negative and may not exceed
@@ -360,8 +360,6 @@ namespace Util
    * This function simply changes the logical size of without
    * modifying any elements of the underlying physical array.
    * If the size increases, added elements are uninitialized.
-   *
-   * \param size new logical size, 0 <= size < capacity.
    */
    template <class Data>
    inline void DSArray<Data>::resize(int size)

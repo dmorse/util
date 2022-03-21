@@ -114,12 +114,10 @@ namespace Util
     : PArray<Data>()
    {}
 
-   /**
+   /*
    * Copy constructor, copy pointers.
    *
    * Allocates a new Data* array and copies all pointer values.
-   *
-   *\param other the GPArray to be copied.
    */
    template <typename Data>
    GPArray<Data>::GPArray(GPArray<Data> const & other) 

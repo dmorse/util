@@ -189,7 +189,7 @@ namespace Util
 
    protected:
 
-      // Physical capacity (# of elements) of buffer, corr, and nCorr.
+      /// Physical capacity (# of elements) of buffer, corr, and nCorr.
       int bufferCapacity_;
 
       /// Maximum allowed stage index (controls maximum degree of blocking).
