@@ -43,32 +43,32 @@ namespace Util
    * Constructor.
    */
    Label::Label(bool isRequired)
-    : isRequired_(isRequired),
-      string_()
+    : string_(),
+      isRequired_(isRequired)
    {}
 
    /*
    * Constructor.
    */
    Label::Label(std::string string, bool isRequired)
-    : isRequired_(isRequired),
-      string_(string)
+    : string_(string),
+      isRequired_(isRequired)
    {}
 
    /*
    * Constructor.
    */
    Label::Label(const char* string, bool isRequired)
-    : isRequired_(isRequired),
-      string_(string)
+    : string_(string),
+      isRequired_(isRequired)
    {}
 
    /*
    * Copy constructor.
    */
    Label::Label(const Label& other)
-    : isRequired_(other.isRequired_),
-      string_(other.string_)
+    : string_(other.string_),
+      isRequired_(other.isRequired_)
    {}
 
    /*
@@ -82,6 +82,12 @@ namespace Util
    */
    void Label::setString(std::string string) 
    {  string_ = string; }
+
+   /*
+   * Set the isRequired flag.
+   */
+   void Label::setIsRequired(bool isRequired) 
+   {  isRequired_ = isRequired; }
 
    /*
    * Return label string.

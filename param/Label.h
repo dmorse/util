@@ -110,6 +110,13 @@ namespace Util
       void setString(std::string string);
 
       /**
+      * Set the isRequired boolean flag.
+      *
+      * \param isRequired  boolean that is true iff the label is required.
+      */
+      void setIsRequired(bool isRequired);
+
+      /**
       * Read and attempt to match next word in an input stream.
       *
       * This is a convenience function that invokes operator >> to
@@ -133,16 +140,16 @@ namespace Util
    private:
 
       /**
+      * Expected label string.
+      */
+      std::string string_;
+
+      /**
       * Is this label a required entry ? 
       *
       * This is passed to the constructor, and constant thereafter.
       */
       bool isRequired_;
-
-      /**
-      * Expected label string.
-      */
-      std::string string_;
 
    // Static members:
 
