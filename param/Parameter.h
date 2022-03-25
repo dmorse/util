@@ -188,6 +188,13 @@ namespace Util
       bool isActive_;
 
       /**
+      * Read and attempt to match label string.
+      *
+      * \param in input stream from which to read
+      */
+      virtual void readLabel(std::istream& in);
+
+      /**
       * Read parameter value from an input stream.
       *
       * \param in input stream from which to read

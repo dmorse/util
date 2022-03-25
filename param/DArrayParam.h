@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <util/param/Parameter.h>    // base class
+#include <util/param/ArrayParam.h>    // base class
 #include <util/containers/DArray.h>  // member
 #include <util/global.h>
 
@@ -23,7 +23,7 @@ namespace Util
    * \ingroup Param_Module
    */
    template <class Type>
-   class DArrayParam : public Parameter
+   class DArrayParam : public ArrayParam
    {
 
    public:
@@ -85,7 +85,7 @@ namespace Util
    */
    template <class Type>
    DArrayParam<Type>::DArrayParam(const char *label, DArray<Type>& array, int n, bool isRequired)
-    : Parameter(label, isRequired),
+    : ArrayParam(label, isRequired),
       arrayPtr_(&array),
       n_(n)
    {}

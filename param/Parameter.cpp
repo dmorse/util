@@ -31,6 +31,12 @@ namespace Util
    {}
 
    /*
+   * Read label string and attempt to match.
+   */
+   void Parameter::readLabel(std::istream &in)
+   {  in >> label_; }
+
+   /*
    * Read a parameter.
    */
    void Parameter::readParam(std::istream &in)
@@ -38,7 +44,7 @@ namespace Util
       if (isIoProcessor()) {
 
          // Read the label and attempt to match.
-         in >> label_;
+         readLabel(in);
 
          // If this parameter is required and the 
          // label does not match, an exception will 
