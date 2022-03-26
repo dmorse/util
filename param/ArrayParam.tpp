@@ -25,11 +25,14 @@ namespace Util
       n_(n),
       name_(label),
       isRequired_(isRequired),
-      hasBrackets_(true)
+      hasBrackets_(false)
    {
-      std::string name = name_;
-      name += "[";
-      label_.setString(name);
+      if (Parameter::bracketPolicy() != Parameter::Forbidden) {
+         std::string name = name_;
+         name += "[";
+         label_.setString(name);
+         hasBrackets_ = true;
+      }
    }
 
    /*
@@ -48,30 +51,62 @@ namespace Util
       isActive_ = false;
       hasBrackets_ = false;
 
-      // Try to match array name with an appended [ bracket
-      std::string string = name_;
-      string += "[";
-      label_.setString(string);    // Tentatively reset label string
-      label_.setIsRequired(false); // Temporarily set isRequired false
-      in >> label_;
-      // This will not throw an exception, because isRequired is false
+      if (Parameter::bracketPolicy() == Parameter::Optional) {
 
-      // Restore isRequired value of label
-      label_.setIsRequired(isRequired_);
-
-      if (Label::isMatched()) {
-         isActive_ = true;
-         hasBrackets_ = true;
-      } else {
-         // Try to match array name without appended [ bracket
-         label_.setString(name_);
+         // First try to match array name with an appended [ bracket
+         std::string string = name_;
+         string += "[";
+         label_.setString(string);    // Tentatively reset label string
+         label_.setIsRequired(false); // Temporarily set isRequired false
          in >> label_;
-         // Will throw exception if not matched and isRequired = true
+         // This will not throw an exception, because isRequired is false
+   
+         // Restore isRequired value of label
+         label_.setIsRequired(isRequired_);
+   
          if (Label::isMatched()) {
             isActive_ = true;
-            hasBrackets_ = false;
+            hasBrackets_ = true;
+         } else {
+            // Try to match array name without appended [ bracket
+            label_.setString(name_);
+            in >> label_;
+            // Will throw exception if not matched and isRequired = true
+            if (Label::isMatched()) {
+               isActive_ = true;
+               hasBrackets_ = false;
+            }
          }
-      }
+
+      } else 
+      if (Parameter::bracketPolicy() == Parameter::Required) {
+
+         hasBrackets_ = true;
+         std::string string = name_;
+         string += "[";
+         label_.setString(string);    
+         in >> label_;
+         if (Label::isMatched()) {
+            isActive_ = true;
+         } else {
+            isActive_ = false;
+         }
+
+      } else
+      if (Parameter::bracketPolicy() == Parameter::Forbidden) {
+
+         hasBrackets_ = false;
+         std::string string = name_;
+         label_.setString(string);    
+         in >> label_;
+         if (Label::isMatched()) {
+            isActive_ = true;
+         } else {
+            isActive_ = false;
+         }
+
+      } 
+      
    }
 
    /*

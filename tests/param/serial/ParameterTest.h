@@ -25,6 +25,7 @@ public:
       setVerbose(2); 
       Label::clear();
       // ParamComponent::setEcho(true);
+      Parameter::setBracketPolicy(Parameter::Optional);
    }
 
    void tearDown()
@@ -355,7 +356,8 @@ public:
       int absentVal;
       std::string requiredVal;
       Parameter* absentPrm = new ScalarParam<int>("Absent", absentVal, false);
-      Parameter* requiredPrm = new ScalarParam<std::string>("Required", requiredVal);
+      Parameter* requiredPrm = new ScalarParam<std::string>("Required", 
+                                                            requiredVal);
       std::ifstream in;
       openInputFile("in/ScalarParamString", in);
       if (ParamComponent::echo()) std::cout << std::endl;
@@ -368,12 +370,6 @@ public:
       delete absentPrm;
       delete requiredPrm;
    }
-
-
-
-
-
-
 
    void testParamStringReadSaveLoad()
    {
@@ -473,6 +469,29 @@ public:
    void testCArrayParamIntWrite() 
    {
       printMethod(TEST_FUNC);
+
+      TEST_ASSERT(Parameter::bracketPolicy() == Parameter::Optional);
+
+      int requiredVal[3];
+      requiredVal[0] = 3;
+      requiredVal[1] = 34;
+      requiredVal[2] = 8;
+      Parameter *requiredPrm;
+      requiredPrm = new CArrayParam<int>("Required", requiredVal, 3);
+      if (verbose() > 0) {
+         printEndl();
+         requiredPrm->writeParam(std::cout);
+      }
+      delete requiredPrm;
+   }
+
+   void testCArrayParamIntWrite2() 
+   {
+      printMethod(TEST_FUNC);
+
+      TEST_ASSERT(Parameter::bracketPolicy() == Parameter::Optional);
+      Parameter::setBracketPolicy(Parameter::Forbidden);
+
       int requiredVal[3];
       requiredVal[0] = 3;
       requiredVal[1] = 34;
@@ -833,6 +852,11 @@ public:
 
    void testFArrayParamDoubleWrite() {
       printMethod(TEST_FUNC);
+
+      TEST_ASSERT(Parameter::bracketPolicy() == Parameter::Optional);
+      Parameter::setBracketPolicy(Parameter::Forbidden);
+      TEST_ASSERT(Parameter::bracketPolicy() == Parameter::Forbidden);
+
       FArray<double,3> requiredVal;
       requiredVal[0] = 3.0;
       requiredVal[1] = 34.7;
@@ -1361,6 +1385,7 @@ TEST_ADD(ParameterTest, testParamStringRead2)
 TEST_ADD(ParameterTest, testParamStringReadSaveLoad)
 #endif
 TEST_ADD(ParameterTest, testCArrayParamIntWrite)
+TEST_ADD(ParameterTest, testCArrayParamIntWrite2)
 TEST_ADD(ParameterTest, testCArrayParamIntRead)
 TEST_ADD(ParameterTest, testCArrayParamIntBracketRead)
 TEST_ADD(ParameterTest, testCArrayParamDoubleWrite)
