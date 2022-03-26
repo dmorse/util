@@ -554,6 +554,11 @@ public:
 
    void testCArrayParamDoubleRead() {
       printMethod(TEST_FUNC);
+
+      TEST_ASSERT(Parameter::bracketPolicy() == Parameter::Optional);
+      Parameter::setBracketPolicy(Parameter::Forbidden);
+      TEST_ASSERT(Parameter::bracketPolicy() == Parameter::Forbidden);
+      
       double requiredVal[3];
       Parameter *requiredPrm;
       requiredPrm = new CArrayParam<double>("Required", requiredVal, 3);

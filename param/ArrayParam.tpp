@@ -49,7 +49,6 @@ namespace Util
    void ArrayParam<Type>::readLabel(std::istream &in)
    {
       isActive_ = false;
-      hasBrackets_ = false;
 
       if (Parameter::bracketPolicy() == Parameter::Optional) {
 
@@ -58,6 +57,7 @@ namespace Util
          string += "[";
          label_.setString(string);    // Tentatively reset label string
          label_.setIsRequired(false); // Temporarily set isRequired false
+         hasBrackets_ = true;
          in >> label_;
          // This will not throw an exception, because isRequired is false
    
@@ -65,45 +65,31 @@ namespace Util
          label_.setIsRequired(isRequired_);
    
          if (Label::isMatched()) {
-            isActive_ = true;
+            //isActive_ = true;
             hasBrackets_ = true;
          } else {
             // Try to match array name without appended [ bracket
             label_.setString(name_);
+            hasBrackets_ = false;
             in >> label_;
-            // Will throw exception if not matched and isRequired = true
-            if (Label::isMatched()) {
-               isActive_ = true;
-               hasBrackets_ = false;
-            }
          }
 
       } else 
       if (Parameter::bracketPolicy() == Parameter::Required) {
 
-         hasBrackets_ = true;
          std::string string = name_;
          string += "[";
          label_.setString(string);    
+         hasBrackets_ = true;
          in >> label_;
-         if (Label::isMatched()) {
-            isActive_ = true;
-         } else {
-            isActive_ = false;
-         }
 
       } else
       if (Parameter::bracketPolicy() == Parameter::Forbidden) {
 
-         hasBrackets_ = false;
          std::string string = name_;
          label_.setString(string);    
+         hasBrackets_ = false;
          in >> label_;
-         if (Label::isMatched()) {
-            isActive_ = true;
-         } else {
-            isActive_ = false;
-         }
 
       } 
       
@@ -126,8 +112,14 @@ namespace Util
       for (int i = 0; i < n_; ++i) {
          in >> element(i);
       }
-      if (hasBrackets()) {
+      if (hasBrackets_) {
          in >> Label("]");
+      } else 
+      if (Parameter::bracketPolicy() != Parameter::Forbidden) {
+         std::string string = name_;
+         string += "[";
+         label_.setString(string);  
+         hasBrackets_ = true;
       }
    }
 
@@ -151,11 +143,11 @@ namespace Util
    
          Label space("");
          int i;
-         if (hasBrackets()) {
+         if (hasBrackets_) {
             out << indent() << Parameter::label_ << std::endl;
          }
          for (i = 0; i < n_; ++i) {
-            if (i == 0 && !hasBrackets()) {
+            if (i == 0 && !hasBrackets_) {
                out << indent() << Parameter::label_;
             } else {
                out << indent() << space;
@@ -166,7 +158,7 @@ namespace Util
                 << element(i)
                 << std::endl;
          }
-         if (hasBrackets()) {
+         if (hasBrackets_) {
             out << indent() << "]" << std::endl;
          }
 
