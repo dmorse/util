@@ -26,6 +26,7 @@ public:
       Label::clear();
       // ParamComponent::setEcho(true);
       Parameter::setBracketPolicy(Parameter::Optional);
+      //Parameter::setBracketPolicy(Parameter::Forbidden);
    }
 
    void tearDown()
@@ -470,6 +471,7 @@ public:
    {
       printMethod(TEST_FUNC);
 
+      Parameter::setBracketPolicy(Parameter::Optional);
       TEST_ASSERT(Parameter::bracketPolicy() == Parameter::Optional);
 
       int requiredVal[3];
@@ -489,8 +491,8 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      TEST_ASSERT(Parameter::bracketPolicy() == Parameter::Optional);
       Parameter::setBracketPolicy(Parameter::Forbidden);
+      TEST_ASSERT(Parameter::bracketPolicy() == Parameter::Forbidden);
 
       int requiredVal[3];
       requiredVal[0] = 3;
@@ -523,6 +525,7 @@ public:
 
    void testCArrayParamIntBracketRead() {
       printMethod(TEST_FUNC);
+      Parameter::setBracketPolicy(Parameter::Optional);
       int requiredVal[3];
       Parameter *requiredPrm;
       requiredPrm = new CArrayParam<int>("Required", requiredVal, 3);
@@ -555,7 +558,6 @@ public:
    void testCArrayParamDoubleRead() {
       printMethod(TEST_FUNC);
 
-      TEST_ASSERT(Parameter::bracketPolicy() == Parameter::Optional);
       Parameter::setBracketPolicy(Parameter::Forbidden);
       TEST_ASSERT(Parameter::bracketPolicy() == Parameter::Forbidden);
       
@@ -621,9 +623,17 @@ public:
       iar.file().close();
       TEST_ASSERT(!absentPrm2->isRequired());
       TEST_ASSERT(!absentPrm2->isActive());
-      TEST_ASSERT(requiredPrm2->label() == "Required[");
+      if (Parameter::bracketPolicy() == Parameter::Forbidden) {
+         TEST_ASSERT(requiredPrm2->label() == "Required");
+      } else {
+         TEST_ASSERT(requiredPrm2->label() == "Required[");
+      }
       TEST_ASSERT(requiredPrm2->isRequired());
-      TEST_ASSERT(presentPrm2->label() == "Present[");
+      if (Parameter::bracketPolicy() == Parameter::Forbidden) {
+         TEST_ASSERT(presentPrm2->label() == "Present");
+      } else {
+         TEST_ASSERT(presentPrm2->label() == "Present[");
+      }
       TEST_ASSERT(!presentPrm2->isRequired());
       TEST_ASSERT(presentPrm2->isActive());
 
@@ -677,6 +687,7 @@ public:
 
    void testDArrayParamIntBracketRead() {
       printMethod(TEST_FUNC);
+      Parameter::setBracketPolicy(Parameter::Optional);
       DArray<int> requiredVal;
       requiredVal.allocate(3);
       Parameter* requiredPrm = new DArrayParam<int>("Required", 
@@ -858,7 +869,6 @@ public:
    void testFArrayParamDoubleWrite() {
       printMethod(TEST_FUNC);
 
-      TEST_ASSERT(Parameter::bracketPolicy() == Parameter::Optional);
       Parameter::setBracketPolicy(Parameter::Forbidden);
       TEST_ASSERT(Parameter::bracketPolicy() == Parameter::Forbidden);
 

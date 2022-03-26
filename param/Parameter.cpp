@@ -181,7 +181,7 @@ namespace Util
    /*
    * Static variable stores current bracket policy.
    */
-   Parameter::BracketPolicy Parameter::bracketPolicy_ = Parameter::Optional;
+   Parameter::BracketPolicy Parameter::bracketPolicy_ = Parameter::Forbidden;
 
    /*
    * Set bracketPolicy value.
