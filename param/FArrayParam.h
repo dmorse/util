@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <util/param/Parameter.h>
+#include <util/param/ArrayParam.h>
 #include <util/containers/FArray.h>
 #include <util/global.h>
 
@@ -23,7 +23,7 @@ namespace Util
    * \ingroup Param_Module
    */
    template <class Type, int N>
-   class FArrayParam : public Parameter
+   class FArrayParam : public ArrayParam<Type>
    {
    
    public:
@@ -35,23 +35,22 @@ namespace Util
       * \param array  associated FArray variable
       * \param isRequired  Is this a required parameter?
       */
-      FArrayParam(const char *label, FArray<Type, N>& array, bool isRequired = true);
- 
-      /** 
-      * Write FArray parameter to stream.
-      *
-      * \param out output stream
-      */
-      void writeParam(std::ostream &out);
+      FArrayParam(const char *label, FArray<Type, N>& array, 
+                  bool isRequired = true);
+
+      using ArrayParam<Type>::writeParam;
 
    protected:
-      
+   
+      using ArrayParam<Type>::readValue;
+
       /**
-      * Read parameter value from an input stream.
-      * 
-      * \param in input stream from which to read
-      */
-      virtual void readValue(std::istream& in);
+      * Return one element by reference.
+      *
+      * \param i array element index
+      */ 
+      Type& element(int i)
+      {   return (*arrayPtr_)[i]; }
 
       /**
       * Load bare parameter value from an archive.
@@ -85,21 +84,12 @@ namespace Util
    * FArrayParam<Type, N> constructor.
    */
    template <class Type, int N>
-   FArrayParam<Type, N>::FArrayParam(const char *label, FArray<Type, N>& array, bool isRequired)
-    : Parameter(label, isRequired),
+   FArrayParam<Type, N>::FArrayParam(const char *label, 
+                                     FArray<Type, N>& array, 
+                                     bool isRequired)
+    : ArrayParam<Type>(label, N, isRequired),
       arrayPtr_(&array)
    {}
-
-   /*
-   * Read a FArray from isteam.
-   */
-   template <class Type, int N>
-   void FArrayParam<Type, N>::readValue(std::istream &in)
-   {  
-      for (int i = 0; i < N; ++i) {
-         in >> (*arrayPtr_)[i];
-      }
-   }
 
    /*
    * Load a FArray from input archive.
@@ -113,7 +103,7 @@ namespace Util
    */
    template <class Type, int N>
    void FArrayParam<Type, N>::saveValue(Serializable::OArchive& ar)
-   { ar << *arrayPtr_; }
+   {  ar << *arrayPtr_; }
 
    #ifdef UTIL_MPI
    /*
@@ -123,29 +113,6 @@ namespace Util
    void FArrayParam<Type, N>::bcastValue()
    {  bcast<Type>(ioCommunicator(), &((*arrayPtr_)[0]), N, 0); }
    #endif
-
-   /*
-   * Write a FArray parameter.
-   */
-   template <class Type, int N>
-   void FArrayParam<Type, N>::writeParam(std::ostream &out) 
-   {
-      if (isActive()) {
-         Label space("");
-         for (int i = 0; i < N; ++i) {
-            if (i == 0) {
-               out << indent() << label_;
-            } else {
-               out << indent() << space;
-            }
-            out << std::right << std::scientific 
-                << std::setprecision(Parameter::Precision) 
-                << std::setw(Parameter::Width)
-                << (*arrayPtr_)[i] 
-                << std::endl;
-         }
-      }
-   }
 
 } 
 #endif

@@ -51,9 +51,10 @@ namespace Util
       void writeParam(std::ostream &out);
 
       /**
-      * Enumeration of policies for use of brackets as delimiters.
+      * Get the logical array dimension.
       */
-      enum BracketPolicy {Required, Forbidden, Optional};
+      int n() const
+      {  return n_; }
 
       using ParamComponent::indent;
       using Parameter::load;
@@ -66,12 +67,6 @@ namespace Util
 
       /// Logical array dimension
       int n_;
-
-      /**
-      * Get the logical array dimension.
-      */
-      int n() const
-      {  return n_; }
 
       /**
       * Read parameter label from an input stream.
@@ -99,7 +94,6 @@ namespace Util
       {  return hasBrackets_; }
 
       using Parameter::label_;
-      //using Parameter::isActive_;
 
    private:
 

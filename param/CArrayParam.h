@@ -1,7 +1,7 @@
 #ifndef UTIL_CARRAY_PARAM_H
 #define UTIL_CARRAY_PARAM_H
 
-#include <util/param/Parameter.h>
+#include <util/param/ArrayParam.h>
 #include <util/global.h>
 
 #ifdef UTIL_MPI
@@ -19,32 +19,37 @@ namespace Util
    * \ingroup Param_Module
    */
    template <class Type>
-   class CArrayParam : public Parameter
+   class CArrayParam : public ArrayParam<Type>
    {
    
    public:
 
       /**   
       * Constructor.
-      */
-      CArrayParam(const char *label, Type *value, int n, bool isRequired = true);
-
-      /** 
-      * Write parameter to stream.
       *
-      * \param out output stream
+      * \param label  label string (name of array variable)
+      * \param value  associated C array (pointer to first element)
+      * \param n  logical size of array
+      * \param isRequired  Is this a required parameter ?
       */
-      void writeParam(std::ostream &out);
+      CArrayParam(const char* label, Type* value, int n, 
+                  bool isRequired = true);
+
+      using ArrayParam<Type>::writeParam;
 
    protected:
-      
-      /**
-      * Read parameter value from an input stream.
-      * 
-      * \param in input stream from which to read
-      */
-      virtual void readValue(std::istream& in);
 
+      using ArrayParam<Type>::readValue;
+      using ArrayParam<Type>::n;
+
+      /**
+      * Return a reference to one element of the array.
+      *
+      * \param i element index
+      */
+      Type& element(int i) 
+      {  return value_[i]; }
+ 
       /**
       * Load bare parameter value from an archive.
       *
@@ -68,48 +73,34 @@ namespace Util
 
    private:
    
-      /// Pointer to value.
+      /// Pointer to array (i.e., to first element)
       Type* value_;
-   
-      /// Array dimension
-      int n_;    
-   
+  
    };
 
    /*
    * CArrayParam<Type> constructor.
    */
    template <class Type>
-   CArrayParam<Type>::CArrayParam(const char *label, Type* value, int n, bool isRequired)
-    : Parameter(label, isRequired),
-      value_(value),
-      n_(n)
+   CArrayParam<Type>::CArrayParam(const char *label, Type* value, int n, 
+                                  bool isRequired)
+    : ArrayParam<Type>(label, n, isRequired),
+      value_(value)
    {}
-
-   /*
-   * Read C-array of n values from file.
-   */
-   template <class Type>
-   void CArrayParam<Type>::readValue(std::istream &in)
-   {  
-      for (int i = 0; i < n_; ++i) {
-         in >> value_[i];
-      }
-   }
 
    /*
    * Load C-array of n values from an input archive
    */
    template <class Type>
    void CArrayParam<Type>::loadValue(Serializable::IArchive& ar)
-   {  ar.unpack(value_, n_); }
+   {  ar.unpack(value_, n()); }
 
    /*
    * Save C-array of n values to an output archive
    */
    template <class Type>
    void CArrayParam<Type>::saveValue(Serializable::OArchive& ar)
-   {  ar.pack(value_, n_); }
+   {  ar.pack(value_, n()); }
 
    #ifdef UTIL_MPI
    /*
@@ -117,31 +108,8 @@ namespace Util
    */
    template <class Type>
    void CArrayParam<Type>::bcastValue()
-   {  bcast<Type>(ioCommunicator(), value_, n_, 0); }
+   {  bcast<Type>(ioCommunicator(), value_, n(), 0); }
    #endif
-
-   /*
-   * Write a C array
-   */
-   template <class Type>
-   void CArrayParam<Type>::writeParam(std::ostream &out) 
-   {
-      if (isActive()) {
-         Label space("");
-         for (int i = 0; i < n_; ++i) {
-            if (i == 0) {
-               out << indent() << label_;
-            } else {
-               out << indent() << space;
-            }
-            out << std::right << std::scientific 
-                << std::setprecision(Parameter::Precision) 
-                << std::setw(Parameter::Width)
-                << value_[i] 
-                << std::endl;
-         }
-      }
-   }
 
 } 
 #endif

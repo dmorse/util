@@ -502,6 +502,22 @@ public:
       delete requiredPrm;
    }
 
+   void testCArrayParamIntBracketRead() {
+      printMethod(TEST_FUNC);
+      int requiredVal[3];
+      Parameter *requiredPrm;
+      requiredPrm = new CArrayParam<int>("Required", requiredVal, 3);
+      std::ifstream in;
+      openInputFile("in/ArrayParamIntBracket", in);
+      if (ParamComponent::echo()) std::cout << std::endl;
+      requiredPrm->readParam(in);
+      if (verbose() > 0) {
+         printEndl();
+         requiredPrm->writeParam(std::cout);
+      }
+      delete requiredPrm;
+   }
+
    void testCArrayParamDoubleWrite() {
       printMethod(TEST_FUNC);
       double requiredVal[3];
@@ -581,9 +597,9 @@ public:
       iar.file().close();
       TEST_ASSERT(!absentPrm2->isRequired());
       TEST_ASSERT(!absentPrm2->isActive());
-      TEST_ASSERT(requiredPrm2->label() == "Required");
+      TEST_ASSERT(requiredPrm2->label() == "Required[");
       TEST_ASSERT(requiredPrm2->isRequired());
-      TEST_ASSERT(presentPrm2->label() == "Present");
+      TEST_ASSERT(presentPrm2->label() == "Present[");
       TEST_ASSERT(!presentPrm2->isRequired());
       TEST_ASSERT(presentPrm2->isActive());
 
@@ -1346,6 +1362,7 @@ TEST_ADD(ParameterTest, testParamStringReadSaveLoad)
 #endif
 TEST_ADD(ParameterTest, testCArrayParamIntWrite)
 TEST_ADD(ParameterTest, testCArrayParamIntRead)
+TEST_ADD(ParameterTest, testCArrayParamIntBracketRead)
 TEST_ADD(ParameterTest, testCArrayParamDoubleWrite)
 TEST_ADD(ParameterTest, testCArrayParamDoubleRead)
 #ifndef UTIL_MPI

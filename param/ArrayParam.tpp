@@ -25,8 +25,12 @@ namespace Util
       n_(n),
       name_(label),
       isRequired_(isRequired),
-      hasBrackets_(false)
-   {}
+      hasBrackets_(true)
+   {
+      std::string name = name_;
+      name += "[";
+      label_.setString(name);
+   }
 
    /*
    * Destructor.
