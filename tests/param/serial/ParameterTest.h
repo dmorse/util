@@ -622,7 +622,8 @@ public:
       printMethod(TEST_FUNC);
       DArray<int> requiredVal;
       requiredVal.allocate(3);
-      Parameter* requiredPrm = new DArrayParam<int>("Required", requiredVal, 3);
+      Parameter* requiredPrm = new DArrayParam<int>("Required", 
+                                                    requiredVal, 3);
       std::ifstream in;
       openInputFile("in/ArrayParamInt", in);
       if (ParamComponent::echo()) std::cout << std::endl;
@@ -631,6 +632,23 @@ public:
          printEndl();
          requiredPrm->writeParam(std::cout);
       }
+      delete requiredPrm;
+   }
+
+   void testDArrayParamIntBracketRead() {
+      printMethod(TEST_FUNC);
+      DArray<int> requiredVal;
+      requiredVal.allocate(3);
+      Parameter* requiredPrm = new DArrayParam<int>("Required", 
+                                                    requiredVal, 3);
+      std::ifstream in;
+      openInputFile("in/ArrayParamIntBracket", in);
+      if (ParamComponent::echo()) std::cout << std::endl;
+      requiredPrm->readParam(in);
+      //if (verbose() > 0) {
+         printEndl();
+         requiredPrm->writeParam(std::cout);
+      //}
       delete requiredPrm;
    }
 
@@ -1335,6 +1353,7 @@ TEST_ADD(ParameterTest, testCArrayParamDoubleReadSaveLoad)
 #endif
 TEST_ADD(ParameterTest, testDArrayParamIntWrite)
 TEST_ADD(ParameterTest, testDArrayParamIntRead)
+TEST_ADD(ParameterTest, testDArrayParamIntBracketRead)
 TEST_ADD(ParameterTest, testDArrayParamDoubleWrite)
 TEST_ADD(ParameterTest, testDArrayParamDoubleRead)
 #ifndef UTIL_MPI

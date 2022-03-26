@@ -23,6 +23,7 @@ namespace Util
    *
    * \ingroup Param_Module
    */
+   template <typename Type>
    class ArrayParam : public Parameter
    {
 
@@ -32,33 +33,45 @@ namespace Util
       * Constructor.
       *
       * \param label  label string preceding value in file format
+      * \param n  logical array dimension
       * \param isRequired  Is this a required parameter?
       */
-      ArrayParam(const char *label, bool isRequired = true);
+      ArrayParam(const char *label, int n, bool isRequired = true);
 
       /**
       * Destructor.
       */
       virtual ~ArrayParam();
 
-      #if 0
-      /**
-      * Read a label and (if label matches) an array of parameter values.
+      /** 
+      * Write parameter to stream.
       *
-      * The parameter file format for ArrayParam consists of a label string
-      * followed by list of values for elements in an array. 
-      *
-      * \param in  input stream from which to read
+      * \param out output stream
       */
-      virtual void readParam(std::istream &in);
-      #endif
+      void writeParam(std::ostream &out);
 
       /**
       * Enumeration of policies for use of brackets as delimiters.
       */
       enum BracketPolicy {Required, Forbidden, Optional};
 
+      using ParamComponent::indent;
+      using Parameter::load;
+      using Parameter::save;
+      using Parameter::label;
+      using Parameter::isRequired;
+      using Parameter::isActive;
+
    protected:
+
+      /// Logical array dimension
+      int n_;
+
+      /**
+      * Get the logical array dimension.
+      */
+      int n() const
+      {  return n_; }
 
       /**
       * Read parameter label from an input stream.
@@ -66,6 +79,27 @@ namespace Util
       * \param in input stream from which to read
       */
       virtual void readLabel(std::istream& in);
+
+      /**
+      * Read parameter value from an input stream.
+      * 
+      * \param in input stream from which to read
+      */
+      virtual void readValue(std::istream& in);
+
+      /**
+      * Return reference to one element.
+      */
+      virtual Type& element(int i) = 0;
+
+      /**
+      * Are brackets used as delimiters?
+      */ 
+      bool hasBrackets() const
+      {  return hasBrackets_; }
+
+      using Parameter::label_;
+      //using Parameter::isActive_;
 
    private:
 
@@ -75,10 +109,11 @@ namespace Util
       /// Is this a required array ?
       bool isRequired_;
 
-      /// Does the label have a [ bracket appended?
+      /// Are square brackets ([....]) used as delimiters?
       bool hasBrackets_;
 
    };
 
 }
+#include <util/param/ArrayParam.tpp>
 #endif
