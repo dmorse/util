@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <util/param/Parameter.h>
+#include <util/param/MatrixParam.h>
 #include <util/containers/DMatrix.h>
 #include <util/format/Int.h>
 #ifdef UTIL_MPI
@@ -27,7 +27,7 @@ namespace Util
    * \ingroup Param_Module
    */
    template <class Type>
-   class DSymmMatrixParam : public Parameter
+   class DSymmMatrixParam : public MatrixParam<Type>
    {
       
    public:
@@ -40,7 +40,8 @@ namespace Util
       * \param n number of rows or columns
       * \param isRequired  Is this a required parameter?
       */
-      DSymmMatrixParam(const char *label, DMatrix<Type>& matrix, int n, bool isRequired = true);
+      DSymmMatrixParam(const char *label, DMatrix<Type>& matrix, int n, 
+                       bool isRequired = true);
  
       /**
       * Write DMatrix to file.
@@ -77,6 +78,17 @@ namespace Util
       virtual void bcastValue();
       #endif
 
+      using ParamComponent::indent;
+      using Parameter::isActive;
+      using MatrixParam<Type>::m;
+      using MatrixParam<Type>::n;
+      using MatrixParam<Type>::readEndBracket;
+
+   protected:
+
+      using Parameter::label_;
+      using MatrixParam<Type>::hasBrackets;
+
    private:
    
       /// Pointer to associated DMatrix.
@@ -88,13 +100,13 @@ namespace Util
    };
 
    /*
-   * DMatrix constructor.
+   * Constructor.
    */
    template <class Type>
-   DSymmMatrixParam<Type>::DSymmMatrixParam(const char* label, DMatrix<Type>& matrix, int n, bool isRequired)
-    : Parameter(label, isRequired),
-      matrixPtr_(&matrix),
-      n_(n)
+   DSymmMatrixParam<Type>::DSymmMatrixParam(const char* label, DMatrix<Type>& matrix, 
+                                            int n, bool isRequired)
+    : MatrixParam<Type>(label, n, n, isRequired),
+      matrixPtr_(&matrix)
    {}
 
    /*
@@ -107,25 +119,25 @@ namespace Util
       if (!(matrixPtr_->isAllocated())) {
          UTIL_THROW("Cannot read unallocated DMatrix");
       }
-      if (n_ != matrixPtr_->capacity1()) {
-         UTIL_THROW("Error: Logical size n_ != DMatrix<Type>::capacity1()");
+      if (n() != matrixPtr_->capacity1()) {
+         UTIL_THROW("Error: Logical size n() != DMatrix<Type>::capacity1()");
       }
-      if (n_ != matrixPtr_->capacity2()) {
-         UTIL_THROW("Error: Logical size n_ != DMatrix<Type>::capacity2()");
+      if (n() != matrixPtr_->capacity2()) {
+         UTIL_THROW("Error: Logical size n() != DMatrix<Type>::capacity2()");
       }
 
       // Create matrix of int/bool flags for error checking
       DMatrix<int> flags;
-      flags.allocate(n_, n_);
+      flags.allocate(n(), n());
       int i, j;
-      for (i = 0; i < n_; ++i) {
-         for (j = 0; j < n_; ++j) {
+      for (i = 0; i < n(); ++i) {
+         for (j = 0; j < n(); ++j) {
             flags(i,j) = 0;
          }
       }
 
       double value;
-      for (int k = 0; k < n_*(n_ + 1)/2; ++k) {
+      for (int k = 0; k < n()*(n() + 1)/2; ++k) {
          in >> i >> j >> value;
          UTIL_CHECK(flags(i,j) == 0);
          (*matrixPtr_)(i, j) = value;
@@ -137,6 +149,7 @@ namespace Util
          }
       }
 
+      readEndBracket(in);
    }
 
    /*
@@ -146,13 +159,13 @@ namespace Util
    void DSymmMatrixParam<Type>::loadValue(Serializable::IArchive& ar)
    {  
       if (!(matrixPtr_->isAllocated())) {
-         matrixPtr_->allocate(n_, n_);
+         matrixPtr_->allocate(n(), n());
       } else {
-         if (n_ != matrixPtr_->capacity1()) {
-            UTIL_THROW("Error: Logical size n_ != DMatrix<Type>::capacity1()");
+         if (n() != matrixPtr_->capacity1()) {
+            UTIL_THROW("Error: Logical size n() != DMatrix<Type>::capacity1()");
          }
-         if (n_ != matrixPtr_->capacity2()) {
-            UTIL_THROW("Error: Logical size n_ != DMatrix<Type>::capacity2()");
+         if (n() != matrixPtr_->capacity2()) {
+            UTIL_THROW("Error: Logical size n() != DMatrix<Type>::capacity2()");
          }
       }
       ar >> *matrixPtr_;
@@ -164,11 +177,11 @@ namespace Util
    template <class Type>
    void DSymmMatrixParam<Type>::saveValue(Serializable::OArchive& ar)
    {
-      if (n_ != matrixPtr_->capacity1()) {
-         UTIL_THROW("Error: Logical size n_ != DMatrix<Type>::capacity1()");
+      if (n() != matrixPtr_->capacity1()) {
+         UTIL_THROW("Error: Logical size n() != DMatrix<Type>::capacity1()");
       }
-      if (n_ != matrixPtr_->capacity2()) {
-         UTIL_THROW("Error: Logical size n_ != DMatrix<Type>::capacity2()");
+      if (n() != matrixPtr_->capacity2()) {
+         UTIL_THROW("Error: Logical size n() != DMatrix<Type>::capacity2()");
       }
       ar << *matrixPtr_; 
    }
@@ -181,16 +194,16 @@ namespace Util
    void DSymmMatrixParam<Type>::bcastValue()
    {  
       if (!(matrixPtr_->isAllocated())) {
-         matrixPtr_->allocate(n_, n_);
+         matrixPtr_->allocate(n(), n());
       } else {
-         if (n_ != matrixPtr_->capacity1()) {
-            UTIL_THROW("Error: Logical size n_ > DMatrix<Type>::capacity1()");
+         if (n() != matrixPtr_->capacity1()) {
+            UTIL_THROW("Error: Logical size n() > DMatrix<Type>::capacity1()");
          }
-         if (n_ != matrixPtr_->capacity2()) {
-            UTIL_THROW("Error: Logical size n_ > DMatrix<Type>::capacity2()");
+         if (n() != matrixPtr_->capacity2()) {
+            UTIL_THROW("Error: Logical size n() > DMatrix<Type>::capacity2()");
          }
       }
-      bcast<Type>(ioCommunicator(), *matrixPtr_, n_, n_, 0); 
+      bcast<Type>(ioCommunicator(), *matrixPtr_, n(), n(), 0); 
    }
    #endif
 
@@ -205,18 +218,21 @@ namespace Util
          if (!(matrixPtr_->isAllocated())) {
             UTIL_THROW("Cannot read unallocated DMatrix");
          }
-         if (n_ > matrixPtr_->capacity1()) {
-            UTIL_THROW("Error: Logical size n_ > DMatrix<Type>::capacity1()");
+         if (n() > matrixPtr_->capacity1()) {
+            UTIL_THROW("Error: Logical size n() > DMatrix<Type>::capacity1()");
          }
-         if (n_ > matrixPtr_->capacity2()) {
-            UTIL_THROW("Error: Logical size n_ > DMatrix<Type>::capacity2()");
+         if (n() > matrixPtr_->capacity2()) {
+            UTIL_THROW("Error: Logical size n() > DMatrix<Type>::capacity2()");
          }
-   
+  
+         if (hasBrackets()) {
+            out << indent() << label_ << std::endl;
+         } 
          Label space("");
          int i, j;
-         for (i = 0; i < n_; ++i) {
+         for (i = 0; i < n(); ++i) {
             for (j = 0; j <= i; ++j) {
-               if (i == 0 && j == 0) {
+               if (i == 0 && j == 0 && !hasBrackets()) {
                   out << indent() << label_;
                } else {
                   out << indent() << space;
@@ -228,6 +244,9 @@ namespace Util
                    << (*matrixPtr_)(i, j)
                    << std::endl;
             }
+         }
+         if (hasBrackets()) {
+            out << indent() << ")" << std::endl;
          }
       }
    }

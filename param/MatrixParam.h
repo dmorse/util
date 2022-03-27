@@ -44,15 +44,6 @@ namespace Util
       */
       virtual ~MatrixParam();
 
-      #if 0
-      /** 
-      * Write parameter to stream.
-      *
-      * \param out output stream
-      */
-      virtual void writeParam(std::ostream &out);
-      #endif
-
       /**
       * Get the logical array dimension.
       */
@@ -88,22 +79,6 @@ namespace Util
       * \param in input stream from which to read
       */
       virtual void readEndBracket(std::istream& in);
-
-      #if 0
-      /**
-      * Read parameter value from an input stream.
-      * 
-      * \param in input stream from which to read
-      */
-      virtual void readValue(std::istream& in);
-      #endif
-
-      #if 0
-      /**
-      * Return reference to one element.
-      */
-      virtual Type& element(int i, int j) = 0;
-      #endif
 
       /**
       * Are brackets used as delimiters?
