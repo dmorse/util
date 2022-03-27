@@ -16,10 +16,44 @@ namespace Util
    /**
    * An array-valued parameter in a parameter file.
    *
-   * MatrixParam is a base class for objects that read and write the value
-   * of an array containing a list of parameters of the same type. The 
-   * parameter file format for a parameter contains a string label followed
-   * by values of the elements of the array. 
+   * MatrixParam is a base class for objects that read and write the value 
+   * of an matrix or 2D array containing a list of parameters of the same  
+   * type. 
+   *
+   * Arrays can be read and written in either of two formats:
+   * 
+   *   - Bracketed format begins with a label immediately followed by a left 
+   *     bracket delimiter on a line by itself, followed by several data 
+   *     lines, and ends with a right bracket delimiter. 
+   *
+   *   - Bracket-free format begins with a label on the same line as the 
+   *     first line of data, with no opening or closing bracket delimiters.
+   *
+   * Different subclasses may use different formats for the data lines, 
+   * and different choices of delmiting brackets (e.g., square brackets 
+   * or parentheses). Two different conventions are in use:
+   *
+   *   - Row data format puts values of all the elements in each row of 
+   *     the matrix on a single line, with rows appearing in order of 
+   *     increasing index, as in standard linear algebra matrix format.
+   * 
+   *   - Element format puts each element on a single line, in which
+   *     each line contains the row and column index followed by the
+   *     value.
+   *
+   * Either row or element data format may be input and output in either 
+   * bracketed or bracket-free format. The choice of whether to use 
+   * bracketed or bracket-free format is determined by the global bracket 
+   * policy returned by the function Util::BracketPolicy::get().
+   *
+   *   - If the policy is BracketPolicy::Forbidden, the bracket-free 
+   *     format must be used for both reading and writing.
+   *
+   *   - If the policy is BracketPolicy::Required, the bracketed format
+   *     must be used for both reading and writing.
+   *
+   *   - If the policy is BracketPolicy::Optional, then either format
+   *     can be read, but the bracketed format is used for writing.
    *
    * \ingroup Param_Module
    */
@@ -74,17 +108,32 @@ namespace Util
       virtual void readLabel(std::istream& in);
 
       /**
-      * Read the end bracket, if any.
+      * Read the end bracket delimiter, if any.
       *
-      * \param in input stream from which to read
+      * \param in  input stream from which to read
       */
-      virtual void readEndBracket(std::istream& in);
+      void readEndBracket(std::istream& in);
 
       /**
-      * Are brackets used as delimiters?
+      * Write the end bracket delimiter, if any.
+      *
+      * \param out  output stream to which to write
+      */
+      void writeEndBracket(std::ostream& out);
+
+      /**
+      * Are brackets being used as delimiters?
       */ 
       bool hasBrackets() const
       {  return hasBrackets_; }
+
+      /**
+      * Set left and right bracket / delimiter strings.
+      *
+      * \param lBracket  left bracket string
+      * \param rBracket  right bracket string
+      */
+      void setBrackets(std::string lBracket, std::string rBracket);
 
       using Parameter::label_;
 
@@ -93,10 +142,16 @@ namespace Util
       /// Name of array (i.e., label string, without opening bracket)
       std::string name_;
 
-      /// Number of rows
+      /// Left bracket delimiter string 
+      std::string lBracket_;
+
+      /// Right bracket delimiter string 
+      std::string rBracket_;
+
+      /// Number of rows (logical)
       int m_;
 
-      /// Number of columns
+      /// Number of columns (logical)
       int n_;
 
       /// Is this a required array ?

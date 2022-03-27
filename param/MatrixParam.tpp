@@ -25,6 +25,8 @@ namespace Util
                                   bool isRequired)
     : Parameter(label, isRequired),
       name_(label),
+      lBracket_("["),
+      rBracket_("]"),
       m_(n),
       n_(n),
       isRequired_(isRequired),
@@ -32,7 +34,7 @@ namespace Util
    {
       if (BracketPolicy::get() != BracketPolicy::Forbidden) {
          std::string name = name_;
-         name += "(";
+         name += lBracket_;
          label_.setString(name);
          hasBrackets_ = true;
       }
@@ -46,6 +48,23 @@ namespace Util
    {}
 
    /*
+   * Set left and right bracket delimiter strings.
+   */
+   template <typename Type>
+   void MatrixParam<Type>::setBrackets(std::string lBracket, 
+                                       std::string rBracket)
+   { 
+      lBracket_ = lBracket;
+      rBracket_ = rBracket;
+      if (BracketPolicy::get() != BracketPolicy::Forbidden) {
+         std::string name = name_;
+         name += lBracket_;
+         label_.setString(name);
+         hasBrackets_ = true;
+      }
+   }
+
+   /*
    * Read the array label.
    */
    template <typename Type>
@@ -55,21 +74,19 @@ namespace Util
 
       if (BracketPolicy::get() == BracketPolicy::Optional) {
 
-         // First try to match array name with an appended ( bracket
+         // First try to match array name with an appended left bracket
          std::string string = name_;
-         string += "(";
+         string += lBracket_;
          label_.setString(string);    // Tentatively reset label string
          label_.setIsRequired(false); // Temporarily set isRequired false
          hasBrackets_ = true;
          in >> label_;
          // This will not throw an exception, because isRequired is false
    
-         // Restore isRequired value of label
+         // Restore original isRequired value of label
          label_.setIsRequired(isRequired_);
    
-         if (Label::isMatched()) {
-            hasBrackets_ = true;
-         } else {
+         if (!Label::isMatched()) {
             // Try to match array name without appended ( bracket
             label_.setString(name_);
             hasBrackets_ = false;
@@ -80,7 +97,7 @@ namespace Util
       if (BracketPolicy::get() == BracketPolicy::Required) {
 
          std::string string = name_;
-         string += "(";
+         string += lBracket_;
          label_.setString(string);    
          hasBrackets_ = true;
          in >> label_;
@@ -101,17 +118,29 @@ namespace Util
    * Read end bracket delimiter, if any.
    */
    template <class Type>
-   void MatrixParam<Type>::readEndBracket(std::istream &in)
+   void MatrixParam<Type>::readEndBracket(std::istream& in)
    {  
       if (hasBrackets_) {
-         in >> Label(")");
-      } else 
+         UTIL_CHECK(!BracketPolicy::Forbidden);
+         in >> Label(rBracket_);
+      } 
       if (BracketPolicy::get() != BracketPolicy::Forbidden) {
          std::string string = name_;
-         string += "(";
+         string += lBracket_;
          label_.setString(string);  
          hasBrackets_ = true;
       }
+   }
+
+   /*
+   * Write end bracket delimiter, if any.
+   */
+   template <class Type>
+   void MatrixParam<Type>::writeEndBracket(std::ostream& out)
+   {  
+      if (hasBrackets_) {
+         out << indent() << rBracket_ << std::endl;
+      } 
    }
 
 } 

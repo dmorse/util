@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <util/param/Parameter.h>
+#include <util/param/MatrixParam.h>
 #include <util/global.h>
 
 #ifdef UTIL_MPI
@@ -26,7 +26,7 @@ namespace Util
    * \ingroup Param_Module
    */
    template <class Type>
-   class CArray2DParam : public Parameter
+   class CArray2DParam : public MatrixParam<Type>
    {
       
    public:
@@ -52,15 +52,24 @@ namespace Util
  
       /**
       * Write 2D C array to file.
+      *
+      * \param out  output stream to which to write
       */ 
-      void writeParam(std::ostream &out);
+      void writeParam(std::ostream& out);
+
+      using ParamComponent::indent;
+      using Parameter::isActive;
+      using MatrixParam<Type>::m;
+      using MatrixParam<Type>::n;
 
    protected:
+
+      using MatrixParam<Type>::hasBrackets;
       
       /**
       * Read 2D array parameter from an input stream.
       * 
-      * \param in input stream from which to read
+      * \param in  input stream from which to read
       */
       virtual void readValue(std::istream& in);
 
@@ -90,12 +99,6 @@ namespace Util
       /// Pointer to first element of first row in associated 2D C array
       Type* ptr_;
    
-      /// Number of rows in array[][np]
-      int m_; 
-
-      /// Logical number of columns in array[][np]
-      int n_; 
-
       /// Physical number of columns in array[][np]
       int np_; 
    
@@ -106,13 +109,16 @@ namespace Util
    * CArray2D constructor.
    */
    template <class Type>
-   CArray2DParam<Type>::CArray2DParam(const char* label, Type* ptr, int m, int n, int np, bool isRequired)
-    : Parameter(label, isRequired),
+   CArray2DParam<Type>::CArray2DParam(const char* label, Type* ptr, 
+                                      int m, int n, int np, 
+                                      bool isRequired)
+    : MatrixParam<Type>(label, m, n, isRequired),
       ptr_(ptr),
-      m_(m),
-      n_(n),
       np_(np)
-   {}
+   {
+      // Set matrix delimiter symbols to left and right square brackets
+      MatrixParam<Type>::setBrackets("[","]");
+   }
 
    /*
    * Read a DArray from isteam.
@@ -121,11 +127,12 @@ namespace Util
    void CArray2DParam<Type>::readValue(std::istream &in)
    {  
       int i, j;
-      for (i = 0; i < m_; ++i) {
-         for (j = 0; j < n_; ++j) {
+      for (i = 0; i < m(); ++i) {
+         for (j = 0; j < n(); ++j) {
             in >> ptr_[i*np_ + j];
          }
       }
+      MatrixParam<Type>::readEndBracket(in);
    }
 
    /*
@@ -133,14 +140,14 @@ namespace Util
    */
    template <class Type>
    void CArray2DParam<Type>::loadValue(Serializable::IArchive& ar)
-   {  ar.unpack(ptr_, m_, n_, np_); }
+   {  ar.unpack(ptr_, m(), n(), np_); }
 
    /*
    *  Save a DArray to an output archive.
    */
    template <class Type>
    void CArray2DParam<Type>::saveValue(Serializable::OArchive& ar)
-   {  ar.pack(ptr_, m_, n_, np_); }
+   {  ar.pack(ptr_, m(), n(), np_); }
 
    #ifdef UTIL_MPI
    /*
@@ -148,7 +155,7 @@ namespace Util
    */
    template <class Type>
    void CArray2DParam<Type>::bcastValue()
-   {  bcast<Type>(ioCommunicator(), ptr_, m_*np_, 0); }
+   {  bcast<Type>(ioCommunicator(), ptr_, m()*np_, 0); }
    #endif
 
    /*
@@ -157,17 +164,21 @@ namespace Util
    template <class Type>
    void CArray2DParam<Type>::writeParam(std::ostream &out)
    {
+
       if (isActive()) {
          Label space("");
          int i, j;
-   
-         for (i = 0; i < m_; ++i) {
-            if (i == 0) {
-               out << indent() << label_;
+  
+         if (hasBrackets()) {
+            out << indent() << Parameter::label_ << std::endl;
+         } 
+         for (i = 0; i < m(); ++i) {
+            if (i == 0 && !hasBrackets()) {
+               out << indent() << Parameter::label_;
             } else {
                out << indent() << space;
             }
-            for (j = 0; j < n_; ++j) {
+            for (j = 0; j < n(); ++j) {
                out << std::right << std::scientific 
                    << std::setprecision(Parameter::Precision) 
                    << std::setw(Parameter::Width)
@@ -175,6 +186,7 @@ namespace Util
             }
             out << std::endl;
          }
+         MatrixParam<Type>::writeEndBracket(out);
       }
    }
 } 

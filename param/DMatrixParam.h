@@ -48,8 +48,15 @@ namespace Util
       */ 
       void writeParam(std::ostream &out);
 
+      using ParamComponent::indent;
+      using Parameter::isActive;
+      using MatrixParam<Type>::m;
+      using MatrixParam<Type>::n;
+
    protected:
       
+      using MatrixParam<Type>::hasBrackets;
+
       /**
       * Read parameter value from an input stream.
       * 
@@ -78,17 +85,6 @@ namespace Util
       virtual void bcastValue();
       #endif
 
-      using ParamComponent::indent;
-      using Parameter::isActive;
-      using MatrixParam<Type>::m;
-      using MatrixParam<Type>::n;
-      using MatrixParam<Type>::readEndBracket;
-
-   protected:
-
-      using Parameter::label_;
-      using MatrixParam<Type>::hasBrackets;
-
    private:
    
       /// Pointer to associated DMatrix.
@@ -104,7 +100,10 @@ namespace Util
                                     int m, int n, bool isRequired)
     : MatrixParam<Type>(label, m, n, isRequired),
       matrixPtr_(&matrix)
-   {}
+   {
+      // Set delimiter strings to left and right square brackets.
+      MatrixParam<Type>::setBrackets("[","]");
+   }
 
    /*
    * Read a DMatrix from isteam.
@@ -130,7 +129,7 @@ namespace Util
          }
       }
 
-      readEndBracket(in);
+      MatrixParam<Type>::readEndBracket(in);
    }
 
    /*
@@ -207,13 +206,13 @@ namespace Util
          }
   
          if (hasBrackets()) {
-            out << indent() << label_ << std::endl;
+            out << indent() << Parameter::label_ << std::endl;
          } 
          Label space("");
          int i, j;
          for (i = 0; i < m(); ++i) {
             if (i == 0 && !hasBrackets()) {
-               out << indent() << label_;
+               out << indent() << Parameter::label_;
             } else {
                out << indent() << space;
             }
@@ -225,9 +224,7 @@ namespace Util
             }
             out << std::endl;
          }
-         if (hasBrackets()) {
-            out << indent() << ")" << std::endl;
-         } 
+         MatrixParam<Type>::writeEndBracket(out);
       }
    }
 

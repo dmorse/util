@@ -22,8 +22,20 @@ namespace Util
 {
 
    /**
-   * A Parameter associated with a symmetric DMatrix.
+   * A Parameter associated with a square symmetric DMatrix.
    *
+   * The parameter file format for a DSymmMatrixParam uses one line per matrix
+   * element, in which each line contains the row index, the column index and
+   * the value of one matrix element.  Symmetry is imposed on reading by 
+   * assigning value to both the (i,j) and (j,i) elements of the matrix when 
+   * the (i, j) element is read. Each distinct element may only appear once.
+   *
+   * The format may input and output in either bracketed or bracket free 
+   * format, depending on the value of the bracket policy returned by the
+   * function BracketPolicy::get(). See class documentation for MatrixParam
+   * for a discussion. When bracketed format is used left and right 
+   * parentheses "( ... )" are used as bracketing delimiters.
+   * 
    * \ingroup Param_Module
    */
    template <class Type>
@@ -37,7 +49,6 @@ namespace Util
       *
       * \param label  parameter label (a literal C-string)
       * \param matrix  DMatrix<Type> object
-      * \param n number of rows or columns
       * \param isRequired  Is this a required parameter?
       */
       DSymmMatrixParam(const char *label, DMatrix<Type>& matrix, int n, 
@@ -82,12 +93,14 @@ namespace Util
       using Parameter::isActive;
       using MatrixParam<Type>::m;
       using MatrixParam<Type>::n;
-      using MatrixParam<Type>::readEndBracket;
 
    protected:
 
       using Parameter::label_;
       using MatrixParam<Type>::hasBrackets;
+      using MatrixParam<Type>::setBrackets;
+      using MatrixParam<Type>::readEndBracket;
+      using MatrixParam<Type>::writeEndBracket;
 
    private:
    
@@ -103,11 +116,15 @@ namespace Util
    * Constructor.
    */
    template <class Type>
-   DSymmMatrixParam<Type>::DSymmMatrixParam(const char* label, DMatrix<Type>& matrix, 
+   DSymmMatrixParam<Type>::DSymmMatrixParam(const char* label, 
+                                            DMatrix<Type>& matrix, 
                                             int n, bool isRequired)
     : MatrixParam<Type>(label, n, n, isRequired),
       matrixPtr_(&matrix)
-   {}
+   {
+      // Set left and right brackets to parentheses 
+      setBrackets("(",")"); 
+   }
 
    /*
    * Read a DMatrix from isteam.
@@ -127,12 +144,14 @@ namespace Util
       }
 
       // Create matrix of int/bool flags for error checking
+      // Initialize all elements to zero
       DMatrix<int> flags;
       flags.allocate(n(), n());
       int i, j;
       for (i = 0; i < n(); ++i) {
          for (j = 0; j < n(); ++j) {
-            flags(i,j) = 0;
+            flags(i, j) = 0;
+            (*matrixPtr_)(i, j) = 0.0;
          }
       }
 
@@ -227,7 +246,7 @@ namespace Util
   
          if (hasBrackets()) {
             out << indent() << label_ << std::endl;
-         } 
+         }
          Label space("");
          int i, j;
          for (i = 0; i < n(); ++i) {
@@ -245,9 +264,7 @@ namespace Util
                    << std::endl;
             }
          }
-         if (hasBrackets()) {
-            out << indent() << ")" << std::endl;
-         }
+         writeEndBracket(out);
       }
    }
 
