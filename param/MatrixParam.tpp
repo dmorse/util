@@ -121,7 +121,7 @@ namespace Util
    void MatrixParam<Type>::readEndBracket(std::istream& in)
    {  
       if (hasBrackets_) {
-         UTIL_CHECK(!BracketPolicy::Forbidden);
+         UTIL_CHECK(BracketPolicy::get() != BracketPolicy::Forbidden);
          in >> Label(rBracket_);
       } 
       if (BracketPolicy::get() != BracketPolicy::Forbidden) {
