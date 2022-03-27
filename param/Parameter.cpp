@@ -176,23 +176,4 @@ namespace Util
    bool Parameter::isActive() const
    {  return isActive_; }
 
-   // Static variables and functions
-
-   /*
-   * Static variable stores current bracket policy.
-   */
-   Parameter::BracketPolicy Parameter::bracketPolicy_ = Parameter::Forbidden;
-
-   /*
-   * Set bracketPolicy value.
-   */
-   void Parameter::setBracketPolicy(Parameter::BracketPolicy policy)
-   {  bracketPolicy_ = policy; }
-
-   /*
-   * Get the value of the bracket policy. 
-   */
-   Parameter::BracketPolicy Parameter::bracketPolicy()
-   {  return bracketPolicy_; }
-
 } 

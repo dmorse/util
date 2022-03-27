@@ -25,8 +25,8 @@ public:
       setVerbose(2); 
       Label::clear();
       // ParamComponent::setEcho(true);
-      Parameter::setBracketPolicy(Parameter::Optional);
-      //Parameter::setBracketPolicy(Parameter::Forbidden);
+      BracketPolicy::set(BracketPolicy::Optional);
+      // BracketPolicy::set(BracketPolicy::Forbidden);
    }
 
    void tearDown()
@@ -124,7 +124,7 @@ public:
       requiredPrm = new ScalarParam<int>("Required", requiredVal);
       presentPrm = new ScalarParam<int>("Present", presentVal, false);
 
-      //Parameter::setEcho(true);
+      //setEcho(true);
       if (ParamComponent::echo()) printEndl();
 
       std::ifstream in;
@@ -245,7 +245,7 @@ public:
       requiredPrm = new ScalarParam<double>("Required", requiredVal);
       presentPrm = new ScalarParam<double>("Present", presentVal, false);
 
-      //Parameter::setEcho(true);
+      //setEcho(true);
       if (ParamComponent::echo()) printEndl();
 
       std::ifstream in;
@@ -385,7 +385,7 @@ public:
       requiredPrm = new ScalarParam<std::string>("Required", requiredVal);
       presentPrm = new ScalarParam<std::string>("Present", presentVal, false);
 
-      //Parameter::setEcho(true);
+      //setEcho(true);
       if (ParamComponent::echo()) printEndl();
 
       std::ifstream in;
@@ -471,8 +471,8 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      Parameter::setBracketPolicy(Parameter::Optional);
-      TEST_ASSERT(Parameter::bracketPolicy() == Parameter::Optional);
+      BracketPolicy::set(BracketPolicy::Optional);
+      TEST_ASSERT(BracketPolicy::get() == BracketPolicy::Optional);
 
       int requiredVal[3];
       requiredVal[0] = 3;
@@ -491,8 +491,8 @@ public:
    {
       printMethod(TEST_FUNC);
 
-      Parameter::setBracketPolicy(Parameter::Forbidden);
-      TEST_ASSERT(Parameter::bracketPolicy() == Parameter::Forbidden);
+      BracketPolicy::set(BracketPolicy::Forbidden);
+      TEST_ASSERT(BracketPolicy::get() == BracketPolicy::Forbidden);
 
       int requiredVal[3];
       requiredVal[0] = 3;
@@ -525,7 +525,7 @@ public:
 
    void testCArrayParamIntBracketRead() {
       printMethod(TEST_FUNC);
-      Parameter::setBracketPolicy(Parameter::Optional);
+      BracketPolicy::set(BracketPolicy::Optional);
       int requiredVal[3];
       Parameter *requiredPrm;
       requiredPrm = new CArrayParam<int>("Required", requiredVal, 3);
@@ -558,8 +558,8 @@ public:
    void testCArrayParamDoubleRead() {
       printMethod(TEST_FUNC);
 
-      Parameter::setBracketPolicy(Parameter::Forbidden);
-      TEST_ASSERT(Parameter::bracketPolicy() == Parameter::Forbidden);
+      BracketPolicy::set(BracketPolicy::Forbidden);
+      TEST_ASSERT(BracketPolicy::get() == BracketPolicy::Forbidden);
       
       double requiredVal[3];
       Parameter *requiredPrm;
@@ -623,13 +623,13 @@ public:
       iar.file().close();
       TEST_ASSERT(!absentPrm2->isRequired());
       TEST_ASSERT(!absentPrm2->isActive());
-      if (Parameter::bracketPolicy() == Parameter::Forbidden) {
+      if (BracketPolicy::get() == BracketPolicy::Forbidden) {
          TEST_ASSERT(requiredPrm2->label() == "Required");
       } else {
          TEST_ASSERT(requiredPrm2->label() == "Required[");
       }
       TEST_ASSERT(requiredPrm2->isRequired());
-      if (Parameter::bracketPolicy() == Parameter::Forbidden) {
+      if (BracketPolicy::get() == BracketPolicy::Forbidden) {
          TEST_ASSERT(presentPrm2->label() == "Present");
       } else {
          TEST_ASSERT(presentPrm2->label() == "Present[");
@@ -687,7 +687,7 @@ public:
 
    void testDArrayParamIntBracketRead() {
       printMethod(TEST_FUNC);
-      Parameter::setBracketPolicy(Parameter::Optional);
+      BracketPolicy::set(BracketPolicy::Optional);
       DArray<int> requiredVal;
       requiredVal.allocate(3);
       Parameter* requiredPrm = new DArrayParam<int>("Required", 
@@ -753,7 +753,7 @@ public:
       requiredPrm = new DArrayParam<double>("Required", requiredVal, 3);
       presentPrm = new DArrayParam<double>("Present", presentVal, 3, false);
 
-      //Parameter::setEcho(true);
+      //setEcho(true);
       if (ParamComponent::echo()) printEndl();
 
       std::ifstream in;
@@ -869,8 +869,8 @@ public:
    void testFArrayParamDoubleWrite() {
       printMethod(TEST_FUNC);
 
-      Parameter::setBracketPolicy(Parameter::Forbidden);
-      TEST_ASSERT(Parameter::bracketPolicy() == Parameter::Forbidden);
+      BracketPolicy::set(BracketPolicy::Forbidden);
+      TEST_ASSERT(BracketPolicy::get() == BracketPolicy::Forbidden);
 
       FArray<double,3> requiredVal;
       requiredVal[0] = 3.0;
@@ -918,7 +918,7 @@ public:
       requiredPrm = new FArrayParam<double, 3>("Required", requiredVal);
       presentPrm = new FArrayParam<double, 3>("Present", presentVal, false);
 
-      //Parameter::setEcho(true);
+      //setEcho(true);
       if (ParamComponent::echo()) printEndl();
 
       std::ifstream in;
@@ -1031,7 +1031,7 @@ public:
       presentPrm = 
             new CArray2DParam<double>("Present", presentVal[0], 2, 2, 2, false);
 
-      //Parameter::setEcho(true);
+      //setEcho(true);
       if (ParamComponent::echo()) printEndl();
 
       std::ifstream in;
@@ -1162,7 +1162,7 @@ public:
       presentPrm = 
             new DMatrixParam<double>("Present", presentVal, 2, 2, false);
 
-      //Parameter::setEcho(true);
+      //setEcho(true);
       if (ParamComponent::echo()) printEndl();
 
       std::ifstream in;
@@ -1295,7 +1295,7 @@ public:
       presentPrm = 
             new DSymmMatrixParam<double>("Present", presentVal, 2, false);
 
-      //Parameter::setEcho(true);
+      //setEcho(true);
       if (ParamComponent::echo()) printEndl();
 
       std::ifstream in;

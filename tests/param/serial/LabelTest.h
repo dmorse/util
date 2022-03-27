@@ -6,6 +6,7 @@
 
 #include <util/param/Label.h>
 #include <util/param/OptionalLabel.h>
+#include <util/param/BracketPolicy.h>
 #include <util/global.h>
 
 #include <iostream>
@@ -20,6 +21,7 @@ public:
 
    void setUp()
    { 
+      BracketPolicy::set(BracketPolicy::Optional);
       Label::clear();
    }
 

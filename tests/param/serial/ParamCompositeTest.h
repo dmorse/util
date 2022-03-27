@@ -4,6 +4,7 @@
 #include <util/global.h>
 
 #include <util/param/ParamComposite.h>
+#include <util/param/BracketPolicy.h>
 #include <util/param/Factory.h>
 #include <util/param/Manager.h>
 #include <util/space/Vector.h>
@@ -39,6 +40,7 @@ public:
    {
       Label::clear();
       ParamComponent::setEcho(false);
+      BracketPolicy::set(BracketPolicy::Optional);
    }
 
    void tearDown()

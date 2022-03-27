@@ -7,7 +7,8 @@ util_param_= \
     util/param/End.cpp \
     util/param/ParamComponent.cpp \
     util/param/ParamComposite.cpp \
-    util/param/Parameter.cpp 
+    util/param/Parameter.cpp \
+    util/param/BracketPolicy.cpp 
 
 util_param_SRCS=$(addprefix $(SRC_DIR)/, $(util_param_))
 util_param_OBJS=$(addprefix $(BLD_DIR)/, $(util_param_:.cpp=.o))

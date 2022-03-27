@@ -6,6 +6,7 @@
 */
 
 #include "ArrayParam.h"
+#include "BracketPolicy.h"
 
 #ifdef UTIL_MPI
 #include <util/mpi/MpiSendRecv.h>
@@ -27,7 +28,7 @@ namespace Util
       isRequired_(isRequired),
       hasBrackets_(false)
    {
-      if (Parameter::bracketPolicy() != Parameter::Forbidden) {
+      if (BracketPolicy::get() != BracketPolicy::Forbidden) {
          std::string name = name_;
          name += "[";
          label_.setString(name);
@@ -50,7 +51,7 @@ namespace Util
    {
       isActive_ = false;
 
-      if (Parameter::bracketPolicy() == Parameter::Optional) {
+      if (BracketPolicy::get() == BracketPolicy::Optional) {
 
          // First try to match array name with an appended [ bracket
          std::string string = name_;
@@ -75,7 +76,7 @@ namespace Util
          }
 
       } else 
-      if (Parameter::bracketPolicy() == Parameter::Required) {
+      if (BracketPolicy::get() == BracketPolicy::Required) {
 
          std::string string = name_;
          string += "[";
@@ -84,7 +85,7 @@ namespace Util
          in >> label_;
 
       } else
-      if (Parameter::bracketPolicy() == Parameter::Forbidden) {
+      if (BracketPolicy::get() == BracketPolicy::Forbidden) {
 
          std::string string = name_;
          label_.setString(string);    
@@ -115,7 +116,7 @@ namespace Util
       if (hasBrackets_) {
          in >> Label("]");
       } else 
-      if (Parameter::bracketPolicy() != Parameter::Forbidden) {
+      if (BracketPolicy::get() != BracketPolicy::Forbidden) {
          std::string string = name_;
          string += "[";
          label_.setString(string);  

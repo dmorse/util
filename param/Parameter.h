@@ -179,21 +179,6 @@ namespace Util
       */
       bool isActive() const;
 
-      /**
-      * Enumeration of policies regarding use of delimiters on arrays
-      */
-      enum BracketPolicy {Required, Forbidden, Optional};
-
-      /**
-      * Set policy regarding use of bracket delimiters on arrays.
-      */
-      static void setBracketPolicy(BracketPolicy policy);
-
-      /**
-      * Get value of bracket policy.
-      */
-      static BracketPolicy bracketPolicy();
-
    protected:
 
       /// Label object that contains parameter label string.
@@ -236,11 +221,6 @@ namespace Util
       */
       virtual void bcastValue(){}
       #endif
-
-   private:
-
-      /// Policy regarding use of brackets.
-      static BracketPolicy bracketPolicy_;
 
    };
 
