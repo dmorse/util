@@ -65,9 +65,6 @@ namespace Util
 
    protected:
 
-      /// Logical array dimension
-      int n_;
-
       /**
       * Read parameter label from an input stream.
       *
@@ -99,6 +96,9 @@ namespace Util
 
       /// Name of array (i.e., label string, without opening bracket)
       std::string name_;
+
+      /// Logical array dimension
+      int n_;
 
       /// Is this a required array ?
       bool isRequired_;

@@ -23,8 +23,8 @@ namespace Util
    template <typename Type>
    ArrayParam<Type>::ArrayParam(const char *label, int n, bool isRequired)
     : Parameter(label, isRequired),
-      n_(n),
       name_(label),
+      n_(n),
       isRequired_(isRequired),
       hasBrackets_(false)
    {
