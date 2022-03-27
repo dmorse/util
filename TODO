@@ -1,4 +1,5 @@
-- Modify patterns.mk to simplify makefile includes
+- Improve param file format for matrix-valued parameters
 
-- Consider moving space/ to simp as well.
+- Consider moving space/ to simp 
+
 
