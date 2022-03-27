@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <util/param/Parameter.h>
+#include <util/param/MatrixParam.h>
 #include <util/containers/DMatrix.h>
 #ifdef UTIL_MPI
 #include <util/mpi/MpiSendRecv.h>
@@ -26,7 +26,7 @@ namespace Util
    * \ingroup Param_Module
    */
    template <class Type>
-   class DMatrixParam : public Parameter
+   class DMatrixParam : public MatrixParam<Type>
    {
       
    public:
@@ -40,7 +40,8 @@ namespace Util
       * \param n  number of columns
       * \param isRequired  Is this a required parameter?
       */
-      DMatrixParam(const char *label, DMatrix<Type>& matrix, int m, int n, bool isRequired = true);
+      DMatrixParam(const char *label, DMatrix<Type>& matrix, int m, int n, 
+                   bool isRequired = true);
  
       /**
       * Write DMatrix to file.
@@ -77,16 +78,21 @@ namespace Util
       virtual void bcastValue();
       #endif
 
+      using ParamComponent::indent;
+      using Parameter::isActive;
+      using MatrixParam<Type>::m;
+      using MatrixParam<Type>::n;
+      using MatrixParam<Type>::readEndBracket;
+
+   protected:
+
+      using Parameter::label_;
+      using MatrixParam<Type>::hasBrackets;
+
    private:
    
       /// Pointer to associated DMatrix.
       DMatrix<Type>* matrixPtr_;
-   
-      /// Number of rows in array[m][n]
-      int m_; 
-
-      /// Number of columns in array[m][n]
-      int n_; 
    
    };
 
@@ -94,11 +100,10 @@ namespace Util
    * DMatrix constructor.
    */
    template <class Type>
-   DMatrixParam<Type>::DMatrixParam(const char* label, DMatrix<Type>& matrix, int m, int n, bool isRequired)
-    : Parameter(label, isRequired),
-      matrixPtr_(&matrix),
-      m_(m),
-      n_(n)
+   DMatrixParam<Type>::DMatrixParam(const char* label, DMatrix<Type>& matrix, 
+                                    int m, int n, bool isRequired)
+    : MatrixParam<Type>(label, m, n, isRequired),
+      matrixPtr_(&matrix)
    {}
 
    /*
@@ -111,19 +116,21 @@ namespace Util
       if (!(matrixPtr_->isAllocated())) {
          UTIL_THROW("Cannot read unallocated DMatrix");
       }
-      if (m_ != matrixPtr_->capacity1()) {
-         UTIL_THROW("Error: Logical size m_ != DMatrix<Type>::capacity1()");
+      if (m() != matrixPtr_->capacity1()) {
+         UTIL_THROW("Error: Logical size m() != DMatrix<Type>::capacity1()");
       }
-      if (n_ != matrixPtr_->capacity2()) {
-         UTIL_THROW("Error: Logical size n_ != DMatrix<Type>::capacity2()");
+      if (n() != matrixPtr_->capacity2()) {
+         UTIL_THROW("Error: Logical size n() != DMatrix<Type>::capacity2()");
       }
 
       int i, j;
-      for (i = 0; i < m_; ++i) {
-         for (j = 0; j < n_; ++j) {
+      for (i = 0; i < m(); ++i) {
+         for (j = 0; j < n(); ++j) {
             in >> (*matrixPtr_)(i, j);
          }
       }
+
+      readEndBracket(in);
    }
 
    /*
@@ -133,13 +140,13 @@ namespace Util
    void DMatrixParam<Type>::loadValue(Serializable::IArchive& ar)
    {  
       if (!(matrixPtr_->isAllocated())) {
-         matrixPtr_->allocate(m_, n_);
+         matrixPtr_->allocate(m(), n());
       } else {
-         if (m_ != matrixPtr_->capacity1()) {
-            UTIL_THROW("Error: Logical size m_ != DMatrix<Type>::capacity1()");
+         if (m() != matrixPtr_->capacity1()) {
+            UTIL_THROW("Error: Logical size m() != DMatrix<Type>::capacity1()");
          }
-         if (n_ != matrixPtr_->capacity2()) {
-            UTIL_THROW("Error: Logical size n_ != DMatrix<Type>::capacity2()");
+         if (n() != matrixPtr_->capacity2()) {
+            UTIL_THROW("Error: Logical size n() != DMatrix<Type>::capacity2()");
          }
       }
       ar >> *matrixPtr_;
@@ -151,11 +158,11 @@ namespace Util
    template <class Type>
    void DMatrixParam<Type>::saveValue(Serializable::OArchive& ar)
    {
-      if (m_ != matrixPtr_->capacity1()) {
-         UTIL_THROW("Error: Logical size m_ != DMatrix<Type>::capacity1()");
+      if (m() != matrixPtr_->capacity1()) {
+         UTIL_THROW("Error: Logical size m() != DMatrix<Type>::capacity1()");
       }
-      if (n_ != matrixPtr_->capacity2()) {
-         UTIL_THROW("Error: Logical size n_ != DMatrix<Type>::capacity2()");
+      if (n() != matrixPtr_->capacity2()) {
+         UTIL_THROW("Error: Logical size n() != DMatrix<Type>::capacity2()");
       }
       ar << *matrixPtr_; 
    }
@@ -168,16 +175,16 @@ namespace Util
    void DMatrixParam<Type>::bcastValue()
    {  
       if (!(matrixPtr_->isAllocated())) {
-         matrixPtr_->allocate(m_, n_);
+         matrixPtr_->allocate(m(), n());
       } else {
-         if (m_ != matrixPtr_->capacity1()) {
-            UTIL_THROW("Error: Logical size m_ > DMatrix<Type>::capacity1()");
+         if (m() != matrixPtr_->capacity1()) {
+            UTIL_THROW("Error: Logical size m() > DMatrix<Type>::capacity1()");
          }
-         if (n_ != matrixPtr_->capacity2()) {
-            UTIL_THROW("Error: Logical size n_ > DMatrix<Type>::capacity2()");
+         if (n() != matrixPtr_->capacity2()) {
+            UTIL_THROW("Error: Logical size n() > DMatrix<Type>::capacity2()");
          }
       }
-      bcast<Type>(ioCommunicator(), *matrixPtr_, m_, n_, 0); 
+      bcast<Type>(ioCommunicator(), *matrixPtr_, m(), n(), 0); 
    }
    #endif
 
@@ -192,22 +199,25 @@ namespace Util
          if (!(matrixPtr_->isAllocated())) {
             UTIL_THROW("Cannot read unallocated DMatrix");
          }
-         if (m_ > matrixPtr_->capacity1()) {
-            UTIL_THROW("Error: Logical size m_ > DMatrix<Type>::capacity1()");
+         if (m() > matrixPtr_->capacity1()) {
+            UTIL_THROW("Error: Logical size m() > DMatrix<Type>::capacity1()");
          }
-         if (n_ > matrixPtr_->capacity2()) {
-            UTIL_THROW("Error: Logical size n_ > DMatrix<Type>::capacity2()");
+         if (n() > matrixPtr_->capacity2()) {
+            UTIL_THROW("Error: Logical size n() > DMatrix<Type>::capacity2()");
          }
-   
+  
+         if (hasBrackets()) {
+            out << indent() << label_ << std::endl;
+         } 
          Label space("");
          int i, j;
-         for (i = 0; i < m_; ++i) {
-            if (i == 0) {
+         for (i = 0; i < m(); ++i) {
+            if (i == 0 && !hasBrackets()) {
                out << indent() << label_;
             } else {
                out << indent() << space;
             }
-            for (j = 0; j < n_; ++j) {
+            for (j = 0; j < n(); ++j) {
                out << std::right << std::scientific 
                    << std::setprecision(Parameter::Precision) 
                    << std::setw(Parameter::Width)
@@ -215,6 +225,9 @@ namespace Util
             }
             out << std::endl;
          }
+         if (hasBrackets()) {
+            out << indent() << ")" << std::endl;
+         } 
       }
    }
 
