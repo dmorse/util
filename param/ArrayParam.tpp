@@ -102,14 +102,6 @@ namespace Util
    template <class Type>
    void ArrayParam<Type>::readValue(std::istream &in)
    {  
-      #if 0
-      if (!(arrayPtr_->isAllocated())) {
-         UTIL_THROW("Cannot read unallocated DArray");
-      }
-      if (arrayPtr_->capacity() != n_) {
-         UTIL_THROW("Error: DArray capacity < n");
-      }
-      #endif
       for (int i = 0; i < n_; ++i) {
          in >> element(i);
       }
@@ -123,7 +115,6 @@ namespace Util
          hasBrackets_ = true;
       }
    }
-
  
    /*
    * Write a array parameter.
@@ -133,15 +124,6 @@ namespace Util
    {
       if (isActive()) {
 
-         #if 0
-         if (!(arrayPtr_->isAllocated())) {
-            UTIL_THROW("Cannot write unallocated DArray");
-         }
-         if (arrayPtr_->capacity() != n_) {
-            UTIL_THROW("Error: DArray capacity != n in writeParam");
-         }
-         #endif
-   
          Label space("");
          int i;
          if (hasBrackets_) {
