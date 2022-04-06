@@ -1276,6 +1276,51 @@ public:
       delete requiredPrm;
    }
 
+   void testDSymmMatrixParamDoubleRead2() 
+   {
+      printMethod(TEST_FUNC);
+      DMatrix<double> absentVal;
+      DMatrix<double> requiredVal;
+      DMatrix<double> presentVal;
+      absentVal.allocate(2, 2);
+      requiredVal.allocate(2, 2);
+      presentVal.allocate(2, 2);
+      Parameter *absentPrm;
+      Parameter *requiredPrm;
+      Parameter *presentPrm;
+      absentPrm = 
+            new DSymmMatrixParam<double>("Absent", absentVal, 2, false);
+      requiredPrm  = 
+            new DSymmMatrixParam<double>("Required", requiredVal, 2);
+      presentPrm = 
+            new DSymmMatrixParam<double>("Present", presentVal, 2, false);
+
+      //setEcho(true);
+      if (ParamComponent::echo()) printEndl();
+
+      std::ifstream in;
+      openInputFile("in/SymmMatrixParamDouble2", in);
+      absentPrm->readParam(in);
+      TEST_ASSERT(!Label::isClear());
+      requiredPrm->readParam(in);
+      TEST_ASSERT(Label::isClear());
+      presentPrm->readParam(in);
+      TEST_ASSERT(Label::isClear());
+
+      TEST_ASSERT(!absentPrm->isRequired());
+      TEST_ASSERT(!absentPrm->isActive());
+      TEST_ASSERT(requiredPrm->isRequired());
+      TEST_ASSERT(requiredPrm->isActive());
+      TEST_ASSERT(!presentPrm->isRequired());
+      TEST_ASSERT(presentPrm->isActive());
+
+      if (verbose() > 0) {
+         printEndl();
+         requiredPrm->writeParam(std::cout);
+         presentPrm->writeParam(std::cout);
+      }
+   }
+
    void testDSymmMatrixParamDoubleReadSaveLoad() 
    {
       printMethod(TEST_FUNC);
@@ -1317,7 +1362,6 @@ public:
       #if 0
       if (verbose() > 0) {
          printEndl();
-         absentPrm->writeParam(std::cout);
          requiredPrm->writeParam(std::cout);
          presentPrm->writeParam(std::cout);
       }
@@ -1434,6 +1478,7 @@ TEST_ADD(ParameterTest, testDMatrixParamDoubleReadSaveLoad)
 #endif
 TEST_ADD(ParameterTest, testDSymmMatrixParamDoubleWrite)
 TEST_ADD(ParameterTest, testDSymmMatrixParamDoubleRead)
+TEST_ADD(ParameterTest, testDSymmMatrixParamDoubleRead2)
 #ifndef UTIL_MPI
 TEST_ADD(ParameterTest, testDSymmMatrixParamDoubleReadSaveLoad)
 #endif

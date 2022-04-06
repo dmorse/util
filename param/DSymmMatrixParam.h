@@ -11,12 +11,14 @@
 #include <util/param/MatrixParam.h>
 #include <util/containers/DMatrix.h>
 #include <util/format/Int.h>
+#include <util/format/Dbl.h>
 #ifdef UTIL_MPI
 #include <util/mpi/MpiSendRecv.h>
 #endif
 #include <util/global.h>
 
 #include <iomanip> 
+#include <sstream> 
 
 namespace Util
 {
@@ -29,6 +31,9 @@ namespace Util
    * the value of one matrix element.  Symmetry is imposed on reading by 
    * assigning value to both the (i,j) and (j,i) elements of the matrix when 
    * the (i, j) element is read. Each distinct element may only appear once.
+   *
+   * Elements may be omitted. Values of omitted elements are set to zero by
+   * default. 
    *
    * The format may input and output in either bracketed or bracket free 
    * format, depending on the value of the bracket policy returned by the
@@ -107,8 +112,8 @@ namespace Util
       /// Pointer to associated DMatrix.
       DMatrix<Type>* matrixPtr_;
    
-      /// Number of rows or columns
-      int n_; 
+      /// Should we allow default zero value for elements
+      bool defaultZero_;
    
    };
 
@@ -120,7 +125,8 @@ namespace Util
                                             DMatrix<Type>& matrix, 
                                             int n, bool isRequired)
     : MatrixParam<Type>(label, n, n, isRequired),
-      matrixPtr_(&matrix)
+      matrixPtr_(&matrix),
+      defaultZero_(true)
    {
       // Set left and right brackets to parentheses 
       setBrackets("(",")"); 
@@ -156,19 +162,36 @@ namespace Util
       }
 
       double value;
-      for (int k = 0; k < n()*(n() + 1)/2; ++k) {
-         in >> i >> j >> value;
-         UTIL_CHECK(flags(i,j) == 0);
-         (*matrixPtr_)(i, j) = value;
-         flags(i, j) = 1;
-         if (i != j) {
-            UTIL_CHECK(flags(j,i) == 0);
-            (*matrixPtr_)(j, i) = value;
-            flags(j, i) = 1;
+      int k = 0;
+      bool open = true ;
+      while (open) {
+         std::string string;
+         in >> string;
+         std::stringstream stream;
+         stream << string;
+         if (string == ")") {
+            UTIL_CHECK(BracketPolicy::get() != BracketPolicy::Forbidden);
+            open = false;
+            readEndBracket(stream);
+         } else {
+            stream >> i; 
+            in >> j >> value;
+            UTIL_CHECK(flags(i,j) == 0);
+            (*matrixPtr_)(i, j) = value;
+            flags(i, j) = 1;
+            if (i != j) {
+               UTIL_CHECK(flags(j,i) == 0);
+               (*matrixPtr_)(j, i) = value;
+               flags(j, i) = 1;
+            }
+            ++k;
+            if (k == (n()+1)*n()/2) {
+               open = false;
+               readEndBracket(in);
+            }
          }
       }
 
-      readEndBracket(in);
    }
 
    /*
