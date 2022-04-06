@@ -20,11 +20,11 @@ namespace Util
    * of an matrix or 2D array containing a list of parameters of the same  
    * type. 
    *
-   * Arrays can be read and written in either of two formats:
+   * Matrices can be read and written in either of two formats:
    * 
-   *   - Bracketed format begins with a label immediately followed by a left 
-   *     bracket delimiter on a line by itself, followed by several data 
-   *     lines, and ends with a right bracket delimiter. 
+   *   - Bracketed format begins with a label immediately followed by an
+   *     opening delimiter on a line by itself, followed by several data 
+   *     lines, and ends with a closing delimiter. 
    *
    *   - Bracket-free format begins with a label on the same line as the 
    *     first line of data, with no opening or closing bracket delimiters.
@@ -108,7 +108,11 @@ namespace Util
       virtual void readLabel(std::istream& in);
 
       /**
-      * Read the end bracket delimiter, if any.
+      * Read the closing delimiter, if any.
+      *
+      * Attempts to read closing bracket iff hasBrackets is true.
+      * Throws an exception if hasBrackets is true but the expected
+      * delimiter is not found.
       *
       * \param in  input stream from which to read
       */
@@ -157,7 +161,7 @@ namespace Util
       /// Is this a required array ?
       bool isRequired_;
 
-      /// Are square brackets ([....]) used as delimiters?
+      /// Are brackets being used as delimiters?
       bool hasBrackets_;
 
    };

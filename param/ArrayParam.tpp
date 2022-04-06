@@ -105,6 +105,9 @@ namespace Util
       for (int i = 0; i < n_; ++i) {
          in >> element(i);
       }
+      readEndBracket(in);
+
+      #if 0
       if (hasBrackets_) {
          in >> Label("]");
       } else 
@@ -114,10 +117,35 @@ namespace Util
          label_.setString(string);  
          hasBrackets_ = true;
       }
+      #endif
    }
  
    /*
-   * Write a array parameter.
+   * Read closing bracket delimiter, if any.
+   */
+   template <class Type>
+   void ArrayParam<Type>::readEndBracket(std::istream& in)
+   { 
+      // If necessary, attempt to read closing bracket 
+      if (hasBrackets_) {
+         UTIL_CHECK(BracketPolicy::get() != BracketPolicy::Forbidden);
+         in >> Label("]");
+         // Operator >> throws an Exception if "]" is not matched
+      }
+ 
+      // Reset label_ and hasBrackets_ to default values for output
+      std::string string = name_;
+      if (BracketPolicy::get() == BracketPolicy::Forbidden) {
+         hasBrackets_ = false;
+      } else {
+         string += "[";
+         hasBrackets_ = true;
+      }
+      label_.setString(string);
+   }
+
+   /*
+   * Write an array-valued parameter.
    */
    template <class Type>
    void ArrayParam<Type>::writeParam(std::ostream &out) 

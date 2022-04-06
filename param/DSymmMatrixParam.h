@@ -39,7 +39,8 @@ namespace Util
    * format, depending on the value of the bracket policy returned by the
    * function BracketPolicy::get(). See class documentation for MatrixParam
    * for a discussion. When bracketed format is used left and right 
-   * parentheses "( ... )" are used as bracketing delimiters.
+   * parentheses "( ... )" are used as bracketing delimiters, and omitted
+   * elements are set to zero by default. 
    * 
    * \ingroup Param_Module
    */
@@ -54,18 +55,21 @@ namespace Util
       *
       * \param label  parameter label (a literal C-string)
       * \param matrix  DMatrix<Type> object
-      * \param isRequired  Is this a required parameter?
+      * \param n  number of rows or columns of a square matrix
+      * \param isRequired  Is this a required array-valued parameter?
       */
       DSymmMatrixParam(const char *label, DMatrix<Type>& matrix, int n, 
                        bool isRequired = true);
  
       /**
-      * Write DMatrix to file.
+      * Write symmetric DMatrix to file.
+      *
+      * \param out  output stream to which to write
       */ 
       void writeParam(std::ostream &out);
 
    protected:
-      
+  
       /**
       * Read parameter value from an input stream.
       * 
@@ -171,6 +175,7 @@ namespace Util
          stream << string;
          if (string == ")") {
             UTIL_CHECK(BracketPolicy::get() != BracketPolicy::Forbidden);
+            UTIL_CHECK(hasBrackets());
             open = false;
             readEndBracket(stream);
          } else {
@@ -187,7 +192,7 @@ namespace Util
             ++k;
             if (k == (n()+1)*n()/2) {
                open = false;
-               readEndBracket(in);
+               readEndBracket(in); // Only reads if hasBrackets
             }
          }
       }
