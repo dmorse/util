@@ -27,7 +27,7 @@ namespace Util
       name_(label),
       lBracket_("["),
       rBracket_("]"),
-      m_(n),
+      m_(m),
       n_(n),
       isRequired_(isRequired),
       hasBrackets_(false)
