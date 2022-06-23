@@ -11,6 +11,7 @@
 #include <util/mpi/MpiFileIo.h>         // member
 #include <util/param/ParamComposite.h>  // used in implementation
 #include <util/param/Begin.h>           // used in implementation
+#include <util/param/Label.h>           // used in implementation
 #include <util/param/End.h>             // used in implementation
 #include <util/global.h>
 
@@ -215,6 +216,7 @@ namespace Util
                                    std::string& className, bool& isEnd)
    {
       std::string  commentString;
+      Label        label("Factory", false); // "Factory" is just a filler string
       Data*        typePtr = 0;
       int          length;
       bool         hasData = false; // initialized to avoid compiler warning
@@ -227,9 +229,17 @@ namespace Util
       #endif
 
       // Read a first line of the form "ClassName{"
-      if (paramFileIo_.isIoProcessor()) {
-         in >> commentString;
+      // (this requires an override of the default behavior of the Label class)
+      if ((label.isMatched()) && (paramFileIo_.isIoProcessor())) { 
+         // if the line "ClassName{" hasn't already been read
+         in >> label; // read the line into Label, which will fail to match
       }
+      commentString = Label::input_; // get the line from Label
+      
+      // Ensure that Label is matched so it can read the rest of the file
+      label.setString(commentString);
+      in >> label; 
+
       #ifdef UTIL_MPI
       // Broadcast the full string to all processors.
       if (paramFileIo_.hasIoCommunicator()) {
