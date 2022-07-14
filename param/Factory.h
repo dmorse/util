@@ -216,7 +216,6 @@ namespace Util
                                    std::string& className, bool& isEnd)
    {
       std::string  commentString;
-      Label        label("Factory", false); // "Factory" is just a filler string
       Data*        typePtr = 0;
       int          length;
       bool         hasData = false; // initialized to avoid compiler warning
@@ -229,16 +228,23 @@ namespace Util
       #endif
 
       // Read a first line of the form "ClassName{"
-      // (this requires an override of the default behavior of the Label class)
-      if ((label.isMatched()) && (paramFileIo_.isIoProcessor())) { 
-         // if the line "ClassName{" hasn't already been read
-         in >> label; // read the line into Label, which will fail to match
+      // (this may require an override of the default behavior of the Label class)
+      if (paramFileIo_.isIoProcessor()) { 
+         if (Label::isClear()) {
+            in >> commentString;
+         } else {
+            // Label is not clear, which means that the last attempt to read
+            // an object was unsuccessful, and the string that Factory needs 
+            // is stored in Label::input_
+            UTIL_CHECK(!Label::isMatched()); // Label should not be matched
+            commentString = Label::input_; // get string from Label
+
+            // set Label static members to the correct state
+            Label::input_.clear();
+            Label::isClear_ = true;
+            Label::isMatched_ = true;
+         }
       }
-      commentString = Label::input_; // get the line from Label
-      
-      // Ensure that Label is matched so it can read the rest of the file
-      label.setString(commentString);
-      in >> label; 
 
       #ifdef UTIL_MPI
       // Broadcast the full string to all processors.
