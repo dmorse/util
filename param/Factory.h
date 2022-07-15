@@ -227,19 +227,18 @@ namespace Util
       }
       #endif
 
-      // Read a first line of the form "ClassName{"
-      // (this may require an override of the default behavior of the Label class)
+      // Read a first line of the form "ClassName{" int variable commentString
       if (paramFileIo_.isIoProcessor()) { 
          if (Label::isClear()) {
             in >> commentString;
          } else {
-            // Label is not clear, which means that the last attempt to read
-            // an object was unsuccessful, and the string that Factory needs 
-            // is stored in Label::input_
+            // Label is not clear, which means that the last attempt to 
+            // read an object was unsuccessful, and the string that Factory 
+            // needs is stored in Label::input_
             UTIL_CHECK(!Label::isMatched()); // Label should not be matched
-            commentString = Label::input_; // get string from Label
+            commentString = Label::input_;   // get string from Label
 
-            // set Label static members to the correct state
+            // Set Label static members to the correct state
             Label::input_.clear();
             Label::isClear_ = true;
             Label::isMatched_ = true;
@@ -269,13 +268,14 @@ namespace Util
          className = commentString.substr(0, commentString.size() - 1);
          hasData = true;
       } else
-      if (commentString[length-1] == '}') {
+      if (commentString[length-1]=='}' && commentString[length-2]=='{'){
          className = commentString.substr(0, commentString.size() - 2);
          hasData = false;
       } else {
          if (paramFileIo_.isIoProcessor()) {
+            className = std::string();
+            Log::file() << "Invalid string:" << commentString << std::endl;
             Log::file() << "commentString = " << commentString << std::endl;
-            Log::file() << "className     = " << className     << std::endl;
             UTIL_THROW("Invalid first line\n");
          }
       }
@@ -296,17 +296,27 @@ namespace Util
             beginPtr->writeParam(Log::file());
          }
 
+         // Add child to parent
+         parent.addParamComposite(*typePtr);
+
          // Read parameters for the new child object, if any
          if (hasData) {
-            parent.addParamComposite(*typePtr);
             typePtr->readParameters(in);
          }
 
-         // Read closing bracket, set indentation as for child.
-         typePtr->readEnd(in).setIndent(parent);
+         // Process end bracket
+         if (hasData) {
+            // Read closing bracket, set indentation as for child.
+            typePtr->readEnd(in).setIndent(parent);
+         } else {
+            // Add End object without reading
+            End* endPtr;
+            endPtr = &typePtr->addEnd();
+            endPtr->setIndent(parent);
+         }
 
          // Note: The readParameters() methods for managed objects should 
-         // not read begin and end lines, which read here. 
+         // not read begin and end lines, which are read here. 
 
       }
       return typePtr;

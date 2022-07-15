@@ -148,6 +148,26 @@
 
    };
 
+   // Another subclass of A (empty param file block)
+   class F  : public A
+   {
+
+   public:
+
+      F()
+      { setClassName("F"); }
+
+      virtual ~F()
+      { } 
+
+      virtual void readParameters(std::istream& in) {}
+
+      virtual void loadParameters(Serializable::IArchive& in) {}
+
+      virtual void save(Serializable::OArchive& ar) {}
+
+   };
+
    class AFactory : public Factory<A>
    {
 
@@ -168,6 +188,9 @@
          } else
          if (classname == "C") {
             ptr = new C();
+         } else 
+         if (classname == "F") {
+            ptr = new F();
          } 
          return ptr;
       }
