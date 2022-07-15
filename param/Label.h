@@ -11,7 +11,6 @@
 #include <util/global.h>
 #include <iostream>
 #include <string>
-#include <string>
 
 namespace Util
 {
@@ -175,6 +174,18 @@ namespace Util
 
       friend std::istream& operator >> (std::istream& in, Label label);
       friend std::ostream& operator << (std::ostream& out, Label label);
+
+      /*
+      * The default behavior of Label is that, to read a string from
+      * the parameter file, the expected label string must match the
+      * input string. However, if a polymorphic block is being read
+      * (which is processed by the Factory class), we do not know the
+      * expected label string beforehand, and thus need to be able to
+      * override the default behavior of Label. So, we make Factory a
+      * friend of Label so it can access the private member variable
+      * input_, which is not accessible to any other classes. 
+      */
+      template <typename Data> friend class Factory;
 
    };
 

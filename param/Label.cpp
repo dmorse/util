@@ -143,7 +143,7 @@ namespace Util
          }
       }
       if (label.input_ == label.string_) {
-         Label::input_.clear();;
+         Label::input_.clear();
          Label::isClear_ = true;
          Label::isMatched_ = true;
       } else {

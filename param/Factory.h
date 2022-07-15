@@ -11,6 +11,7 @@
 #include <util/mpi/MpiFileIo.h>         // member
 #include <util/param/ParamComposite.h>  // used in implementation
 #include <util/param/Begin.h>           // used in implementation
+#include <util/param/Label.h>           // used in implementation
 #include <util/param/End.h>             // used in implementation
 #include <util/global.h>
 
@@ -227,9 +228,24 @@ namespace Util
       #endif
 
       // Read a first line of the form "ClassName{"
-      if (paramFileIo_.isIoProcessor()) {
-         in >> commentString;
+      // (this may require an override of the default behavior of the Label class)
+      if (paramFileIo_.isIoProcessor()) { 
+         if (Label::isClear()) {
+            in >> commentString;
+         } else {
+            // Label is not clear, which means that the last attempt to read
+            // an object was unsuccessful, and the string that Factory needs 
+            // is stored in Label::input_
+            UTIL_CHECK(!Label::isMatched()); // Label should not be matched
+            commentString = Label::input_; // get string from Label
+
+            // set Label static members to the correct state
+            Label::input_.clear();
+            Label::isClear_ = true;
+            Label::isMatched_ = true;
+         }
       }
+
       #ifdef UTIL_MPI
       // Broadcast the full string to all processors.
       if (paramFileIo_.hasIoCommunicator()) {
