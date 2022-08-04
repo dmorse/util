@@ -20,8 +20,7 @@ namespace Util
    // Static member functions
 
    /*
-   * Clear static input buffer (static member function), and
-   * set isClear = true.
+   * Clear static input buffer and set isClear = true (static).
    */
    void Label::clear()
    {
@@ -31,22 +30,25 @@ namespace Util
 
    /*
    * Extract string from input stream and store in the buffer without 
-   * attempting to match.
+   * attempting to match (static).
    */
    void Label::read(std::istream& in)
    {
       if (isClear_) {
-         if (!in.eof()) {
+         if (in.eof()) {
+            Label::isMatched_ = false;
+         } else { 
             if (in.fail()) {
                UTIL_THROW("istream::fail() before reading Label");
             } 
             skipws(in);
             in >> buffer_;
-            if (buffer_.size() != 0) {
+            if (buffer_.size() == 0) {
+               // If the string is empty
+               Label::isMatched_ = false;
+            } else {
                isClear_ = false;
             }
-         } else { // if is eof
-            Label::isMatched_ = false;
          }
       }
    }
@@ -131,9 +133,11 @@ namespace Util
                         << std::endl;
             Log::file() << "Expected: " << label.string_ << std::endl;
             UTIL_THROW("EOF before reading required label");
+         } else {
+            Label::isMatched_ = false;
+            return in;
          }
       } else {
-         // If previous input value matched, try to read a new one.
          Label::read(in);
 
          if (label.isRequired() && label.isClear()) {
@@ -150,10 +154,10 @@ namespace Util
       } else {
          Label::isMatched_ = false;
          if (label.isRequired_) {
-            Log::file() << "Error reading label"         << std::endl;
-            Log::file() << "Expected: " << label.string_ << std::endl;
+            Log::file() << "Error reading required label" << std::endl;
+            Log::file() << "Expected: " << label.string_  << std::endl;
             Log::file() << "Scanned:  " << label.buffer_  << std::endl;
-            UTIL_THROW("Incorrect label");
+            UTIL_THROW("Incorrect required label");
          }
       };
       return in;

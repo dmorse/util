@@ -357,7 +357,8 @@ namespace Util
          Label::setIsMatched(false);
 
          if (isRequired) {
-            std::string msg = "Factory was unable to read line: " + Label::buffer();
+            std::string msg = "Factory was unable to match line: " 
+                              + Label::buffer();
             UTIL_THROW(msg.c_str());
          }
 
@@ -369,15 +370,18 @@ namespace Util
    * Read optional subclass name, create object, and read its parameters.
    */
    template <typename Data>
-   Data* Factory<Data>::readObjectOptional(std::istream &in, ParamComposite& parent,
-                                   std::string& className, bool& isEnd)
+   Data* 
+   Factory<Data>::readObjectOptional(std::istream &in, 
+                                     ParamComposite& parent,
+                                     std::string& className, bool& isEnd)
    {  return readObject(in, parent, className, isEnd, false); }
 
    /*
    * Load subclass name, create object, and load object.
    */
    template <typename Data>
-   Data* Factory<Data>::loadObject(Serializable::IArchive& ar, ParamComposite& parent,
+   Data* Factory<Data>::loadObject(Serializable::IArchive& ar, 
+                                   ParamComposite& parent,
                                    std::string& className)
    {
       #ifdef UTIL_MPI
@@ -414,7 +418,8 @@ namespace Util
    * Try all subfactories in sequence searching for a match.
    */
    template <typename Data>
-   Data* Factory<Data>::trySubfactories(const std::string& className) const
+   Data* Factory<Data>::trySubfactories(const std::string& className) 
+   const
    {
       Data* typePtr = 0;
       int n = subfactories_.size();

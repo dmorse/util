@@ -18,7 +18,7 @@ run: $(TEST)
 	@echo "Finished running $(TEST)"
 	@cd $(SRC_DIR)/util/tests; $(MAKE) -s clean-outputs
 	
-quiet: $(TEST)
+run-quiet: $(TEST)
 	@$(TEST) $(SRC_DIR)/util/tests/ > log
 	@echo `grep failed log` ", "\
               `grep successful log` "in util/tests/log" > count
