@@ -76,22 +76,54 @@ namespace Util
       * This method:
       *  - reads a comment line of the form className + {
       *  - invokes the factory method to create an instance of className
+      *    if className is recognized
       *  - invokes the readParam() method of the new object
+      *  - throws an Exception if className is not recognized if isRequired
+      *    is true.
+      *  - returns a null pointer if className is not recognized if 
+      *    isRequired is false.
       *
       * When compiled with MPI, if the parent ParamComposite has a param
       * communicator, this method reads the comment line on the Io processor,
       * broadcasts it to all others, and then lets each processor 
       * independently match this string. 
       *
-      * \throws Exception if className is not recognized.
+      * \throws Exception if className is not recognized but is required.
       *
-      * \param  in        input stream
-      * \param  parent    parent ParamComposite object
-      * \param  className (output) name of subclass of Data
-      * \param  isEnd     (output) is the input a closing bracket "}" ?
+      * \param  in         input stream
+      * \param  parent     parent ParamComposite object
+      * \param  className  (output) name of subclass of Data
+      * \param  isEnd      (output) is the input a closing bracket "}" ?
+      * \param  isRequired is this object required? Default is true.
       * \return pointer to new instance of className
       */
       Data* readObject(std::istream &in, ParamComposite& parent,
+                       std::string& className, bool& isEnd,
+                       bool isRequired = true);
+
+      /**
+      * Read an optional class name, instantiate an object, and read its 
+      * parameters.
+      *
+      * This method:
+      *  - reads a comment line of the form className + {
+      *  - invokes the factory method to create an instance of className
+      *  - invokes the readParam() method of the new object if className
+      *    is recognized.
+      *  - returns a null pointer if className is not recognized.
+      *
+      * When compiled with MPI, if the parent ParamComposite has a param
+      * communicator, this method reads the comment line on the Io processor,
+      * broadcasts it to all others, and then lets each processor 
+      * independently match this string. 
+      *
+      * \param  in         input stream
+      * \param  parent     parent ParamComposite object
+      * \param  className  (output) name of subclass of Data
+      * \param  isEnd      (output) is the input a closing bracket "}" ?
+      * \return pointer to new instance of className
+      */
+      Data* readObjectOptional(std::istream &in, ParamComposite& parent,
                        std::string& className, bool& isEnd);
 
       /**
@@ -213,9 +245,9 @@ namespace Util
    */
    template <typename Data>
    Data* Factory<Data>::readObject(std::istream &in, ParamComposite& parent,
-                                   std::string& className, bool& isEnd)
+                                   std::string& className, bool& isEnd,
+                                   bool isRequired)
    {
-      std::string  commentString;
       Data*        typePtr = 0;
       int          length;
       bool         hasData = false; // initialized to avoid compiler warning
@@ -227,55 +259,53 @@ namespace Util
       }
       #endif
 
-      // Read a first line of the form "ClassName{" int variable commentString
+      // Read a first line of the form "ClassName{" into Label::buffer
       if (paramFileIo_.isIoProcessor()) { 
-         if (Label::isClear()) {
-            in >> commentString;
-         } else {
-            // Label is not clear, which means that the last attempt to 
-            // read an object was unsuccessful, and the string that Factory 
-            // needs is stored in Label::input_
-            UTIL_CHECK(!Label::isMatched()); // Label should not be matched
-            commentString = Label::input_;   // get string from Label
+         Label::read(in);
 
-            // Set Label static members to the correct state
-            Label::input_.clear();
-            Label::isClear_ = true;
-            Label::isMatched_ = true;
+         if (Label::isClear()) { // Label did not successfully read a string
+            if (isRequired) {
+               Log::file() << "Empty required label read into Factory" 
+                           << std::endl;
+               UTIL_THROW("Empty required label read into Factory");
+            } else { // return null pointer
+               return 0;
+            }
          }
       }
 
       #ifdef UTIL_MPI
       // Broadcast the full string to all processors.
       if (paramFileIo_.hasIoCommunicator()) {
-         bcast<std::string>(paramFileIo_.ioCommunicator(), commentString, 0);
+         bcast<std::string>(paramFileIo_.ioCommunicator(), Label::buffer(), 0);
       }
       // Hereafter, each processor independently processes the same string.
       #endif
-      length = commentString.size();
+      length = Label::buffer().size();
 
-      // If commentString = '}', set isEnd=true and return null ptr.
-      if (length == 1 && commentString[0] == '}') {
+      // If Label::buffer() = '}', set isEnd=true and return null ptr.
+      if (length == 1 && Label::buffer()[0] == '}') {
          className = std::string();
          isEnd = true;
+         Label::clear();
+         Label::setIsMatched(true);
          return 0; 
       } else {
          isEnd = false;
       }
 
       // Isolate className by stripping the trailing "{" bracket
-      if (commentString[length-1] == '{') {
-         className = commentString.substr(0, commentString.size() - 1);
+      if (Label::buffer()[length-1] == '{') {
+         className = Label::buffer().substr(0, length-1);
          hasData = true;
       } else
-      if (commentString[length-1]=='}' && commentString[length-2]=='{'){
-         className = commentString.substr(0, commentString.size() - 2);
+      if (Label::buffer()[length-1]=='}' && Label::buffer()[length-2]=='{'){
+         className = Label::buffer().substr(0, length-2);
          hasData = false;
       } else {
          if (paramFileIo_.isIoProcessor()) {
             className = std::string();
-            Log::file() << "Invalid string:" << commentString << std::endl;
-            Log::file() << "commentString = " << commentString << std::endl;
+            Log::file() << "Invalid string: " << Label::buffer() << std::endl;
             UTIL_THROW("Invalid first line\n");
          }
       }
@@ -285,6 +315,10 @@ namespace Util
 
       // If the subclass name was recognized:
       if (typePtr) {
+
+         // Clear the Label object and set Label::isMatched to true
+         Label::clear();
+         Label::setIsMatched(true);
 
          // Add Begin object to new child ParamComposite, indented for child.
          Begin* beginPtr;
@@ -318,9 +352,26 @@ namespace Util
          // Note: The readParameters() methods for managed objects should 
          // not read begin and end lines, which are read here. 
 
+      } else {
+
+         Label::setIsMatched(false);
+
+         if (isRequired) {
+            std::string msg = "Factory was unable to read line: " + Label::buffer();
+            UTIL_THROW(msg.c_str());
+         }
+
       }
       return typePtr;
    }
+
+   /*
+   * Read optional subclass name, create object, and read its parameters.
+   */
+   template <typename Data>
+   Data* Factory<Data>::readObjectOptional(std::istream &in, ParamComposite& parent,
+                                   std::string& className, bool& isEnd)
+   {  return readObject(in, parent, className, isEnd, false); }
 
    /*
    * Load subclass name, create object, and load object.

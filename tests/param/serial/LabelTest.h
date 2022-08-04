@@ -139,6 +139,26 @@ public:
       std::cout << "\n"; 
    }
 
+   void testRead()
+   {
+      printMethod(TEST_FUNC);
+      std::ifstream in;
+      openInputFile("in/Label", in);
+      Label::read(in);
+      Label::setIsMatched(false);
+      TEST_ASSERT(Label::isMatched() == false);
+      TEST_ASSERT(Label::buffer() == "MyLabel");
+
+      Label::read(in); // should do nothing, buffer not clear
+
+      // Make label object and use >> operator. This will not
+      // read a new string since buffer is not clear, but it
+      // will perform string matching tests
+      Label label("MyLabel", true);
+      in >> label; 
+      TEST_ASSERT(Label::isMatched());
+   }
+
 };
 
 
@@ -151,6 +171,7 @@ TEST_ADD(LabelTest, testExtractor2)
 TEST_ADD(LabelTest, testExtractor3)
 #endif
 TEST_ADD(LabelTest, testInserter)
+TEST_ADD(LabelTest, testRead)
 TEST_END(LabelTest)
 
 #endif
