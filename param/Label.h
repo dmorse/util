@@ -29,6 +29,12 @@ namespace Util
    * Exception. If the input value does not match and isRequired is false,
    * the >> operator stores the input value in a string buffer, and will 
    * compare it to subsequent values until a match is found.
+   * 
+   * Generally, the string that is read from the file should not be
+   * directly accessed by any outside class; the >> operator should be
+   * used to handle the input string. However, several static member 
+   * functions are provided to bypass this default behavior if needed
+   * (clear, setIsMatched, read, and buffer).
    *
    * \ingroup Param_Module
    */
@@ -43,9 +49,7 @@ namespace Util
       static const int LabelWidth  = 20;
 
       /**
-      * Reset buffer and flags to initial state.
-      * 
-      * Clears buffer, sets isClear = true and isMatched = false.
+      * Clears buffer and sets isClear = true.
       */
       static void clear();
 
@@ -55,14 +59,32 @@ namespace Util
       static bool isClear();
 
       /**
+      * Manually set isMatched_.
+      * 
+      * \param isMatched Boolean to store in isMatched_.
+      */
+      static void setIsMatched(bool isMatched);
+
+      /**
       * Did the most recent attempt to match a Label succeed?
       *
-      * Returns true after a succesful match by operator >>
+      * Returns true after a successful match by operator >>
       * or the match() function. Returns false before any 
       * attempt to match any Label, after a failed attempt 
       * with an an optional label.
       */
       static bool isMatched();
+
+      /**
+      * Extract string from input stream and store in the buffer without 
+      * attempting to match. If matching is desired, use >> operator.
+      */
+      static void read(std::istream& in);
+
+      /** 
+      * Get a copy of the string that is currently stored in the buffer.
+      */ 
+      static std::string buffer();
 
       // Non-static Public Members
 
@@ -153,7 +175,7 @@ namespace Util
    // Static members:
 
       /**
-      * Is the Label::input_ buffer clear? (initialized true).
+      * Is Label::buffer_ clear? (initialized true).
       */
       static bool isClear_;
 
@@ -168,24 +190,12 @@ namespace Util
       static bool isMatched_;
 
       /// Most recent input value from istream (initialized empty).
-      static std::string input_;
+      static std::string buffer_;
 
    //friends:
 
       friend std::istream& operator >> (std::istream& in, Label label);
       friend std::ostream& operator << (std::ostream& out, Label label);
-
-      /*
-      * The default behavior of Label is that, to read a string from
-      * the parameter file, the expected label string must match the
-      * input string. However, if a polymorphic block is being read
-      * (which is processed by the Factory class), we do not know the
-      * expected label string beforehand, and thus need to be able to
-      * override the default behavior of Label. So, we make Factory a
-      * friend of Label so it can access the private member variable
-      * input_, which is not accessible to any other classes. 
-      */
-      template <typename Data> friend class Factory;
 
    };
 
@@ -216,10 +226,29 @@ namespace Util
    {  return isRequired_; }
 
    /*
-   * Did the most recent attempt to read match?
+   * Is the input buffer clear? (static member function).
+   */
+   inline bool Label::isClear()
+   {  return isClear_; }
+
+   /*
+   * Did the most recent attempt to read match? 
+   * (static member function)
    */
    inline bool Label::isMatched()
    {  return isMatched_; }
+
+   /*
+   * Manually set isMatched. (static member function)
+   */
+   inline void Label::setIsMatched(bool isMatched)
+   {  isMatched_ = isMatched; }
+
+   /*
+   * Get the string that is currently stored in the buffer.
+   */ 
+   inline std::string Label::buffer()
+   {  return buffer_; }
 
 } 
 #endif

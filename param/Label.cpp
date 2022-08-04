@@ -15,27 +15,41 @@ namespace Util
    /// Define static variables.
    bool  Label::isClear_ = true;
    bool  Label::isMatched_ = false;
-   std::string  Label::input_;
+   std::string  Label::buffer_;
 
    // Static member functions
 
    /*
-   * Clear static input buffer (static member function).
-   *
-   * Sets isClear = true and isMatched = false.
+   * Clear static input buffer (static member function), and
+   * set isClear = true.
    */
    void Label::clear()
    {
-      input_.clear(); 
+      buffer_.clear(); 
       isClear_ = true;
-      isMatched_ = false;
    }
 
    /*
-   * Is the input buffer clear? (static member function).
+   * Extract string from input stream and store in the buffer without 
+   * attempting to match.
    */
-   bool Label::isClear() 
-   {  return isClear_; }
+   void Label::read(std::istream& in)
+   {
+      if (isClear_) {
+         if (!in.eof()) {
+            if (in.fail()) {
+               UTIL_THROW("istream::fail() before reading Label");
+            } 
+            skipws(in);
+            in >> buffer_;
+            if (buffer_.size() != 0) {
+               isClear_ = false;
+            }
+         } else { // if is eof
+            Label::isMatched_ = false;
+         }
+      }
+   }
 
    // Non-static member functions
 
@@ -111,47 +125,34 @@ namespace Util
    {
       UTIL_CHECK(label.string_.size() > 0);
 
-      // If previous input value matched, try to read a new one.
-      if (label.isClear_) {
-         if (!in.eof()) {
-            if (in.fail()) {
-               UTIL_THROW("istream::fail() before reading Label");
-            } 
-            skipws(in);
-            in >> label.input_;
-            if (label.input_.size() != 0) {
-               label.isClear_ = false;
-            } else {
-               if (label.isRequired()) {
-                  Log::file() << "Empty required label" << std::endl;
-                  Log::file() << "Expected: " << label.string_ << std::endl;
-                  UTIL_THROW("Empty required label after read");
-               }
-            }
-         } else { // if is eof
-            if (label.isRequired()) {
-               Log::file() << "End-of-file before reading required Label" 
-                           << std::endl;
-               Log::file() << "Expected: " << label.string_ << std::endl;
-               UTIL_THROW("EOF before reading required label");
-            } else {
-               Label::input_.clear();
-               Label::isClear_ = true;
-               Label::isMatched_ = false;
-               return in;
-            }
+      if (in.eof()) {
+         if (label.isRequired()) {
+            Log::file() << "End-of-file before reading required Label" 
+                        << std::endl;
+            Log::file() << "Expected: " << label.string_ << std::endl;
+            UTIL_THROW("EOF before reading required label");
+         }
+      } else {
+         // If previous input value matched, try to read a new one.
+         Label::read(in);
+
+         if (label.isRequired() && label.isClear()) {
+            Log::file() << "Empty required label" << std::endl;
+            Log::file() << "Expected: " << label.string_ << std::endl;
+            UTIL_THROW("Empty required label after read");
          }
       }
-      if (label.input_ == label.string_) {
-         Label::input_.clear();
-         Label::isClear_ = true;
+
+      // Attempt to match input string to expected string.
+      if (label.buffer_ == label.string_) {
+         Label::clear();
          Label::isMatched_ = true;
       } else {
          Label::isMatched_ = false;
          if (label.isRequired_) {
             Log::file() << "Error reading label"         << std::endl;
             Log::file() << "Expected: " << label.string_ << std::endl;
-            Log::file() << "Scanned:  " << label.input_  << std::endl;
+            Log::file() << "Scanned:  " << label.buffer_  << std::endl;
             UTIL_THROW("Incorrect label");
          }
       };
