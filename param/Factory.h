@@ -284,11 +284,15 @@ namespace Util
       length = Label::buffer().size();
 
       // If Label::buffer() = '}', set isEnd=true and return null ptr.
+      // Clear the Label if this object isRequired, otherwise leave 
+      // the "}" in Label::buffer().
       if (length == 1 && Label::buffer()[0] == '}') {
          className = std::string();
          isEnd = true;
-         Label::clear();
-         Label::setIsMatched(true);
+         if (isRequired) {
+            Label::clear();
+            Label::setIsMatched(true);
+         }
          return 0; 
       } else {
          isEnd = false;
