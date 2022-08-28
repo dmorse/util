@@ -44,7 +44,7 @@ namespace Util
       *
       * \param out output stream
       */
-      virtual void writeParam(std::ostream &out);
+      virtual void writeParam(std::ostream &out) const;
 
    };
 

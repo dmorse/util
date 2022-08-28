@@ -116,7 +116,7 @@ namespace Util
    /*
    * Default writeParam implementation.
    */
-   void ParamComposite::writeParam(std::ostream &out)
+   void ParamComposite::writeParam(std::ostream &out) const
    {
       if (isActive_) {
          for (int i=0; i < size_; ++i) {

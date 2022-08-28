@@ -38,9 +38,9 @@ namespace Util
    }
 
    /* 
-   * End::writeParam()
+   * Write end bracket.
    */
-   void End::writeParam(std::ostream &out)
+   void End::writeParam(std::ostream &out) const
    {  out << indent() << "}" << std::endl; }
 
    /* 

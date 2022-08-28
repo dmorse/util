@@ -55,7 +55,7 @@ namespace Util
       *
       * \param out  output stream to which to write
       */ 
-      void writeParam(std::ostream& out);
+      void writeParam(std::ostream& out) const;
 
       using ParamComponent::indent;
       using Parameter::isActive;
@@ -162,7 +162,7 @@ namespace Util
    * Write a CArray2DParam.
    */
    template <class Type>
-   void CArray2DParam<Type>::writeParam(std::ostream &out)
+   void CArray2DParam<Type>::writeParam(std::ostream &out) const
    {
 
       if (isActive()) {

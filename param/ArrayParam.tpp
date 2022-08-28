@@ -148,7 +148,7 @@ namespace Util
    * Write an array-valued parameter.
    */
    template <class Type>
-   void ArrayParam<Type>::writeParam(std::ostream &out) 
+   void ArrayParam<Type>::writeParam(std::ostream &out) const
    {
       if (isActive()) {
 

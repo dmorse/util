@@ -40,7 +40,7 @@ namespace Util
    *
    * \param out output stream
    */
-   void Blank::writeParam(std::ostream &out)
+   void Blank::writeParam(std::ostream &out) const
    {  out << std::endl; }
 
 } 

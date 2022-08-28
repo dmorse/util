@@ -189,7 +189,7 @@ namespace Util
       *
       * \param out output stream for reading
       */
-      virtual void writeParam(std::ostream &out);
+      virtual void writeParam(std::ostream &out) const;
 
       //@}
       /// \name Serialization: Load and save functions for this composite

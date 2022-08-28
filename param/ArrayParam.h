@@ -78,7 +78,7 @@ namespace Util
       *
       * \param out output stream
       */
-      void writeParam(std::ostream &out);
+      void writeParam(std::ostream &out) const;
 
       /**
       * Get the logical array dimension.
@@ -134,6 +134,16 @@ namespace Util
       * \param i  array element index
       */
       virtual Type& element(int i) = 0;
+
+      /**
+      * Return a non-const reference to one element of the array.
+      *
+      * This function is used to access individual elements within the
+      * readValue function. It must be implemented by subclasses.
+      * 
+      * \param i  array element index
+      */
+      virtual Type const & element(int i) const = 0;
 
       /**
       * Are square brackets being used as delimiters?

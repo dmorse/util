@@ -123,7 +123,7 @@ namespace Util
       *
       * \param out  output stream to which to write
       */
-      void writeEndBracket(std::ostream& out);
+      void writeEndBracket(std::ostream& out) const;
 
       /**
       * Are brackets being used as delimiters?

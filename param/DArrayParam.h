@@ -44,7 +44,7 @@ namespace Util
       *
       * \param out output stream
       */
-      void writeParam(std::ostream &out);
+      void writeParam(std::ostream &out) const;
 
       using ArrayParam<Type>::readParam;
 
@@ -54,6 +54,12 @@ namespace Util
       * Return a reference to one element of the array.
       */ 
       Type& element(int i)
+      {  return (*arrayPtr_)[i]; }
+ 
+      /**
+      * Return a reference to one element of the array.
+      */ 
+      Type const & element(int i) const
       {  return (*arrayPtr_)[i]; }
  
       /**
@@ -108,7 +114,7 @@ namespace Util
    * Write a DArray to a parameter file.
    */
    template <class Type>
-   void DArrayParam<Type>::writeParam(std::ostream &out) 
+   void DArrayParam<Type>::writeParam(std::ostream &out) const
    {
       if (Parameter::isActive()) {
          if (!(arrayPtr_->isAllocated())) {

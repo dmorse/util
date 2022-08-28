@@ -50,7 +50,7 @@ namespace Util
       *
       * \param out output stream
       */
-      void writeParam(std::ostream& out);
+      void writeParam(std::ostream& out) const;
 
       /**
       * Set the pointer to point a specific variable.
@@ -136,7 +136,7 @@ namespace Util
    * Write a parameter.
    */
    template <class Type>
-   void ScalarParam<Type>::writeParam(std::ostream& out)
+   void ScalarParam<Type>::writeParam(std::ostream& out) const
    {
       if (isActive()) {
          out << indent();

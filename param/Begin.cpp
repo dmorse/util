@@ -75,9 +75,9 @@ namespace Util
    }
 
    /* 
-   * Begin::writeParam() template
+   * Write label and opening bracket.
    */
-   void Begin::writeParam(std::ostream &out)
+   void Begin::writeParam(std::ostream &out) const
    {  out << indent() << label_.string() << std::endl; }
 
    /*

@@ -46,7 +46,7 @@ namespace Util
       /**
       * Write DMatrix to file.
       */ 
-      void writeParam(std::ostream &out);
+      void writeParam(std::ostream &out) const;
 
       using ParamComponent::indent;
       using Parameter::isActive;
@@ -191,7 +191,7 @@ namespace Util
    * Write a DMatrixParam.
    */
    template <class Type>
-   void DMatrixParam<Type>::writeParam(std::ostream &out)
+   void DMatrixParam<Type>::writeParam(std::ostream &out) const
    {
       if (isActive()) {
          // Preconditions

@@ -43,11 +43,19 @@ namespace Util
       using ArrayParam<Type>::n;
 
       /**
-      * Return a reference to one element of the array.
+      * Return a reference to one element of the array (non const).
       *
       * \param i element index
       */
       Type& element(int i) 
+      {  return value_[i]; }
+ 
+      /**
+      * Return a reference to one element of the array (const ref).
+      *
+      * \param i element index
+      */
+      Type const & element(int i) const
       {  return value_[i]; }
  
       /**

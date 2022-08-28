@@ -147,7 +147,7 @@ namespace Util
    * Write end bracket delimiter, if any.
    */
    template <class Type>
-   void MatrixParam<Type>::writeEndBracket(std::ostream& out)
+   void MatrixParam<Type>::writeEndBracket(std::ostream& out) const
    {
       if (hasBrackets_) {
          out << indent() << rBracket_ << std::endl;

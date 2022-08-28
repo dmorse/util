@@ -45,7 +45,7 @@ namespace Util
       *
       * \param out output stream
       */
-      virtual void writeParam(std::ostream &out);
+      virtual void writeParam(std::ostream &out) const;
 
       /**
       * Is this the beginning line for a required element?

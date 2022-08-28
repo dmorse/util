@@ -43,16 +43,22 @@ namespace Util
       *
       * \param out output stream
       */
-      void writeParam(std::ostream &out);
+      void writeParam(std::ostream &out) const;
 
       using ArrayParam<Type>::readParam;
 
    protected:
   
       /**
-      * Return a reference to one element of the array.
+      * Return a reference to one element of the array (non-const).
       */ 
       Type& element(int i)
+      {  return (*arrayPtr_)[i]; }
+ 
+      /**
+      * Return a reference to one element of the array (const).
+      */ 
+      Type const & element(int i) const
       {  return (*arrayPtr_)[i]; }
  
       /**
@@ -107,7 +113,7 @@ namespace Util
    * Write a FArray to a parameter file.
    */
    template <typename Type, int Capacity>
-   void FArrayParam<Type, Capacity>::writeParam(std::ostream &out) 
+   void FArrayParam<Type, Capacity>::writeParam(std::ostream &out) const
    {
       if (Parameter::isActive()) {
          if (Capacity != n()) {

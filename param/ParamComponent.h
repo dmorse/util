@@ -50,7 +50,7 @@ namespace Util
       *
       * \param out output stream
       */
-      virtual void writeParam(std::ostream& out) = 0;
+      virtual void writeParam(std::ostream& out) const = 0;
 
       /**
       * Load internal state from an archive.

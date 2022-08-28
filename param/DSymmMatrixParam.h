@@ -66,7 +66,7 @@ namespace Util
       *
       * \param out  output stream to which to write
       */ 
-      void writeParam(std::ostream &out);
+      void writeParam(std::ostream &out) const;
 
    protected:
   
@@ -258,7 +258,7 @@ namespace Util
    * Write a DSymmMatrixParam.
    */
    template <class Type>
-   void DSymmMatrixParam<Type>::writeParam(std::ostream &out)
+   void DSymmMatrixParam<Type>::writeParam(std::ostream &out) const
    {
       if (isActive()) {
          // Preconditions
