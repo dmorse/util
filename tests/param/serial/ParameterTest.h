@@ -9,6 +9,7 @@
 #include <util/param/CArrayParam.h>
 #include <util/param/DArrayParam.h>
 #include <util/param/FArrayParam.h>
+#include <util/param/FSArrayParam.h>
 #include <util/param/CArray2DParam.h>
 #include <util/param/DMatrixParam.h>
 #include <util/param/DSymmMatrixParam.h>
@@ -34,6 +35,8 @@ public:
       Label::clear();
       ParamComponent::setEcho(false);
    }
+
+   // ScalarParam
 
    void testParamIntConstructor1() {
       printMethod(TEST_FUNC);
@@ -467,6 +470,8 @@ public:
       delete presentPrm2;
    }
 
+   // CArrayParam
+
    void testCArrayParamIntWrite() 
    {
       printMethod(TEST_FUNC);
@@ -652,6 +657,8 @@ public:
       delete presentPrm2;
    }
 
+   // DArrayParam
+
    void testDArrayParamIntWrite() 
    {
       printMethod(TEST_FUNC);
@@ -833,6 +840,8 @@ public:
       delete presentPrm2;
    }
 
+   // FArrayParam
+
    void testFArrayParamIntWrite() 
    {
       printMethod(TEST_FUNC);
@@ -998,6 +1007,180 @@ public:
       delete presentPrm2;
    }
 
+   // FSArrayParam
+
+   void testFSArrayParamIntWrite() 
+   {
+      printMethod(TEST_FUNC);
+      FSArray<int, 4> requiredVal;
+      requiredVal.clear();
+      requiredVal.append(3);
+      requiredVal.append(34);
+      requiredVal.append(8);
+      TEST_ASSERT(requiredVal.size() == 3);
+      Parameter *requiredPrm;
+      requiredPrm = new FSArrayParam<int, 4>("Required", requiredVal, 3);
+      if (verbose() > 0) {
+         printEndl();
+         requiredPrm->writeParam(std::cout);
+      }
+      delete requiredPrm;
+   }
+
+   void testFSArrayParamIntRead() {
+      printMethod(TEST_FUNC);
+      FSArray<int, 4> requiredVal;
+      Parameter *requiredPrm;
+      requiredPrm = new FSArrayParam<int, 4>("Required", requiredVal, 3);
+      std::ifstream in;
+      openInputFile("in/ArrayParamInt", in);
+      if (ParamComponent::echo()) std::cout << std::endl;
+      requiredPrm->readParam(in);
+      in.close();
+      TEST_ASSERT(requiredVal.size() == 3);
+      if (verbose() > 0) {
+         printEndl();
+         requiredPrm->writeParam(std::cout);
+      }
+      delete requiredPrm;
+   }
+
+   void testFSArrayParamDoubleWrite() {
+      printMethod(TEST_FUNC);
+
+      BracketPolicy::set(BracketPolicy::Forbidden);
+      TEST_ASSERT(BracketPolicy::get() == BracketPolicy::Forbidden);
+
+      FSArray<double,4> requiredVal;
+      requiredVal.clear();
+      requiredVal.append(3.0);
+      requiredVal.append(34.7);
+      requiredVal.append(8.97296);
+      TEST_ASSERT(requiredVal.size() == 3);
+      Parameter *requiredPrm;
+      requiredPrm 
+          = new FSArrayParam<double, 4>("Required", requiredVal, 3);
+      if (verbose() > 0) {
+         printEndl();
+         requiredPrm->writeParam(std::cout);
+      }
+      delete requiredPrm;
+   }
+
+   void testFSArrayParamDoubleRead() {
+      printMethod(TEST_FUNC);
+      FSArray<double,4> requiredVal;
+      Parameter *requiredPrm;
+      requiredPrm 
+             = new FSArrayParam<double, 4>("Required", requiredVal, 3);
+      std::ifstream in;
+      openInputFile("in/ArrayParamDouble", in);
+      if (ParamComponent::echo()) std::cout << std::endl;
+      requiredPrm->readParam(in);
+      in.close();
+      TEST_ASSERT(requiredVal.size() == 3);
+      if (verbose() > 0) {
+         printEndl();
+         requiredPrm->writeParam(std::cout);
+      }
+      delete requiredPrm;
+   }
+
+   void testFSArrayParamDoubleReadSaveLoad()
+   {
+      printMethod(TEST_FUNC);
+      FSArray<double, 4> absentVal;
+      FSArray<double, 4> requiredVal;
+      FSArray<double, 4> presentVal;
+      Parameter *absentPrm;
+      Parameter *requiredPrm;
+      Parameter *presentPrm;
+      absentPrm 
+         = new FSArrayParam<double, 4>("Absent", absentVal, 3, false);
+      requiredPrm 
+         = new FSArrayParam<double, 4>("Required", requiredVal, 3);
+      presentPrm 
+         = new FSArrayParam<double, 4>("Present", presentVal, 3, false);
+
+      //setEcho(true);
+      if (ParamComponent::echo()) printEndl();
+
+      std::ifstream in;
+      openInputFile("in/ArrayParamDouble", in);
+      absentPrm->readParam(in);
+      TEST_ASSERT(!Label::isClear());
+      requiredPrm->readParam(in);
+      TEST_ASSERT(Label::isClear());
+      presentPrm->readParam(in);
+      TEST_ASSERT(Label::isClear());
+
+      TEST_ASSERT(!absentPrm->isRequired());
+      TEST_ASSERT(!absentPrm->isActive());
+      TEST_ASSERT(requiredPrm->isRequired());
+      TEST_ASSERT(requiredPrm->isActive());
+      TEST_ASSERT(!presentPrm->isRequired());
+      TEST_ASSERT(presentPrm->isActive());
+
+      #if 0
+      if (verbose() > 0) {
+         printEndl();
+         absentPrm->writeParam(std::cout);
+         requiredPrm->writeParam(std::cout);
+         presentPrm->writeParam(std::cout);
+      }
+      #endif
+
+      // Save to archive
+      Serializable::OArchive oar;
+      openOutputFile("out/binary", oar.file());
+      Parameter::saveOptional(oar, absentVal, false);
+      oar << requiredVal;
+      Parameter::saveOptional(oar, presentVal, true);
+      oar.file().close();
+
+      // Load from archive
+      FSArray<double, 4> absentVal2;
+      FSArray<double, 4> requiredVal2;
+      FSArray<double, 4> presentVal2;
+      Parameter* absentPrm2;
+      Parameter* requiredPrm2;
+      Parameter* presentPrm2;
+      absentPrm2 = 
+           new FSArrayParam<double, 4>("Absent", absentVal2, 3, false);
+      requiredPrm2 = 
+           new FSArrayParam<double, 4>("Required", requiredVal2, 3);
+      presentPrm2 = 
+           new FSArrayParam<double, 4>("Present", presentVal2, 3, false);
+
+      Serializable::IArchive iar;
+      openInputFile("out/binary", iar.file());
+      absentPrm2->load(iar);
+      requiredPrm2->load(iar);
+      presentPrm2->load(iar);
+      iar.file().close();
+      TEST_ASSERT(!absentPrm2->isRequired());
+      TEST_ASSERT(!absentPrm2->isActive());
+      TEST_ASSERT(requiredPrm2->isRequired());
+      TEST_ASSERT(!presentPrm2->isRequired());
+      TEST_ASSERT(presentPrm2->isActive());
+
+      if (verbose() > 0) {
+         printEndl();
+         absentPrm2->writeParam(std::cout);
+         requiredPrm2->writeParam(std::cout);
+         presentPrm2->writeParam(std::cout);
+      }
+
+      delete absentPrm;
+      delete requiredPrm;
+      delete presentPrm;
+      delete absentPrm2;
+      delete requiredPrm2;
+      delete presentPrm2;
+   }
+
+   // CArray2DParam
+
    void testCArray2DParamDoubleWrite() {
       printMethod(TEST_FUNC);
       double requiredVal[2][2];
@@ -1107,6 +1290,8 @@ public:
       delete requiredPrm2;
       delete presentPrm2;
    }
+
+   // DMatrixParam
 
    void testDMatrixParamDoubleWrite() {
       printMethod(TEST_FUNC);
@@ -1241,6 +1426,8 @@ public:
       delete requiredPrm2;
       delete presentPrm2;
    }
+
+   // DSymmMatrixParam
 
    void testDSymmMatrixParamDoubleWrite() {
       printMethod(TEST_FUNC);
@@ -1464,6 +1651,13 @@ TEST_ADD(ParameterTest, testFArrayParamIntWrite)
 TEST_ADD(ParameterTest, testFArrayParamIntRead)
 TEST_ADD(ParameterTest, testFArrayParamDoubleWrite)
 TEST_ADD(ParameterTest, testFArrayParamDoubleRead)
+#ifndef UTIL_MPI
+TEST_ADD(ParameterTest, testFArrayParamDoubleReadSaveLoad)
+#endif
+TEST_ADD(ParameterTest, testFSArrayParamIntWrite)
+TEST_ADD(ParameterTest, testFSArrayParamIntRead)
+TEST_ADD(ParameterTest, testFSArrayParamDoubleWrite)
+TEST_ADD(ParameterTest, testFSArrayParamDoubleRead)
 #ifndef UTIL_MPI
 TEST_ADD(ParameterTest, testFArrayParamDoubleReadSaveLoad)
 #endif

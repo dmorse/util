@@ -26,14 +26,15 @@ where ROOT refers to the name of the root directory of the software project,
 and ROOT/src/util is a directory that was originally created by cloning the
 dmorse/util github repository, or by creating a submodule of an enclosing
 repository. If the util/ directory was created as a standalone directory by
-cloning the github repository, then can safely moved (using unix mv command)
-after it is created without disturbing synchronization with the server. 
+cloning the github repository, then it can be safely moved (using unix mv 
+command) after it is created without disturbing synchronization with the 
+server. 
 
 Standalone Installation 
 -----------------------
 
-Instructions to installation util in a directory tree that is not part of
-a larger project:
+Instructions to create a standalone installation of util in a directory tree 
+that is not part of a larger project:
 
 1) Create the directory structure described above, in which the working copy
 of the git repository is located in directory ROOT/src/util.
@@ -49,7 +50,7 @@ of the git repository is located in directory ROOT/src/util.
    the ROOT/src/ and ROOT/src/util directories.
 
 4) Your PYTHONPATH must be set to allow python to find several module
-   files that are installed in the ROOT/scripts/pytyon directory. If your 
+   files that are installed in the ROOT/scripts/python directory. If your 
    PYTHONPATH is already set up to allow you to compile simpatico in a 
    separate directory on the same computer, then the PYTHONPATH should 
    already include the corresponding simpatico/scripts/python directory 
@@ -63,6 +64,19 @@ of the git repository is located in directory ROOT/src/util.
 5) From the ROOT/src/util directory, invoke
 
    > make all
+
+Incorporation into a larger project
+------------------------------------
+
+When the util/ library is used as a component of a larger project, the 
+util/ directory (i.e., the root directory of the util github repository)
+should be installed as a subdirectory of the src/ directory of the larger
+project. This is conveniently done by making the src/util directory of 
+the larger project a git submodule that references the dmorse/util 
+repository on github.com. The project should then use a system of 
+makefiles consistent with those used within the util/ directory, which
+treats util/ as a subdirectory containing code that is enclosed in the
+Util C++ namespace.
 
 Makefile targets:
 -----------------

@@ -106,18 +106,6 @@ namespace Util
          in >> element(i);
       }
       readEndBracket(in);
-
-      #if 0
-      if (hasBrackets_) {
-         in >> Label("]");
-      } else 
-      if (BracketPolicy::get() != BracketPolicy::Forbidden) {
-         std::string string = name_;
-         string += "[";
-         label_.setString(string);  
-         hasBrackets_ = true;
-      }
-      #endif
    }
  
    /*
