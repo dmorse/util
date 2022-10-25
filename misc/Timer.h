@@ -117,77 +117,12 @@ namespace Util
 
    };
 
-   /**
-   * Return current time point (static function)
-   */
-   inline Timer::TimePoint Timer::now()
-   #ifdef UTIL_CXX11
-   {  return Clock::now(); }
-   #else
-   {  return clock(); }
-   #endif
-
-   /*
-   * Start the timer with externally supplied time point.
-   */ 
-   inline 
-   void Timer::start(TimePoint begin)
-   {
-      if (isRunning_) {
-         UTIL_THROW("Attempt to restart an active Timer");
-      }
-      isRunning_ = true;
-      begin_ = begin;
-   }
-   
-   /*
-   * Start the timer.
-   */ 
-   inline 
-   void Timer::start()
-   {
-      if (isRunning_) {
-         UTIL_THROW("Attempt to restart an active Timer");
-      }
-      isRunning_ = true;
-      begin_ = Timer::now();
-   }
-   
-   /*
-   * Stop the timer at externally supplied time point.
-   */ 
-   inline void Timer::stop(TimePoint end)
-   {
-      if (!isRunning_) {
-         UTIL_THROW("Attempt to stop an inactive Timer");
-      }
-      isRunning_ = false;
-      #ifdef UTIL_CXX11
-      time_ += end - begin_;
-      #else
-      time_ += double(end - begin_)/double(CLOCKS_PER_SEC); 
-      #endif
-   }
-   
    /*
    * Stop the timer.
    */ 
    inline void Timer::stop()
    {  stop(Timer::now()); }
    
-   /*
-   * Clear the timer.
-   */ 
-   inline void Timer::clear()
-   {
-      #ifdef UTIL_CXX11
-      time_  = Duration::zero();
-      #else
-      time_  = 0.0;
-      #endif
-      isRunning_ = false;
-   }
-
    /*
    * Is this timer running?
    */ 
