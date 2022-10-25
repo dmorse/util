@@ -47,6 +47,7 @@ public:
    {
       Label::clear();
       ParamComponent::setEcho(false);
+      if (file_.is_open()) file_.close();
    }
 
    void testConstructor() 
@@ -129,7 +130,7 @@ public:
       if (ParamComponent::echo()) printEndl();
       paramComposite_.readBegin(file_, "AComposite");
       paramComposite_.read<int>(file_, "value0", value0);
-      paramComposite_.readOptional<int>(file_, "optInt", optInt); // Optional parameter
+      paramComposite_.readOptional<int>(file_, "optInt", optInt); 
       paramComposite_.read<long>(file_, "value1", value1);
       paramComposite_.read<double>(file_, "value2", value2);
       paramComposite_.read<std::string>(file_, "str", str);
@@ -167,6 +168,78 @@ public:
       printEndl();
       bcomp.writeParam(std::cout);
       acomp.writeParam(std::cout);
+   }
+
+   void testFArray() 
+   {
+      printMethod(TEST_FUNC);
+      paramComposite_.setEcho(true);
+      if (ParamComponent::echo()) printEndl();
+
+      FArray<int, 3> required;
+      openInputFile("in/ArrayParamInt", file_);
+
+      paramComposite_.readFArray<int, 3>(file_, "Required", required);
+      file_.close();
+
+      TEST_ASSERT(required[0] == 36);
+      TEST_ASSERT(required[1] == 19);
+      TEST_ASSERT(required[2] == 97);
+      paramComposite_.writeParam(std::cout);
+
+      Serializable::OArchive oar;
+      openOutputFile("out/testFArray.bin", oar.file());
+      oar << required;
+      oar.file().close();
+
+      Serializable::IArchive iar;
+      openInputFile("out/testFArray.bin", iar.file());
+      FArray<int, 3> required2;
+      ParamComposite composite2;
+      //iar >> required2;
+      composite2.loadFArray<int, 3>(iar, "Required", required2);
+      iar.file().close();
+      
+      TEST_ASSERT(required2.size() == 3);
+      TEST_ASSERT(required2[0] == 36);
+      TEST_ASSERT(required2[1] == 19);
+      TEST_ASSERT(required2[2] == 97);
+   }
+
+   void testFSArray() 
+   {
+      printMethod(TEST_FUNC);
+      paramComposite_.setEcho(true);
+      if (ParamComponent::echo()) printEndl();
+
+      FSArray<int, 4> required;
+      openInputFile("in/ArrayParamInt", file_);
+
+      paramComposite_.readFSArray<int, 4>(file_, "Required", required, 3);
+      file_.close();
+
+      TEST_ASSERT(required.size() == 3);
+      TEST_ASSERT(required[0] == 36);
+      TEST_ASSERT(required[1] == 19);
+      TEST_ASSERT(required[2] == 97);
+      paramComposite_.writeParam(std::cout);
+
+      Serializable::OArchive oar;
+      openOutputFile("out/testFSArray.bin", oar.file());
+      oar << required;
+      oar.file().close();
+
+      Serializable::IArchive iar;
+      openInputFile("out/testFSArray.bin", iar.file());
+      FSArray<int, 4> required2;
+      ParamComposite composite2;
+      composite2.loadFSArray<int, 4>(iar, "Required", required2, 3);
+      iar.file().close();
+      
+      TEST_ASSERT(required2.size() == 3);
+      TEST_ASSERT(required2[0] == 36);
+      TEST_ASSERT(required2[1] == 19);
+      TEST_ASSERT(required2[2] == 97);
    }
 
    void testSaveLoadWrite() 
@@ -239,6 +312,7 @@ public:
       clone.loadDArray<double>(iar, "value6", cValue6, 4);
       clone.loadFArray<double, 4>(iar, "value7", cValue7);
       clone.addEnd();
+      iar.file().close();
 
       TEST_ASSERT(cValue0 == 4);
       TEST_ASSERT(cValue1 == 25);
@@ -304,6 +378,7 @@ public:
       paramComposite_.readParamComposite(file_, e);
       paramComposite_.readParamComposite(file_, manager);
       paramComposite_.readEnd(file_);
+      file_.close();
       paramComposite_.setEcho(false);
 
       Serializable::OArchive oar;
@@ -358,6 +433,7 @@ public:
       //clone.loadParamComposite(iar, cE);
       //clone.loadParamComposite(iar, cManager);
       clone.addEnd();
+      iar.file().close();
 
       printEndl();
       clone.writeParam(std::cout);
@@ -376,6 +452,7 @@ public:
       AComposite original;
       absent.readParamOptional(file_);
       original.readParam(file_);
+      file_.close();
 
       // printEndl();
       // original.writeParam(std::cout);
@@ -434,6 +511,8 @@ TEST_ADD(ParamCompositeTest, testConstructor)
 //TEST_ADD(ParamCompositeTest, testAddWrite)
 TEST_ADD(ParamCompositeTest, testReadWrite1)
 TEST_ADD(ParamCompositeTest, testReadWrite2)
+TEST_ADD(ParamCompositeTest, testFArray)
+TEST_ADD(ParamCompositeTest, testFSArray)
 TEST_ADD(ParamCompositeTest, testSaveLoadWrite)
 TEST_ADD(ParamCompositeTest, testReadSaveLoadWrite1)
 TEST_ADD(ParamCompositeTest, testReadSaveLoadWrite2)

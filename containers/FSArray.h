@@ -276,8 +276,9 @@ namespace Util
    */
    template <class Data, int Capacity>
    template <class Archive>
-   inline void FSArray<Data, Capacity>::serialize(Archive& ar, 
-                                          const unsigned int version)
+   inline 
+   void FSArray<Data, Capacity>::serialize(Archive& ar, 
+                                           const unsigned int version)
    {
       ar & size_;
       if (size_ > Capacity) {

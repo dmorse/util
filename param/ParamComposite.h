@@ -14,6 +14,7 @@
 #include <util/param/CArrayParam.h>        // member function template
 #include <util/param/DArrayParam.h>        // member function template
 #include <util/param/FArrayParam.h>        // member function template
+#include <util/param/FSArrayParam.h>       // member function template
 #include <util/param/CArray2DParam.h>      // member function template
 #include <util/param/DMatrixParam.h>       // member function template
 #include <util/param/DSymmMatrixParam.h>       // member function template
@@ -399,6 +400,34 @@ namespace Util
                          FArray<Type, N >& array);
 
       /**
+      * Add and read a required FSArray < Type, N > array parameter.
+      *
+      * \param in  input stream for reading
+      * \param label  Label string for new array
+      * \param array  FSArray object
+      * \param size  logical size of array
+      * \return reference to the new FSArrayParam<Type, N> object
+      */
+      template <typename Type, int N>
+      FSArrayParam<Type, N>&
+      readFSArray(std::istream &in, const char *label, 
+                 FSArray<Type, N >& array, int size);
+
+      /**
+      * Add and read an optional FSArray < Type, N > array parameter.
+      *
+      * \param in  input stream for reading
+      * \param label  Label string for new array
+      * \param array  FSArray object
+      * \param size  logical size of array
+      * \return reference to the new FSArrayParam<Type, N> object
+      */
+      template <typename Type, int N>
+      FSArrayParam<Type, N>&
+      readOptionalFSArray(std::istream &in, const char *label, 
+                         FSArray<Type, N >& array, int size);
+
+      /**
       * Add and read a required CArray2DParam < Type > 2D C-array.
       *
       * \param in  input stream for reading
@@ -677,6 +706,38 @@ namespace Util
       {  return loadFArray<Type, N>(ar, label, array, true); }
 
       /**
+      * Add and load an FSArray < Type, N > array parameter.
+      *
+      * \param ar  archive for loading
+      * \param label  label string for new array
+      * \param array  FSArray object
+      * \param size  logical size of array (number of elements)
+      * \param isRequired  Is this a required parameter?
+      * \return reference to the new FSArrayParam<Type, N> object
+      */
+      template <typename Type, int N>
+      FSArrayParam<Type, N>&
+      loadFSArray(Serializable::IArchive &ar, const char *label,
+                  FSArray<Type, N >& array, int size, bool isRequired);
+
+      /**
+      * Add and load a required FSArray < Type > array parameter.
+      *
+      * Equivalent to loadFSArrayParam < Type > (ar, label, array, size, true).
+      *
+      * \param ar  archive for loading
+      * \param label  label string for new array
+      * \param array  FSArray object
+      * \param size  logical size of array (number of elements)
+      * \return reference to the new FSArrayParam<Type, N> object
+      */
+      template <typename Type, int N>
+      FSArrayParam<Type, N>&
+      loadFSArray(Serializable::IArchive &ar, const char *label,
+                  FSArray<Type, N >& array, int size)
+      {  return loadFSArray<Type, N>(ar, label, array, size, true); }
+
+      /**
       * Add and load a CArray2DParam < Type > C 2D array parameter.
       *
       * \param ar  archive for loading
@@ -933,6 +994,22 @@ namespace Util
                 FArray<Type, N >& array, bool isRequired = true);
 
       /**
+      * Add (but do not read) a FSArray < Type, N > array parameter.
+      *
+      * \param in  input stream for reading
+      * \param label  Label string for new array
+      * \param array  FSArray object
+      * \param size  logical size (number of elements)
+      * \param isRequired Is this a required parameter?
+      * \return reference to the new FSArrayParam<Type, N> object
+      */
+      template <typename Type, int N>
+      FSArrayParam<Type, N>&
+      addFSArray(std::istream &in, const char *label, 
+                 FSArray<Type, N >& array, int size, 
+                 bool isRequired = true);
+
+      /**
       * Add (but do not read) a CArray2DParam < Type > 2D C-array.
       *
       * \param in  input stream for reading
@@ -1042,6 +1119,21 @@ namespace Util
       FArrayParam<Type, N>&
       readFArray_(std::istream &in, const char *label, 
                  FArray<Type, N >& array, bool isRequired);
+
+      /**
+      * Add and read an FSArray < Type, N > array parameter.
+      *
+      * \param in  input stream for reading
+      * \param label  Label string for new array
+      * \param array  FSArray object
+      * \param size  logical size of array (number of elements)
+      * \param isRequired  Is this a required parameter?
+      * \return reference to the new FSArrayParam<Type, N> object
+      */
+      template <typename Type, int N>
+      FSArrayParam<Type, N>&
+      readFSArray_(std::istream &in, const char *label, 
+                 FSArray<Type, N >& array, int size, bool isRequired);
 
       /**
       * Add and read a 2D C-array parameter.
@@ -1344,6 +1436,8 @@ namespace Util
                               DArray<Type>& array, int n)
    {  return loadDArray<Type>(ar, label, array, n, true); }
 
+
+
    // Templates for fixed size FArray array objects.
 
    /*
@@ -1407,6 +1501,81 @@ namespace Util
    {
       FArrayParam<Type, N>* ptr;
       ptr = new FArrayParam<Type, N>(label, array, isRequired);
+      setParent(*ptr);
+      ptr->load(ar);
+      addComponent(*ptr);
+      return *ptr;
+   }
+
+   // Templates for fixed size FSArray array objects.
+
+   /*
+   * Add and read an FSArrayParam<Type, N> fixed size array (private).
+   */
+   template <typename Type, int N>
+   FSArrayParam<Type, N>&
+   ParamComposite::readFSArray_(std::istream &in, const char *label,
+                                FSArray<Type, N>& array, int size,
+                                bool isRequired)
+   {
+      FSArrayParam<Type, N>* ptr;
+      ptr = new FSArrayParam<Type, N>(label, array, size, isRequired);
+      setParent(*ptr);
+      ptr->readParam(in);
+      addComponent(*ptr);
+      return *ptr;
+   }
+
+   /*
+   * Add a FSArrayParam<Type, N> parameter (protected).
+   */
+   template <typename Type, int N>
+   FSArrayParam<Type, N>&
+   ParamComposite::addFSArray(std::istream &in, const char *label,
+                              FSArray<Type, N>& array, int size,
+                              bool isRequired)
+   {
+      FSArrayParam<Type, N>* ptr;
+      ptr = new FSArrayParam<Type, N>(label, array, size, isRequired);
+      setParent(*ptr);
+      addComponent(*ptr);
+      return *ptr;
+   }
+
+   /*
+   * Add and read a required FSArray < Type, N > array parameter.
+   */
+   template <typename Type, int N>
+   inline 
+   FSArrayParam<Type, N>&
+   ParamComposite::readFSArray(std::istream &in, const char *label, 
+                              FSArray<Type, N >& array, int size)
+   {  return readFSArray_<Type>(in, label, array, size, true); }
+
+   /*
+   * Add and read an optional FSArray < Type, N > array parameter.
+   */
+   template <typename Type, int N>
+   inline 
+   FSArrayParam<Type, N>&
+   ParamComposite::readOptionalFSArray(std::istream &in, 
+                                       const char *label, 
+                                       FSArray<Type, N >& array,
+                                       int size)
+   {  return readFSArray_<Type>(in, label, array, size, false); }
+
+   /*
+   * Add and load an FSArray < Type, N > fixed-size array parameter.
+   */
+   template <typename Type, int N>
+   FSArrayParam<Type, N>&
+   ParamComposite::loadFSArray(Serializable::IArchive &ar, 
+                               const char *label,
+                               FSArray<Type, N >& array, int size,
+                               bool isRequired)
+   {
+      FSArrayParam<Type, N>* ptr;
+      ptr = new FSArrayParam<Type, N>(label, array, size, isRequired);
       setParent(*ptr);
       ptr->load(ar);
       addComponent(*ptr);
