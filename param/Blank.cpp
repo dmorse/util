@@ -10,7 +10,7 @@
 namespace Util
 {
 
-   /// Constructor.
+   // Constructor.
    Blank::Blank()
     : ParamComponent()
    {}
@@ -19,11 +19,7 @@ namespace Util
    Blank::~Blank()
    {}
 
-   /**
-   * Read a blank line
-   *
-   * \param in input stream
-   */
+   // Read a blank line
    void Blank::readParam(std::istream &in)
    {
       if (isIoProcessor()) {
@@ -35,11 +31,7 @@ namespace Util
       }
    }
 
-   /**
-   * Write a blank line
-   *
-   * \param out output stream
-   */
+   // Write a blank line
    void Blank::writeParam(std::ostream &out) const
    {  out << std::endl; }
 

@@ -26,10 +26,14 @@ namespace Util
 
    public:
 
-      /// Constructor.
+      /**
+      * Constructor.
+      */
       Blank();
 
-      /// Virtual Destructor
+      /**
+      * Destructor
+      */
       virtual ~Blank();
 
       /**
