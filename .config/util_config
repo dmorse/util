@@ -79,6 +79,11 @@ ifdef UTIL_CXX11
 UTIL_DEFS+= -DUTIL_CXX11
 endif
 
+# Enable access to RPC library, used by XDR archive classes.
+# The required <rpc/rpc.h> header was once part of glibc, now removed.
+# Uncomment if access is available
+#UTIL_XDR=1
+
 #-----------------------------------------------------------------------
 # Path to the util library 
 # Note: BLD_DIR is defined in config.mk
