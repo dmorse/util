@@ -33,6 +33,8 @@ namespace Util
    *    std::cout << "Print from processor " << MPI::COMM_WORLD.Get_rank() << std::endl;
    *    logger.endl();
    * \endcode
+   *
+   * \ingroup Mpi_Module
    */
    class MpiLogger
    {

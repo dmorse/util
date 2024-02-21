@@ -119,6 +119,7 @@ namespace Util
    void Vector::initStatic()
    {
       static int nCall = 0;
+      UTIL_CHECK(nCall == 0);
       ++nCall;
    }
 

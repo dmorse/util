@@ -27,9 +27,7 @@ namespace Util
    void Tensor::initStatic()
    {
      int nCall = 0;
-     if (nCall > 0) {
-         UTIL_THROW("Tensor::initStatic called more than once");
-     }
+     UTIL_CHECK(nCall == 0);
      ++nCall;
    }
 

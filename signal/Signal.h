@@ -162,7 +162,7 @@ namespace Util
    * that takes no parameters, and that calls methods of each observer
    * object that take no parameters.
    * 
-   * \ingroup Util_Module
+   * \ingroup Util_Signal_Module
    */
    template <>
    class Signal<void>

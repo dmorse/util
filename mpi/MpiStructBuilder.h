@@ -50,6 +50,8 @@ namespace Util
    * all refer to same instance. The commit method calculates the offset
    * of each member by subtracting the address of the object from the
    * address of each of its members.
+   *
+   * \ingroup Mpi_Module
    */
    class MpiStructBuilder
    {

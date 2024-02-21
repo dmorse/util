@@ -18,6 +18,8 @@ namespace Util
 
    /**
    * Base class for MpiTraits with no type.
+   *
+   * \ingroup Mpi_Module
    */
    class MpiTraitsNoType
    {

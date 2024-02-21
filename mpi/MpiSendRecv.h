@@ -69,6 +69,8 @@
 * element in a separate transmission if no MpiType exists but an 
 * explicit specialization exists for the required scalar form of 
 * send, recv, or bcast.
+* 
+* \ingroup Mpi_Module
 */
 
 #include <util/global.h>

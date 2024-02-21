@@ -29,6 +29,8 @@ namespace Util
    * When compiled with UTIL_MPI defined, an MpiFileIo object has a pointer 
    * to an MPI communiciator, and provides methods to set and unset (nullify) 
    * the associated communicator.
+   *
+   * \ingroup Mpi_Module
    */
    class MpiFileIo
    {
