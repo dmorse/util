@@ -30,7 +30,7 @@ namespace Util
    * to an MPI communiciator, and provides methods to set and unset (nullify) 
    * the associated communicator.
    *
-   * \ingroup Mpi_Module
+   * \ingroup Util_Mpi_Module
    */
    class MpiFileIo
    {

@@ -34,7 +34,7 @@ namespace Util
    *    logger.endl();
    * \endcode
    *
-   * \ingroup Mpi_Module
+   * \ingroup Util_Mpi_Module
    */
    class MpiLogger
    {

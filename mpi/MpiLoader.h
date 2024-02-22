@@ -37,7 +37,7 @@ namespace Util
    * enabled but no parameter communicator is set, every processor loads 
    * data independently.
    *
-   * \ingroup Mpi_Module
+   * \ingroup Util_Mpi_Module
    */
    template <class IArchive>
    class MpiLoader 

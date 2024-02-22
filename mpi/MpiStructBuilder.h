@@ -51,7 +51,7 @@ namespace Util
    * of each member by subtracting the address of the object from the
    * address of each of its members.
    *
-   * \ingroup Mpi_Module
+   * \ingroup Util_Mpi_Module
    */
    class MpiStructBuilder
    {

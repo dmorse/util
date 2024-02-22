@@ -19,7 +19,7 @@ namespace Util
    /**
    * Base class for MpiTraits with no type.
    *
-   * \ingroup Mpi_Module
+   * \ingroup Util_Mpi_Module
    */
    class MpiTraitsNoType
    {
@@ -36,6 +36,8 @@ namespace Util
    * Each explicit specialization of MpiTraits has a public
    * static const member named type. This is the MPI data
    * type associated with the C++ template type parameter.
+   *
+   * \ingroup Util_Mpi_Module
    */
    template <typename T>
    class MpiTraits : public MpiTraitsNoType
@@ -47,6 +49,8 @@ namespace Util
 
    /**
    * MpiTraits<char> explicit specialization.
+   *
+   * \ingroup Util_Mpi_Module
    */
    template <>
    class MpiTraits<char>
@@ -58,6 +62,8 @@ namespace Util
 
    /**
    * MpiTraits<unsigned char> explicit specialization.
+   *
+   * \ingroup Util_Mpi_Module
    */
    template <>
    class MpiTraits<unsigned char>
@@ -69,6 +75,8 @@ namespace Util
 
    /**
    * MpiTraits<short> explicit specialization.
+   *
+   * \ingroup Util_Mpi_Module
    */
    template <>
    class MpiTraits<short>
@@ -80,6 +88,8 @@ namespace Util
 
    /**
    * MpiTraits<int> explicit specialization.
+   *
+   * \ingroup Util_Mpi_Module
    */
    template <>
    class MpiTraits<int>
@@ -91,6 +101,8 @@ namespace Util
 
    /**
    * MpiTraits<long> explicit specialization.
+   *
+   * \ingroup Util_Mpi_Module
    */
    template <>
    class MpiTraits<long>
@@ -102,6 +114,8 @@ namespace Util
 
    /**
    * MpiTraits<unsigned short> explicit specialization.
+   *
+   * \ingroup Util_Mpi_Module
    */
    template <>
    class MpiTraits<unsigned short>
@@ -113,6 +127,8 @@ namespace Util
 
    /**
    * MpiTraits<unsigned int> explicit specialization.
+   *
+   * \ingroup Util_Mpi_Module
    */
    template <>
    class MpiTraits<unsigned int>
@@ -124,6 +140,8 @@ namespace Util
 
    /**
    * MpiTraits<unsigned long> explicit specialization.
+   *
+   * \ingroup Util_Mpi_Module
    */
    template <>
    class MpiTraits<unsigned long>
@@ -135,6 +153,8 @@ namespace Util
 
    /**
    * MpiTraits<float> explicit specialization.
+   *
+   * \ingroup Util_Mpi_Module
    */
    template <>
    class MpiTraits<float>
@@ -146,6 +166,8 @@ namespace Util
 
    /**
    * MpiTraits<double> explicit specialization.
+   *
+   * \ingroup Util_Mpi_Module
    */
    template <>
    class MpiTraits<double>
@@ -157,6 +179,8 @@ namespace Util
 
    /**
    * MpiTraits<long double> explicit specialization.
+   *
+   * \ingroup Util_Mpi_Module
    */
    template <>
    class MpiTraits<long double>
@@ -168,6 +192,8 @@ namespace Util
 
    /**
    * MpiTraits<bool> explicit specialization.
+   *
+   * \ingroup Util_Mpi_Module
    */
    template <>
    class MpiTraits<bool>
@@ -191,6 +217,8 @@ namespace Util
 
    /**
    * MpiTraits< std::complex<double> > explicit specialization.
+   *
+   * \ingroup Util_Mpi_Module
    */
    template <>
    class MpiTraits< std::complex<double> >
@@ -202,6 +230,8 @@ namespace Util
 
    /**
    * MpiTraits< std::complex<long double> > explicit specialization.
+   *
+   * \ingroup Util_Mpi_Module
    */
    template <>
    class MpiTraits< std::complex<long double> >
@@ -215,6 +245,8 @@ namespace Util
    #if 0
    /**
    * MpiTraits<wchar_t> explicit specialization.
+   *
+   * \ingroup Util_Mpi_Module
    */
    template <>
    class MpiTraits<wchar_t>

@@ -70,7 +70,7 @@
 * explicit specialization exists for the required scalar form of 
 * send, recv, or bcast.
 * 
-* \ingroup Mpi_Module
+* \ingroup Util_Mpi_Module
 */
 
 #include <util/global.h>
