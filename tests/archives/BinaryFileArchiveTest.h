@@ -57,6 +57,9 @@ void BinaryFileArchiveTest::testPack()
    BinaryFileOArchive  v;
    openOutputFile("tmp/BinaryTestPack", v.file());
 
+   // Typedef for fixed size array double[2]
+   typedef double cmplx[2];
+
    // Declare variables
    int i1, i2;
    double d1, d2;
@@ -68,6 +71,8 @@ void BinaryFileArchiveTest::testPack()
    double b2[4];
    double m1[3][3];
    double m2[3][3];
+   cmplx z1; 
+   cmplx z2; 
 
    // Initialize variables
    i1 = 3;
@@ -87,6 +92,8 @@ void BinaryFileArchiveTest::testPack()
    m1[0][1] = 14.0;
    m1[1][0] = 15.0;
    m1[1][1] = 16.0;
+   z1[0] = 0.6;
+   z1[1] = 0.4;
   
    // Write variables to OArchive v
    v << i1;
@@ -95,6 +102,7 @@ void BinaryFileArchiveTest::testPack()
    v << s1;
    v << a1;
    v << o1;
+   v << z1;
    v.pack(b1, 4);
    v.pack(m1[0], 2, 2, 3);
    v.file().close();
@@ -121,6 +129,17 @@ void BinaryFileArchiveTest::testPack()
    u >> o2;
    TEST_ASSERT(o2.i == 13);
    TEST_ASSERT(o2.d == 26.0);
+
+   // Fixed size array
+   u & z2;
+   TEST_ASSERT(eq(z1[0], z2[0]));
+   TEST_ASSERT(eq(z1[1], z2[1]));
+   TEST_ASSERT(eq(z2[0], 0.6));
+   TEST_ASSERT(eq(z2[1], 0.4));
+
+   // std::cout << std::endl;
+   // std::cout << "z2[0] = " << z2[0] << std::endl;
+   // std::cout << "z2[1] = " << z2[1] << std::endl;
 
    u.unpack(b2, 4);
    for (int j = 0; j < 4; ++j) {

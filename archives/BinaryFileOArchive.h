@@ -67,20 +67,56 @@ namespace Util
       */
       std::ofstream& file();
 
-      /**
-      * Save one object.
-      */
-      template <typename T>
-      BinaryFileOArchive& operator & (T& data);
+      // Overloaded << (insertion) and & operators
 
       /**
-      * Save one object.
+      * Save (write) one object of type T via the << operator.
+      *
+      * The implementation calls the appropriate global serialize function.
+      * 
+      * \param data object of type T to be saved to this archive
       */
       template <typename T>
       BinaryFileOArchive& operator << (T& data);
 
       /**
+      * Save (write) one object of type T via the & operator.
+      *
+      * Equivalent to corresponding << operator.
+      * 
+      * \param data object of type T to be saved to this archive
+      */
+      template <typename T>
+      BinaryFileOArchive& operator & (T& data);
+
+      /**
+      * Save a fixed size array via operator <<.
+      *
+      * The implementation applies the serialize function to each element.
+      * This template should thus work for any type T for which a serialize
+      * function exists. 
+      *
+      * \param data array of fixed size N with elements of type T
+      */
+      template <typename T, size_t N>
+      BinaryFileOArchive& operator << (T (& data)[N]);
+
+      /**
+      * Save a fixed size array via operator &.
+      *
+      * Equivalent to the corresponding << operator.
+      *
+      * \param data array of fixed size N with elements of type T
+      */
+      template <typename T, size_t N>
+      BinaryFileOArchive& operator & (T (& data)[N]);
+
+      // Pack functions and function templates 
+
+      /**
       * Pack one object of type T.
+      * 
+      * \param data object of type T to be saved to this archive
       */
       template <typename T> 
       void pack(const T& data);
@@ -121,7 +157,7 @@ namespace Util
 
    };
 
-   // Inline methods
+   // Inline static member functions
 
    inline bool BinaryFileOArchive::is_saving()
    {  return true; }
@@ -129,7 +165,17 @@ namespace Util
    inline bool BinaryFileOArchive::is_loading()
    {  return false; }
 
-   // Inline non-static methods
+   // Overloaded << and & operators
+
+   /*
+   * Save (write) one object to this archive via the << operator.
+   */
+   template <typename T>
+   inline BinaryFileOArchive& BinaryFileOArchive::operator << (T& data)
+   {  
+      serialize(*this, data, version_);
+      return *this;
+   }
 
    /*
    * Write one object.
@@ -142,12 +188,26 @@ namespace Util
    }
 
    /*
-   * Write one object.
+   * Save a fixed size array of objects via operator <<.
    */
-   template <typename T>
-   inline BinaryFileOArchive& BinaryFileOArchive::operator << (T& data)
-   {  
-      serialize(*this, data, version_);
+   template <typename T, size_t N>
+   inline BinaryFileOArchive& BinaryFileOArchive::operator << (T (&data)[N])
+   {
+      for (int i=0; i < N; ++i) {   
+         serialize(*this, data[i], version_); 
+      }
+      return *this;
+   }
+
+   /*
+   * Save a fixed size array of objects via operator &.
+   */
+   template <typename T, size_t N>
+   inline BinaryFileOArchive& BinaryFileOArchive::operator & (T (&data)[N])
+   {
+      for (int i=0; i < N; ++i) {
+         serialize(*this, data[i], version_); 
+      }
       return *this;
    }
 

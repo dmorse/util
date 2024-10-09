@@ -210,6 +210,10 @@ void MemoryArchiveTest::testPackArray()
    TEST_ASSERT(v.cursor() == v.begin());
    TEST_ASSERT(v.capacity() == capacity);
 
+   // Typedef for complex number as fixed-size array
+   typedef double cmplx[2];
+
+   // Declare variables
    int offset;   
    int i1, i2;
    double d1, d2;
@@ -218,7 +222,10 @@ void MemoryArchiveTest::testPackArray()
    double a2[4];
    double m1[3][3]; // intentionally oversized
    double m2[3][3]; // intentionally oversized
+   cmplx z1; 
+   cmplx z2; 
 
+   // Initialize values
    i1 = 3;
    d1 = 45.0;
    c1 = std::complex<double>(3.0, 4.0);
@@ -230,22 +237,32 @@ void MemoryArchiveTest::testPackArray()
    m1[0][1] = 14.0;
    m1[1][0] = 15.0;
    m1[1][1] = 16.0;
+   z1[0] = 0.6;
+   z1[1] = 0.4;
   
    // Pack data into OArchive v 
    v << i1;
    offset = sizeof(int);
    TEST_ASSERT(v.cursor() == v.begin() + offset);
+
    v << d1;
    offset += sizeof(double);
    TEST_ASSERT(v.cursor() == v.begin() + offset);
+
    v.pack(a1, 4);
    offset += 4*sizeof(double);
    TEST_ASSERT(v.cursor() == v.begin() + offset);
+
    v << c1;
    offset += sizeof(std::complex<double>);
    TEST_ASSERT(v.cursor() == v.begin() + offset);
+
    v.pack(m1[0], 2, 2, 3);
    offset += 4*sizeof(double);
+   TEST_ASSERT(v.cursor() == v.begin() + offset);
+
+   v << z1;
+   offset += 2*sizeof(double);
    TEST_ASSERT(v.cursor() == v.begin() + offset);
 
    // Read data from IArchive u
@@ -260,32 +277,46 @@ void MemoryArchiveTest::testPackArray()
    u >> i2;
    offset = sizeof(int);
    TEST_ASSERT(u.cursor() == u.begin() + offset);
+   TEST_ASSERT(i1 == i2);
+
    u >> d2;
    offset += sizeof(double);
    TEST_ASSERT(u.cursor() == u.begin() + offset);
+   TEST_ASSERT(eq(d1, d2));
+
    u.unpack(a2, 4);
    offset += 4*sizeof(double);
    TEST_ASSERT(u.cursor() == u.begin() + offset);
+   int i, j;
+   for (j = 0; j < 4; ++j) {
+      TEST_ASSERT(eq(a1[j],a2[j]));
+   }
+
    u & c2;
    offset += sizeof(std::complex<double>);
    TEST_ASSERT(u.cursor() == u.begin() + offset);
+   TEST_ASSERT(eq(c1.real(), c2.real()));
+   TEST_ASSERT(eq(c1.imag(), c2.imag()));
+
    u.unpack(m2[0], 2, 2, 3);
    offset += 4*sizeof(double);
    TEST_ASSERT(u.cursor() == u.begin() + offset);
-
-
-   TEST_ASSERT(i1 == i2);
-   TEST_ASSERT(d1 == d2);
-   TEST_ASSERT(c1 == c2);
-   int i, j;
-   for (j = 0; j < 4; ++j) {
-      TEST_ASSERT(a1[j] == a2[j]);
-   }
    for (i = 0; i < 2; ++i) {
       for (j = 0; j < 2; ++j) {
          TEST_ASSERT(eq(m1[i][j], m2[i][j]));
       }
    }
+  
+   u & z2;
+   offset += 2*sizeof(double);
+   TEST_ASSERT(u.cursor() == u.begin() + offset);
+   TEST_ASSERT(eq(z1[0], z2[0]));
+   TEST_ASSERT(eq(z1[1], z2[1]));
+   TEST_ASSERT(eq(z2[0], 0.6));
+   TEST_ASSERT(eq(z2[1], 0.4));
+   //std::cout << std::endl;
+   //std::cout << "z2[0] = " << z2[0] << std::endl;
+   //std::cout << "z2[1] = " << z2[1] << std::endl;
 
 }
 

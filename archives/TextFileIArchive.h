@@ -32,11 +32,19 @@ namespace Util
 
    public:
 
-      /// Returns true;
+      // Static functions
+
+      /**
+      * Is this a saving (output) archive? Returns false.
+      */
       static bool is_saving();
 
-      /// Returns false;
+      /**
+      * Is this a loading (input) archive? Returns true.
+      */
       static bool is_loading();
+
+      // Lifetime and file control
 
       /**
       * Constructor.
@@ -67,20 +75,57 @@ namespace Util
       */
       std::ifstream& file();
 
-      /**
-      * Load one object.
-      */
-      template <typename T>
-      TextFileIArchive& operator & (T& data);
+      // Overloaded >> (extraction) and & operator templates.
 
       /**
-      * Load one object.
+      * Load one object of type T via operator >>.
+      * 
+      * Implementation calls a global serialize function, which 
+      * thus must exist.
+      *
+      * \param data object of type T to be loaded from archive
       */
       template <typename T>
       TextFileIArchive& operator >> (T& data);
 
       /**
+      * Load one object of type T via operator &.
+      *
+      * Equivalent to operator >>.
+      * 
+      * \param data object of type T to be loaded from archive
+      */
+      template <typename T>
+      TextFileIArchive& operator & (T& data);
+
+      /**
+      * Load a fixed-size array via operator >>.
+      *
+      * Applies a serialize function to each element of array.
+      *
+      * \param data array of fixed size N with elements of type T
+      */
+      template <typename T, size_t N>
+      TextFileIArchive& operator >> (T (& data)[N]);
+
+      /**
+      * Load a fixed-size array via operator &.
+      *
+      * Equivalent to operator >>.
+      *
+      * \param data array of fixed size N with elements of type T
+      */
+      template <typename T, size_t N>
+      TextFileIArchive& operator & (T (& data)[N]);
+
+      // Unpack functions (building blocks)
+
+      /**
       * Load a single T object.
+      *
+      * This template uses the ifstream >> extractor operator to 
+      * unpack object data. It will thus work for any type T for
+      * which the extractor operator is defined.
       *
       * \param data object to be loaded from this archive.
       */
@@ -90,6 +135,10 @@ namespace Util
       /**
       * Load a C-array of T objects.
       *
+      * This template uses the ifstream >> extractor operator to 
+      * unpack each element of a C array. It will thus work for 
+      * any type T for which the extractor operator is defined.
+      *
       * \param array pointer to array of T objecs.
       * \param n     number of elements in array
       */
@@ -98,6 +147,10 @@ namespace Util
 
       /**
       * Load a 2D C array.
+      *
+      * This template uses the ifstream >> extractor operator to 
+      * unpack each element of a 2D C array. It will thus work for 
+      * any type T for which the extractor operator is defined.
       *
       * \param array pointer to first row or element
       * \param m  logical number of rows
@@ -131,7 +184,17 @@ namespace Util
    // Inline non-static methods
 
    /*
-   * Load one object.
+   * Load one object via operator >>.
+   */
+   template <typename T>
+   inline TextFileIArchive& TextFileIArchive::operator >> (T& data)
+   {   
+      serialize(*this, data, version_); 
+      return *this;
+   }
+
+   /*
+   * Load one object via operator &.
    */
    template <typename T>
    inline TextFileIArchive& TextFileIArchive::operator & (T& data)
@@ -141,16 +204,30 @@ namespace Util
    }
 
    /*
-   * Load one object.
+   * Load a fixed size array of objects via operator >>.
    */
-   template <typename T>
-   inline TextFileIArchive& TextFileIArchive::operator >> (T& data)
-   {   
-      serialize(*this, data, version_); 
+   template <typename T, size_t N>
+   inline TextFileIArchive& TextFileIArchive::operator >> (T (&data)[N])
+   {
+      for (int i=0; i < N; ++i) {   
+         serialize(*this, data[i], version_); 
+      }
       return *this;
    }
 
-   // Method templates
+   /*
+   * Load a fixed size array of objects via operator &.
+   */
+   template <typename T, size_t N>
+   inline TextFileIArchive& TextFileIArchive::operator & (T (&data)[N])
+   {
+      for (int i=0; i < N; ++i) {
+         serialize(*this, data[i], version_); 
+      }
+      return *this;
+   }
+
+   // Unpack method templates
 
    /*
    * Load a single object of type T.

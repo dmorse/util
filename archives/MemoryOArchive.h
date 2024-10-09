@@ -62,16 +62,46 @@ namespace Util
       void clear();
 
       /**
-      * Save one object.
-      */
-      template <typename T>
-      void operator & (T& data);
-
-      /**
-      * Save one object.
+      * Save (write) one object to this archive via the << operator.
+      *
+      * \param data object of type T to be saved to this archive
       */
       template <typename T>
       MemoryOArchive& operator << (T& data);
+
+      /**
+      * Save (write) one object to this archive via the & operator.
+      *
+      * Equivalent to << operator.
+      *
+      * \param data object of type T to be saved to this archive
+      */
+      template <typename T>
+      MemoryOArchive& operator & (T& data);
+
+      /**
+      * Save a fixed size array via operator <<.
+      *
+      * The implementation applies the serialize function to each element.
+      * This template should thus work for any type T for which a serialize
+      * function exists. 
+      *
+      * \param data array of fixed size N with elements of type T
+      */
+      template <typename T, size_t N>
+      MemoryOArchive& operator << (T (& data)[N]);
+
+      /**
+      * Save a fixed size array via operator &.
+      *
+      * Equivalent to the corresponding << operator.
+      *
+      * \param data array of fixed size N with elements of type T
+      */
+      template <typename T, size_t N>
+      MemoryOArchive& operator & (T (& data)[N]);
+
+      // Pack functions and function templates
 
       /**
       * Pack a T object.
@@ -218,19 +248,46 @@ namespace Util
    {  return cursor_; }
 
    /*
-   * Save one object.
-   */
-   template <typename T>
-   inline void MemoryOArchive::operator & (T& data)
-   {  serialize(*this, data, version_); }
-
-   /*
-   * Save one object.
+   * Save one object of type T to this archive via the << operator.
    */
    template <typename T>
    inline MemoryOArchive& MemoryOArchive::operator << (T& data)
    {   
       serialize(*this, data, version_); 
+      return *this;
+   }
+
+   /*
+   * Save one object of type T to this archive via the & operator.
+   */
+   template <typename T>
+   inline MemoryOArchive& MemoryOArchive::operator & (T& data)
+   {  
+      serialize(*this, data, version_); 
+      return *this;
+   }
+
+   /*
+   * Save a fixed size array of objects via operator <<.
+   */
+   template <typename T, size_t N>
+   inline MemoryOArchive& MemoryOArchive::operator << (T (&data)[N])
+   {
+      for (int i=0; i < N; ++i) {   
+         serialize(*this, data[i], version_); 
+      }
+      return *this;
+   }
+
+   /*
+   * Save a fixed size array of objects via operator &.
+   */
+   template <typename T, size_t N>
+   inline MemoryOArchive& MemoryOArchive::operator & (T (&data)[N])
+   {
+      for (int i=0; i < N; ++i) {
+         serialize(*this, data[i], version_); 
+      }
       return *this;
    }
 

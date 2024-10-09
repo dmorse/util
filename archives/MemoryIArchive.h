@@ -79,7 +79,15 @@ namespace Util
       void release();
 
       /**
-      * Load one object.
+      * Load (read) one object of type T via the >> operator.
+      *
+      * \param data object to be loaded from this archive.
+      */
+      template <typename T>
+      MemoryIArchive& operator >> (T& data);
+
+      /**
+      * Load (read) one object of type T via the & operator.
       *
       * \param data object to be loaded from this archive.
       */
@@ -87,12 +95,28 @@ namespace Util
       MemoryIArchive& operator & (T& data);
 
       /**
-      * Load one object.
+      * Load a fixed size array via operator >>.
       *
-      * \param data object to be loaded from this archive.
+      * The implementation applies the serialize function to each element.
+      * This template should thus work for any type T for which a serialize
+      * function exists. 
+      *
+      * \param data array of fixed size N with elements of type T
       */
-      template <typename T>
-      MemoryIArchive& operator >> (T& data);
+      template <typename T, size_t N>
+      MemoryIArchive& operator >> (T (& data)[N]);
+
+      /**
+      * Load a fixed size array via operator &.
+      *
+      * Equivalent to the corresponding >> operator.
+      *
+      * \param data array of fixed size N with elements of type T
+      */
+      template <typename T, size_t N>
+      MemoryIArchive& operator & (T (& data)[N]);
+
+      // Pack functions and function templates
 
       /**
       * Unpack one object of type T.
@@ -234,6 +258,16 @@ namespace Util
    // Template methods
 
    /*
+   * Load one T object from this MemoryIArchive.
+   */
+   template <typename T>
+   inline MemoryIArchive& MemoryIArchive::operator >> (T& data)
+   {   
+      serialize(*this, data, version_); 
+      return *this;
+   }
+
+   /*
    * Load one T object from a MemoryIArchive.
    */
    template <typename T>
@@ -244,12 +278,26 @@ namespace Util
    }
 
    /*
-   * Load one T object from this MemoryIArchive.
+   * Load a fixed size array of objects via operator >>.
    */
-   template <typename T>
-   inline MemoryIArchive& MemoryIArchive::operator >> (T& data)
-   {   
-      serialize(*this, data, version_); 
+   template <typename T, size_t N>
+   inline MemoryIArchive& MemoryIArchive::operator >> (T (&data)[N])
+   {
+      for (int i=0; i < N; ++i) {   
+         serialize(*this, data[i], version_); 
+      }
+      return *this;
+   }
+
+   /*
+   * Load a fixed size array of objects via operator &.
+   */
+   template <typename T, size_t N>
+   inline MemoryIArchive& MemoryIArchive::operator & (T (&data)[N])
+   {
+      for (int i=0; i < N; ++i) {
+         serialize(*this, data[i], version_); 
+      }
       return *this;
    }
 

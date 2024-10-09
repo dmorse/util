@@ -23,7 +23,7 @@ namespace Util
 {
 
    /**
-   * Saving archive for binary istream.
+   * Loading (input) archive for binary istream.
    *
    * \ingroup Serialize_Module
    */
@@ -32,10 +32,14 @@ namespace Util
 
    public:
 
-      /// Returns true;
+      /**
+      * Is this a saving (output) archive? Returns false.
+      */ 
       static bool is_saving();
 
-      /// Returns false;
+      /**
+      * Is this a loading (input) archive? Returns true.
+      */ 
       static bool is_loading();
 
       /**
@@ -68,16 +72,45 @@ namespace Util
       std::ifstream& file();
 
       /**
-      * Read one object.
+      * Load (read) one object of type T via the & operator.
+      *
+      * \param data object of type T to be loaded from archive
+      */
+      template <typename T>
+      BinaryFileIArchive& operator >> (T& data);
+
+      /**
+      * Load (read) one object of type T via the & operator.
+      *
+      * Equivalent to the >> operator.
+      *
+      * \param data object of type T to be loaded from archive
       */
       template <typename T>
       BinaryFileIArchive& operator & (T& data);
 
       /**
-      * Read one object.
+      * Load a fixed size array via operator >>.
+      *
+      * The implementation applies the serialize function to each element.
+      * This template should thus work for any type T for which a serialize
+      * function exists. 
+      *
+      * \param data array of fixed size N with elements of type T
       */
-      template <typename T>
-      BinaryFileIArchive& operator >> (T& data);
+      template <typename T, size_t N>
+      BinaryFileIArchive& operator >> (T (& data)[N]);
+
+      /**
+      * Load a fixed size array via operator &.
+      *
+      * Equivalent to the corresponding >> operator.
+      *
+      * \param data array of fixed size N with elements of type T
+      */
+      template <typename T, size_t N>
+      BinaryFileIArchive& operator & (T (& data)[N]);
+      // Unpack function templates 
 
       /**
       * Unpack a single T object.
@@ -123,7 +156,7 @@ namespace Util
 
    };
 
-   // Inline methods
+   // Inline static member functions
 
    inline bool BinaryFileIArchive::is_saving()
    {  return false; }
@@ -131,10 +164,20 @@ namespace Util
    inline bool BinaryFileIArchive::is_loading()
    {  return true; }
 
-   // Inline non-static method templates
+   // Overloaded >> (extraction) and & operators.
 
    /*
-   * Read one object.
+   * Load (read) one object of type T via the >> operator.
+   */
+   template <typename T>
+   inline BinaryFileIArchive& BinaryFileIArchive::operator >> (T& data)
+   {   
+      serialize(*this, data, version_); 
+      return *this;
+   }
+
+   /*
+   * Load (read) one object of type T via the & operator.
    */
    template <typename T>
    inline BinaryFileIArchive& BinaryFileIArchive::operator & (T& data)
@@ -144,16 +187,32 @@ namespace Util
    }
 
    /*
-   * Read one object.
+   * Load a fixed size array of objects via operator >>.
    */
-   template <typename T>
-   inline BinaryFileIArchive& BinaryFileIArchive::operator >> (T& data)
-   {   
-      serialize(*this, data, version_); 
+   template <typename T, size_t N>
+   inline 
+   BinaryFileIArchive& BinaryFileIArchive::operator >> (T (&data)[N])
+   {
+      for (int i=0; i < N; ++i) {   
+         serialize(*this, data[i], version_); 
+      }
       return *this;
    }
 
-   // Method templates
+   /*
+   * Load a fixed size array of objects via operator &.
+   */
+   template <typename T, size_t N>
+   inline 
+   BinaryFileIArchive& BinaryFileIArchive::operator & (T (&data)[N])
+   {
+      for (int i=0; i < N; ++i) {
+         serialize(*this, data[i], version_); 
+      }
+      return *this;
+   }
+
+   // Unpack function templates
 
    /*
    * Load a single object of type T.

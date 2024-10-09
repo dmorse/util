@@ -68,16 +68,48 @@ namespace Util
       std::ofstream& file();
 
       /**
+      * Save one T object to this archive via the << (insertion) operator.
+      *
+      * Implementation calls a global serialize function.
+      *
+      * \param data object to be saved to archive
+      */
+      template <typename T>
+      TextFileOArchive& operator << (T& data);
+
+      /**
       * Save one T object to this archive.
+      *
+      * Equivalent to operator <<.
+      *
+      * \param data object to be saved to archive
       */
       template <typename T>
       TextFileOArchive& operator & (T& data);
 
       /**
-      * Save one T object to this archive.
+      * Save a fixed size array via operator <<.
+      *
+      * Implementation applies the serialize function to each element.
+      * The template should thus work for any type T for which a 
+      * serialize function exists. 
+      *
+      * \param data array of fixed size N with elements of type T
       */
-      template <typename T>
-      TextFileOArchive& operator << (T& data);
+      template <typename T, size_t N>
+      TextFileOArchive& operator << (T (& data)[N]);
+
+      /**
+      * Save a fixed size array via operator &.
+      *
+      * Equivalent to << operator.
+      *
+      * \param data array of fixed size N with elements of type T
+      */
+      template <typename T, size_t N>
+      TextFileOArchive& operator & (T (& data)[N]);
+
+      // Pack function templates
 
       /**
       * Save one T object to this archive.
@@ -120,7 +152,7 @@ namespace Util
 
    };
 
-   // Inline methods
+   // Static inline methods
 
    inline bool TextFileOArchive::is_saving()
    {  return true; }
@@ -128,10 +160,20 @@ namespace Util
    inline bool TextFileOArchive::is_loading()
    {  return false; }
 
-   // Inline non-static method templates.
+   // Overloaded << (insertion) and & operators
 
    /*
-   * Save one object.
+   * Save one object of type T to this archive via the << operator.
+   */
+   template <typename T>
+   inline TextFileOArchive& TextFileOArchive::operator << (T& data)
+   {   
+      serialize(*this, data, version_); 
+      return *this;
+   }
+
+   /*
+   * Save one object of type T to this archive via the & operator.
    */
    template <typename T>
    inline TextFileOArchive& TextFileOArchive::operator & (T& data)
@@ -141,16 +183,30 @@ namespace Util
    }
 
    /*
-   * Save one object to this archive.
+   * Save a fixed size array of T objects via operator <<.
    */
-   template <typename T>
-   inline TextFileOArchive& TextFileOArchive::operator << (T& data)
-   {   
-      serialize(*this, data, version_); 
+   template <typename T, size_t N>
+   inline TextFileOArchive& TextFileOArchive::operator << (T (&data)[N])
+   {
+      for (int i=0; i < N; ++i) {   
+         serialize(*this, data[i], version_); 
+      }
       return *this;
    }
 
-   // Method templates
+   /*
+   * Save a fixed size array of T objects via operator &.
+   */
+   template <typename T, size_t N>
+   inline TextFileOArchive& TextFileOArchive::operator & (T (&data)[N])
+   {
+      for (int i=0; i < N; ++i) {
+         serialize(*this, data[i], version_); 
+      }
+      return *this;
+   }
+
+   // Pack function templates and template instantiations
 
    /*
    * Save a single object of type T.
@@ -190,8 +246,8 @@ namespace Util
    inline void TextFileOArchive::pack(const T* array, int m, int n, int np)
    {
       int i, j;
-      for (i=0; i < m; ++i) {
-         for (j=0; j < n; ++j) {
+      for (i = 0; i < m; ++i) {
+         for (j = 0; j < n; ++j) {
             *filePtr_ << array[i*np + j] << "  ";
          }
          *filePtr_ << std::endl;
@@ -297,6 +353,9 @@ namespace Util
 
    /*
    * Save a std::complex<float> to a TextFileOArchive.
+   * 
+   * Implementation relies on existence of a << operator for 
+   * std::complex<float>.
    */
    template <>
    inline 
@@ -306,6 +365,9 @@ namespace Util
 
    /*
    * Save a std::complex<double> to a TextFileOArchive.
+   *
+   * Implementation relies on existence of a << operator for 
+   * std::complex<float>.
    */
    template <>
    inline 
@@ -327,7 +389,7 @@ namespace Util
       }
    }
 
-   // Explicit serialize functions for namespace Util
+   // Explicit serialize functions for classes in namespace Util
 
    /*
    * Save a Util::Vector to a TextFileOArchive.
