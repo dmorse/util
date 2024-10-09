@@ -63,16 +63,36 @@ namespace Util
       void clear();
 
       /**
-      * Add packed size of one object.
+      * Add packed size of one object via operator <<.
+      *
+      * \param data object to be analyzed
+      */
+      template <typename T>
+      MemoryCounter& operator << (T& data);
+
+      /**
+      * Add packed size of one object via operator &.
+      *
+      * \param data object to be analyzed
       */
       template <typename T>
       MemoryCounter& operator & (T& data);
 
       /**
-      * Add packed size of one object.
+      * Add packed size of a fixed size array via operator <<.
+      *
+      * \param data fixed size array to be analyzed
       */
-      template <typename T>
-      MemoryCounter& operator << (T& data);
+      template <typename T, size_t N>
+      MemoryCounter& operator << (T (& data)[N]);
+
+      /**
+      * Add packed size of a fixed size array via operator &.
+      *
+      * \param data fixed size array to be analyzed
+      */
+      template <typename T, size_t N>
+      MemoryCounter& operator & (T (& data)[N]);
 
       /**
       * Add size of one object in memory.
@@ -152,8 +172,8 @@ namespace Util
    * Compute size of one object, default implementation.
    */
    template <typename T>
-   inline MemoryCounter& MemoryCounter::operator & (T& data)
-   {  
+   inline MemoryCounter& MemoryCounter::operator << (T& data)
+   {   
       serialize(*this, data, version_); 
       return *this;
    }
@@ -162,9 +182,33 @@ namespace Util
    * Compute size of one object, default implementation.
    */
    template <typename T>
-   inline MemoryCounter& MemoryCounter::operator << (T& data)
-   {   
+   inline MemoryCounter& MemoryCounter::operator & (T& data)
+   {  
       serialize(*this, data, version_); 
+      return *this;
+   }
+
+   /*
+   * Compute size of a fixed size array via operator <<.
+   */
+   template <typename T, size_t N>
+   inline MemoryCounter& MemoryCounter::operator << (T (& data)[N])
+   {   
+      for (int i = 0; i < N; ++i) {
+         serialize(*this, data[i], version_); 
+      }
+      return *this;
+   }
+
+   /*
+   * Compute size of a fixed size array via operator &.
+   */
+   template <typename T, size_t N>
+   inline MemoryCounter& MemoryCounter::operator & (T (& data)[N])
+   {   
+      for (int i = 0; i < N; ++i) {
+         serialize(*this, data[i], version_); 
+      }
       return *this;
    }
 

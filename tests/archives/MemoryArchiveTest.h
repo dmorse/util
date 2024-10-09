@@ -101,12 +101,16 @@ void MemoryArchiveTest::testPack()
    TEST_ASSERT(v.isAllocated() );
    TEST_ASSERT(v.cursor() == v.begin());
 
+   // Typedef for complex as double[2]
+   typedef double cmplx[2];
+
    // Declare variables
    int i1, i2;
    double d1, d2;
    std::complex<double> c1, c2;
    std::string s1, s2;
    Vector a1, a2;
+   cmplx z1, z2;
    size_t offset;   
 
    // Initialize variables
@@ -117,8 +121,10 @@ void MemoryArchiveTest::testPack()
    a1[0] =  1.3;
    a1[1] = -2.3;
    a1[2] =  3.3;
+   z1[0] = 0.6;
+   z1[1] = 0.4;
   
-   // Write variables to OArchive v
+   // Write variables to MemoryOArchive v and MemoryCounter w
    v << i1;
    w << i1;
    offset = sizeof(int);
@@ -146,6 +152,13 @@ void MemoryArchiveTest::testPack()
    v << a1;
    w << a1;
    offset += memorySize(a1);
+   TEST_ASSERT(v.cursor() == v.begin() + offset);
+   TEST_ASSERT(w.size() == offset);
+
+   v << z1;
+   w << z1;
+   offset += memorySize(z1);
+   TEST_ASSERT(memorySize(z1) == 2*sizeof(double));
    TEST_ASSERT(v.cursor() == v.begin() + offset);
    TEST_ASSERT(w.size() == offset);
 
@@ -181,6 +194,12 @@ void MemoryArchiveTest::testPack()
    offset += memorySize(a2);
    TEST_ASSERT(u.cursor() == u.begin() + offset);
    TEST_ASSERT(a1 == a2);
+
+   u >> z2;
+   offset += memorySize(z2);
+   TEST_ASSERT(u.cursor() == u.begin() + offset);
+   TEST_ASSERT(eq(z1[0], z2[0]));
+   TEST_ASSERT(eq(z1[1], z2[1]));
 
    // Reset and begin rereading
    u.reset();
