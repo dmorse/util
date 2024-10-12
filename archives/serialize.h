@@ -42,7 +42,7 @@ namespace Util
    template <class Archive, typename T, size_t N>
    inline void serialize(Archive& ar, T data[N], const unsigned int version)
    {  
-      for (int i = 0; i < N; ++i) {
+      for (size_t i = 0; i < N; ++i) {
          serialize(ar, data[i], version); 
       }
    }

@@ -193,7 +193,7 @@ namespace Util
    inline 
    BinaryFileIArchive& BinaryFileIArchive::operator >> (T (&data)[N])
    {
-      for (int i=0; i < N; ++i) {   
+      for (size_t i=0; i < N; ++i) {   
          serialize(*this, data[i], version_); 
       }
       return *this;
@@ -206,7 +206,7 @@ namespace Util
    inline 
    BinaryFileIArchive& BinaryFileIArchive::operator & (T (&data)[N])
    {
-      for (int i=0; i < N; ++i) {
+      for (size_t i=0; i < N; ++i) {
          serialize(*this, data[i], version_); 
       }
       return *this;

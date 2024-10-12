@@ -209,7 +209,7 @@ namespace Util
    template <typename T, size_t N>
    inline TextFileIArchive& TextFileIArchive::operator >> (T (&data)[N])
    {
-      for (int i=0; i < N; ++i) {   
+      for (size_t i = 0; i < N; ++i) {   
          serialize(*this, data[i], version_); 
       }
       return *this;
@@ -221,7 +221,7 @@ namespace Util
    template <typename T, size_t N>
    inline TextFileIArchive& TextFileIArchive::operator & (T (&data)[N])
    {
-      for (int i=0; i < N; ++i) {
+      for (size_t i = 0; i < N; ++i) {
          serialize(*this, data[i], version_); 
       }
       return *this;
