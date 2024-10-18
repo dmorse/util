@@ -36,7 +36,6 @@ namespace Util
    *
    * \param ar  archive object
    * \param data  fixed size array to be serialized
-   * \param N  number of elements in fixed-size array
    * \param version archive version id
    */
    template <class Archive, typename T, size_t N>
