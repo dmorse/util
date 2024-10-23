@@ -6,6 +6,7 @@
 */
 
 #include "Log.h"
+#include <util/global.h>
 
 namespace Util
 {
@@ -23,10 +24,9 @@ namespace Util
    void Log::initStatic() 
    {
       static int nCall = 0;
-      if (nCall == 0) {
-         Log::streamPtr_ = 0;
-         Log::filePtr_ = 0;
-      }
+      UTIL_CHECK(nCall == 0);
+      Log::streamPtr_ = 0;
+      Log::filePtr_ = 0;
       ++nCall;
    }
 

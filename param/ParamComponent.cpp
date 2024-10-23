@@ -78,9 +78,8 @@ namespace Util
    {  
       // This function can only be called once.
       static int nCall = 0;
-      if (nCall == 0) {
-         echo_ = false; 
-      }
+      UTIL_CHECK(nCall == 0);
+      echo_ = false; 
       ++nCall;
    }
 

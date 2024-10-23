@@ -6,6 +6,7 @@
 */
 
 #include "Format.h"
+#include <util/global.h>
 
 namespace Util
 {
@@ -47,11 +48,10 @@ namespace Util
    void Format::initStatic()
    {  
       // This function can only be called once.
-      static int nCall = 0;
-      if (nCall == 0) {
-         Format::defaultWidth_     = 15;
-         Format::defaultPrecision_ =  7;
-      }
+      static int nCall = 0;  // static value is only initialized once
+      UTIL_CHECK(nCall == 0);
+      Format::defaultWidth_     = 15;
+      Format::defaultPrecision_ =  7;
       ++nCall;
    }
 

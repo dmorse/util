@@ -21,8 +21,8 @@ namespace Util
    */
    void Constants::initStatic() 
    {
-      // This method may only be called once.
-      static int nCall = 0;
+      static int nCall = 0; // This initializer is only called once
+      UTIL_CHECK(nCall == 0);
       ++nCall;
    }
 
