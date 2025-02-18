@@ -216,6 +216,8 @@ namespace Util
          }
       }
       size_ = 0;
+      list_.clear();
+      isLeaf_.clear();
    }
 
    /*
