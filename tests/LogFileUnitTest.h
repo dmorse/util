@@ -5,6 +5,7 @@
 #include <util/misc/Log.h>
 
 #include <fstream>
+#include <string>
 
 class LogFileUnitTest : public UnitTest
 {
@@ -24,13 +25,15 @@ protected:
       Util::Log::setFile(logFile_);
    }
 
+   void openLogFile(std::string const & filename)
+   {  openLogFile(filename.c_str()); }
+
    void closeLogFile()
    {
       if (logFile_.is_open()) {
          Util::Log::close();
       }
    }
-
 
 };
 #endif
