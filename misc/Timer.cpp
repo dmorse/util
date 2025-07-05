@@ -34,7 +34,7 @@ namespace Util
    /*
    * Get the current time.
    */ 
-   double Timer::time()
+   double Timer::time() const
    {
       #ifdef UTIL_CXX11
       return time_.count();
