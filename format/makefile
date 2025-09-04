@@ -1,9 +1,7 @@
-SRC_DIR_REL =../..
 
-include $(SRC_DIR_REL)/config.mk
-include $(SRC_DIR_REL)/util/config.mk
-include $(SRC_DIR_REL)/util/patterns.mk
-include $(SRC_DIR_REL)/util/format/sources.mk
+include ../../config.mk
+include $(SRC_DIR)/util/format/sources.mk
+include $(SRC_DIR)/util/patterns.mk
 
 all: $(util_format_OBJS)
 

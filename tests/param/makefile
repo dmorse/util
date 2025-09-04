@@ -1,11 +1,9 @@
-BLD_DIR_REL =../../..
-include $(BLD_DIR_REL)/config.mk
-include $(BLD_DIR)/util/config.mk
-include $(SRC_DIR)/util/patterns.mk
+include ../../../config.mk
 include $(SRC_DIR)/util/sources.mk
 include $(SRC_DIR)/util/tests/param/sources.mk
+include $(SRC_DIR)/util/patterns.mk
 
-#TEST=$(BLD_DIR)/util/tests/param/Test
+TEST=$(BLD_DIR)/util/tests/param/Test
 
 .SECONDARY:$(util_tests_param_OBJS)
 
@@ -31,6 +29,8 @@ clean:
 
 clean-outputs:
 	@cd serial; $(MAKE) clean-outputs
+
+.PHONY: all run quiet clean clean-outputs
 
 -include $(util_tests_param_OBJS:.o=.d)
 -include $(util_OBJS:.o=.d)

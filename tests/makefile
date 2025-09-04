@@ -1,13 +1,9 @@
-BLD_DIR_REL =../..
-include $(BLD_DIR_REL)/config.mk
-include $(BLD_DIR)/util/config.mk
-include $(SRC_DIR)/util/patterns.mk
+include ../../config.mk
 include $(SRC_DIR)/util/sources.mk
 include $(SRC_DIR)/util/tests/sources.mk
+include $(SRC_DIR)/util/patterns.mk
 
 TEST=$(BLD_DIR)/util/tests/Test
-
-.SECONDARY:$(util_tests_OBJS)
 
 all: $(util_tests_EXES)
 
@@ -52,6 +48,10 @@ clean-outputs:
 	@cd containers; $(MAKE) clean-outputs
 	@cd param/serial; $(MAKE) clean-outputs
 	@cd random; $(MAKE) clean-outputs
+
+.PHONY: all run run-quiet clean clean-outputs
+
+.SECONDARY:$(util_tests_OBJS)
 
 -include $(util_tests_OBJS:.o=.d)
 -include $(util_OBJS:.o=.d)

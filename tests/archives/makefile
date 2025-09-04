@@ -1,9 +1,6 @@
-BLD_DIR_REL =../../..
-include $(BLD_DIR_REL)/config.mk
-include $(BLD_DIR)/util/config.mk
-include $(SRC_DIR)/util/patterns.mk
-include $(SRC_DIR)/util/sources.mk
+include ../../../config.mk
 include $(SRC_DIR)/util/tests/archives/sources.mk
+include $(SRC_DIR)/util/patterns.mk
 
 TEST=util/tests/archives/Test
 #TEST=util/tests/archives/MpiTest
@@ -17,6 +14,8 @@ clean:
 
 clean-outputs:
 	@rm -f tmp/*
+
+.PHONY: all clean clean-outputs
 
 -include $(util_tests_archives_OBJS:.o=.d)
 -include $(util_OBJS:.o=.d)

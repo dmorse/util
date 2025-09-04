@@ -6,10 +6,9 @@
 #-----------------------------------------------------------------------
 # Include makefiles
 
-SRC_DIR_REL =..
-include $(SRC_DIR_REL)/config.mk
-include $(SRC_DIR)/util/patterns.mk
+include ../config.mk
 include $(SRC_DIR)/util/sources.mk
+include $(SRC_DIR)/util/patterns.mk
 
 #-----------------------------------------------------------------------
 # Main targets 
