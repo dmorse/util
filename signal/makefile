@@ -1,7 +1,7 @@
 
 include ../../config.mk
-include $(SRC_DIR)/util/patterns.mk
 include $(SRC_DIR)/util/signal/sources.mk
+include $(SRC_DIR)/util/patterns.mk
 
 all: $(util_signal_OBJS)
 
