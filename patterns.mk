@@ -28,9 +28,7 @@ MAKEDEP_ARGS+= -B$(BLD_DIR)
 $(BLD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@SDIR=$$(dirname "$@"); if [ ! -d "$$SDIR" ]; then mkdir -p "$$SDIR"; fi
 	$(CXX) $(CPPFLAGS) $(INCLUDES) $(CXXFLAGS) -c -o $@ $<
-ifdef MAKEDEP
 	$(MAKEDEP) $(MAKEDEP_CMD) $(MAKEDEP_ARGS) $<
-endif
 
 # Rule to compile *.cc test programs in src/util/tests
 $(BLD_DIR)/util/tests/%.o: $(SRC_DIR)/util/tests/%.cc 
