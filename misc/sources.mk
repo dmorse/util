@@ -7,6 +7,8 @@ util_misc_=\
     util/misc/initStatic.cpp \
     util/misc/Log.cpp \
     util/misc/Memory.cpp \
+    util/misc/ReferenceCounter.cpp \
+    util/misc/CountedReference.cpp \
     util/misc/Timer.cpp \
     util/misc/ioUtil.cpp 
 
