@@ -19,9 +19,9 @@ namespace Util
    /**
    * Provides method to allocate array.
    *
-   * The Memory::allocate() method invokes the new operator within
-   * a try catch block, and keeps track of the total memory 
-   * allocated.
+   * The Memory::allocate() method invokes the new operator within a
+   * try-catch block, and keeps track of the total memory allocated via 
+   * this class.
    *
    * \ingroup Misc_Module
    */

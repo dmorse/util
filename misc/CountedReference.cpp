@@ -24,7 +24,7 @@ namespace Util {
    */
    void CountedReference::associate(ReferenceCounter& owner)
    {
-      if (isAssociated()) dissociate();
+      UTIL_CHECK(!isAssociated());
       ptr_ = &owner;
       ++(ptr_->nRef_);
    }
