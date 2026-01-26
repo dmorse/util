@@ -37,7 +37,7 @@ namespace Util {
    * invalidate a shared resource, and output a warning of such actions
    * when they cannot be prevented (e.g., during destruction).
    * 
-   * \ingroup Util_Misc_Module
+   * \ingroup Misc_Module
    */
    class ReferenceCounter 
    {
