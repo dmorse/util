@@ -105,7 +105,7 @@ namespace Util
       double uniform(double range1, double range2);
    
       /**
-      * Return random long int x uniformly distributed in range1 <= x < range2.
+      * Return random long int x uniform in range1 <= x < range2.
       *
       * Parameters range1 and range2 must be within the range of long integers.
       *
@@ -207,7 +207,7 @@ namespace Util
    }
  
    /*
-   * Get a uniform double precision number.
+   * Get a uniform double precision number in range1 <= x < range2.
    */
    inline double Random::uniform(double range1, double range2)
    {
@@ -217,13 +217,14 @@ namespace Util
    }
  
    /* 
-   * Return a random long integer x uniformly distributed in range1 <= x < range2.
+   * Return a random long integer x uniform in range1 <= x < range2.
    *
    * Parameters range1 and range2 must be within the range of long integers.
    */
    inline long Random::uniformInt(long range1, long range2) {
-      double x = uniform(range1, range2);
-      return long(x);
+      assert(range2 > range1);
+      double x = uniform(0, range2 - range1);
+      return range1 + long(x);
    }
    
    /* 
