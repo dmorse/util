@@ -12,32 +12,32 @@
 #-----------------------------------------------------------------------
 # Makefile variable definitions
 
-# Dependencies on build configuration files
-UTIL_CFGS= -A$(BLD_DIR)/config.mk
-UTIL_CFGS+= -A$(BLD_DIR)/util/config.mk
-
 # All libraries needed in src/util
 LIBS=$(util_LIB)
+
+# Arguments for MAKEDEP
+MAKEDEP_ARGS=$(CPPFLAGS) $(INCLUDES)
+MAKEDEP_ARGS+= -A$(BLD_DIR)/config.mk
+MAKEDEP_ARGS+= -S$(SRC_DIR)
+MAKEDEP_ARGS+= -B$(BLD_DIR)
 
 #-----------------------------------------------------------------------
 # Pattern rules
 
 # Rule to compile *.cpp class source files in src/util
-$(BLD_DIR)/%.o:$(SRC_DIR)/%.cpp
+$(BLD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@SDIR=$$(dirname "$@"); if [ ! -d "$$SDIR" ]; then mkdir -p "$$SDIR"; fi
-	$(CXX) $(INCLUDES) $(UTIL_DEFS) $(CXXFLAGS) -c -o $@ $<
-ifdef MAKEDEP
-	$(MAKEDEP) $(INCLUDES) $(UTIL_DEFS) $(CXXFLAGS) $(UTIL_CFGS) -S$(SRC_DIR) -B$(BLD_DIR) $<
-endif
+	$(CXX) $(CPPFLAGS) $(INCLUDES) $(CXXFLAGS) -c -o $@ $<
+	$(MAKEDEP) $(MAKEDEP_CMD) $(MAKEDEP_ARGS) $<
 
 # Rule to compile *.cc test programs in src/util/tests
 $(BLD_DIR)/util/tests/%.o: $(SRC_DIR)/util/tests/%.cc 
-	$(CXX) $(INCLUDES) $(UTIL_DEFS) $(TESTFLAGS) -c -o $@ $<
+	$(CXX) $(CPPFLAGS) $(INCLUDES) $(CXXFLAGS) -c -o $@ $<
 ifdef MAKEDEP
-	$(MAKEDEP) $(INCLUDES) $(UTIL_DEFS) $(CXXFLAGS) $(UTIL_CFGS) -S$(SRC_DIR) -B$(BLD_DIR) $<
+	$(MAKEDEP) $(MAKEDEP_CMD) $(MAKEDEP_ARGS) $<
 endif
 
 # Rule to link *.cc test programs in src/util/tests
 $(BLD_DIR)/util/tests/%: $(BLD_DIR)/util/tests/%.o $(LIBS)
-	$(CXX) -o $@ $@.o $(LIBS) $(LDFLAGS)
+	$(CXX) $(LDFLAGS) -o $@ $< $(LIBS)
 

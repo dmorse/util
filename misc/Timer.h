@@ -78,20 +78,20 @@ namespace Util
       */
       void stop();
      
-      /**
-      * Is this Timer running?
-      */
-      bool isRunning();
-
       /** 
       * Reset accumulated time to zero.
       */
       void clear();
 
       /**
+      * Is this Timer running?
+      */
+      bool isRunning() const;
+
+      /**
       * Return the accumulated time, in seconds.
       */
-      double time();
+      double time() const;
 
       /**
       * Return current time point.
@@ -126,7 +126,7 @@ namespace Util
    /*
    * Is this timer running?
    */ 
-   inline bool Timer::isRunning()
+   inline bool Timer::isRunning() const
    {  return isRunning_; }
 
 }

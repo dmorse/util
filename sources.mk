@@ -23,6 +23,12 @@ util_SRCS=\
 util_OBJS=\
      $(addprefix $(BLD_DIR)/, $(util_:.cpp=.o))
 
+#-----------------------------------------------------------------------
+# Path and rule for libutil.a static library
+
+util_LIBNAME=util
+util_LIB=$(BLD_DIR)/util/lib$(util_LIBNAME).a
+
 $(util_LIB): $(util_OBJS)
 	$(AR) rcs $(util_LIB) $(util_OBJS)
 

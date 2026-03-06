@@ -1,6 +1,4 @@
-BLD_DIR_REL =../../..
-include $(BLD_DIR_REL)/config.mk
-include $(BLD_DIR)/util/config.mk
+include ../../../config.mk
 include $(SRC_DIR)/util/patterns.mk
 include $(SRC_DIR)/util/sources.mk
 include $(SRC_DIR)/util/tests/random/sources.mk
