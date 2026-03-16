@@ -19,7 +19,7 @@ namespace Util
    * Dynamically allocatable contiguous array template.
    *
    * A DArray wraps a dynamically allocated C Array, and stores the 
-   * size of the array. A DArray can be allocated, deallocated or
+   * capacity of the array. A DArray can be allocated, deallocated or
    * reallocated (i.e., resized and moved) by member functions.j
    *
    * The Array<Data> base class provides bounds checking when compiled
@@ -39,11 +39,18 @@ namespace Util
       DArray();
 
       /**
+      * Allocating constructor.
+      *
+      * \param capacity  number of elements to allocate
+      */
+      DArray(int capacity);
+
+      /**
       * Copy constructor.
       *
       * Allocates new memory and copies all elements by value.
       *
-      * \param other the DArray to be copied
+      * \param other  the DArray to be copied
       */
       DArray(DArray<Data> const & other);
 
@@ -74,7 +81,7 @@ namespace Util
       *
       * \throw Exception if the DArray is already allocated
       *
-      * \param capacity number of elements to allocate
+      * \param capacity  number of elements to allocate
       */
       void allocate(int capacity);
 
@@ -88,10 +95,13 @@ namespace Util
       /**
       * Reallocate the underlying C array and copy to new location.
       *
-      * The new capacity, given by the capacity parameter, must be 
-      * greater than the existing array capacity.
+      * The array is reallocated and copied to a new location if the new 
+      * capacity, given by the capacity parameter, is greater than the 
+      * existing array capacity. Nothing is done if the new and old 
+      * capacities are equal. An Exception is thrown if the new capacity
+      * is less than the old capacity. 
       *
-      * \param capacity
+      * \param capacity  number of elements for which to allocate space
       */
       void reallocate(int capacity);
 
@@ -116,6 +126,7 @@ namespace Util
 
    };
 
+   // Member function definitions
 
    /*
    * Constructor.
@@ -128,7 +139,7 @@ namespace Util
    /*
    * Copy constructor.
    *
-   * Allocates new memory and copies all elements by value.
+   * Allocates memory and copies all elements by value.
    *
    *\param other the DArray to be copied.
    */
@@ -169,18 +180,22 @@ namespace Util
       // Check for self assignment
       if (this == &other) return *this;
 
-      // Precondition
+      // Precondition - require that other (RHS) array is allocated
       if (!other.isAllocated()) {
          UTIL_THROW("Other DArray must be allocated.");
       }
 
+      // Allocate this (LHS) array if necessary
       if (!isAllocated()) {
          allocate(other.capacity());
-      } else if (capacity_ != other.capacity_) {
+      }
+
+      // Require equal capacities 
+      if (capacity_ != other.capacity_) {
          UTIL_THROW("Cannot assign DArrays of unequal capacity");
       }
 
-      // Copy elements
+      // Copy all elements
       for (int i = 0; i < capacity_; ++i) {
          data_[i] = other[i];
       }
@@ -190,19 +205,15 @@ namespace Util
 
    /*
    * Allocate the underlying C array.
-   *
-   * Throw an Exception if this DArray is already allocated.
-   *
-   * \param capacity number of elements to allocate.
    */
    template <class Data>
    void DArray<Data>::allocate(int capacity)
    {
-      if (isAllocated()) {
-         UTIL_THROW("Attempt to re-allocate a DArray");
-      }
       if (capacity <= 0) {
          UTIL_THROW("Attempt to allocate with capacity <= 0");
+      }
+      if (isAllocated()) {
+         UTIL_THROW("Attempt to re-allocate a DArray");
       }
       Memory::allocate<Data>(data_, capacity);
       capacity_ = capacity;
@@ -210,8 +221,6 @@ namespace Util
 
    /*
    * Deallocate the underlying C array.
-   *
-   * Throw an Exception if this DArray is not allocated.
    */
    template <class Data>
    void DArray<Data>::deallocate()
