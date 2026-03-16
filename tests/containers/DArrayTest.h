@@ -31,7 +31,9 @@ public:
    {  memory_ = Memory::total(); }
 
    void tearDown() {}
-   void testConstructor();
+
+   void testDefaultConstructor();
+   void testAllocateConstructor();
    void testAllocate();
    void testReallocate();
    void testSubscript();
@@ -50,13 +52,35 @@ public:
 };
 
 
-void DArrayTest::testConstructor()
+void DArrayTest::testDefaultConstructor()
 {
    printMethod(TEST_FUNC);
    {
       DArray<Data> v;
       TEST_ASSERT(v.capacity() == 0 );
       TEST_ASSERT(!v.isAllocated() );
+   }
+   TEST_ASSERT((int)Memory::total() == memory_);
+}
+
+void DArrayTest::testAllocateConstructor()
+{
+   printMethod(TEST_FUNC);
+   TEST_ASSERT(Memory::total() == 0);
+   {
+      DArray<Data> v(capacity);
+
+      // Allocate array
+      TEST_ASSERT(v.capacity() == capacity );
+      TEST_ASSERT(v.isAllocated());
+      TEST_ASSERT((int)Memory::total() == capacity*sizeof(Data));
+
+      // Deallocate array
+      v.deallocate();
+      TEST_ASSERT(v.capacity() == 0);
+      TEST_ASSERT(!v.isAllocated());
+      TEST_ASSERT((int)Memory::total() == memory_);
+
    }
    TEST_ASSERT((int)Memory::total() == memory_);
 }
@@ -559,7 +583,8 @@ void DArrayTest::testSerialize2FileCmplx()
 }
 
 TEST_BEGIN(DArrayTest)
-TEST_ADD(DArrayTest, testConstructor)
+TEST_ADD(DArrayTest, testDefaultConstructor)
+TEST_ADD(DArrayTest, testAllocateConstructor)
 TEST_ADD(DArrayTest, testAllocate)
 TEST_ADD(DArrayTest, testReallocate)
 TEST_ADD(DArrayTest, testSubscript)
