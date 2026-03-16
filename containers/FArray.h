@@ -267,7 +267,7 @@ namespace Util
    /*
    * Serialize a FArray to/from an Archive.
    */
-   template <class Data, int Capacity>
+   template <typename Data, int Capacity>
    template <class Archive>
    void FArray<Data, Capacity>::serialize(Archive& ar, 
                                           const unsigned int version)

@@ -131,7 +131,7 @@ namespace Util
    /*
    * Default constructor.
    */
-   template <class Data>
+   template <typename Data>
    DArray<Data>::DArray()
     : Array<Data>()
    {}
@@ -139,7 +139,7 @@ namespace Util
    /*
    * Allocating constructor.
    */
-   template <class Data>
+   template <typename Data>
    DArray<Data>::DArray(int capacity)
     : Array<Data>()
    {  allocate(capacity); }
@@ -151,7 +151,7 @@ namespace Util
    *
    *\param other the DArray to be copied.
    */
-   template <class Data>
+   template <typename Data>
    DArray<Data>::DArray(DArray<Data> const & other)
     : Array<Data>()
    {
@@ -168,7 +168,7 @@ namespace Util
    /*
    * Destructor.
    */
-   template <class Data>
+   template <typename Data>
    DArray<Data>::~DArray()
    {
       if (isAllocated()) {
@@ -182,7 +182,7 @@ namespace Util
    *
    * This operator will allocate memory if not allocated previously.
    */
-   template <class Data>
+   template <typename Data>
    DArray<Data>& DArray<Data>::operator = (DArray<Data> const & other)
    {
       // Check for self assignment
@@ -214,7 +214,7 @@ namespace Util
    /*
    * Allocate the underlying C array.
    */
-   template <class Data>
+   template <typename Data>
    void DArray<Data>::allocate(int capacity)
    {
       if (capacity <= 0) {
@@ -230,7 +230,7 @@ namespace Util
    /*
    * Deallocate the underlying C array.
    */
-   template <class Data>
+   template <typename Data>
    void DArray<Data>::deallocate()
    {
       if (!isAllocated()) {
@@ -243,7 +243,7 @@ namespace Util
    /*
    * Reallocate and copy the underlying C array.
    */
-   template <class Data>
+   template <typename Data>
    void DArray<Data>::reallocate(int capacity)
    {
       UTIL_CHECK(capacity >= 0);
@@ -260,14 +260,14 @@ namespace Util
    /*
    * Return true if the DArray has been allocated, false otherwise.
    */
-   template <class Data>
+   template <typename Data>
    inline bool DArray<Data>::isAllocated() const
    {  return (bool)data_; }
 
    /*
    * Serialize a DArray to/from an Archive.
    */
-   template <class Data>
+   template <typename Data>
    template <class Archive>
    void DArray<Data>::serialize(Archive& ar, const unsigned int version)
    {

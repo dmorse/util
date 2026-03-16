@@ -166,7 +166,7 @@ namespace Util
    /*
    * Constructor.
    */
-   template <class Data>
+   template <typename Data>
    DSArray<Data>::DSArray()
     : data_(0),
       size_(0),
@@ -176,7 +176,7 @@ namespace Util
    /*
    * Copy constructor.
    */
-   template <class Data>
+   template <typename Data>
    DSArray<Data>::DSArray(DSArray< Data > const & other)
     : data_(0),
       size_(0),
@@ -200,7 +200,7 @@ namespace Util
    *
    * Capacity of LHS DSArray must be zero or == capacity of RHS DSArray.
    */
-   template <class Data>
+   template <typename Data>
    DSArray<Data>& DSArray<Data>::operator=(DSArray<Data> const & other)
    {
       // Check for self assignment
@@ -229,7 +229,7 @@ namespace Util
    /*
    * Destructor.
    */
-   template <class Data>
+   template <typename Data>
    DSArray<Data>::~DSArray()
    {
        size_ = 0;
@@ -243,7 +243,7 @@ namespace Util
    /*
    * Allocates the underlying C array.
    */
-   template <class Data>
+   template <typename Data>
    void DSArray<Data>::allocate(int capacity)
    {
       if (isAllocated()) {
@@ -260,7 +260,7 @@ namespace Util
    /*
    * Serialize a DSArray to/from an Archive.
    */
-   template <class Data>
+   template <typename Data>
    template <class Archive>
    void DSArray<Data>::serialize(Archive& ar, const unsigned int version)
    {
@@ -297,7 +297,7 @@ namespace Util
    *
    * \param iterator ArrayIterator, initialized on output.
    */
-   template <class Data>
+   template <typename Data>
    inline
    void DSArray<Data>::begin(ArrayIterator<Data> &iterator)
    {
@@ -308,7 +308,7 @@ namespace Util
    /*
    * Set a ConstArrayIterator to the beginning of this Array.
    */
-   template <class Data>
+   template <typename Data>
    inline
    void DSArray<Data>::begin(ConstArrayIterator<Data> &iterator) const
    {
@@ -319,7 +319,7 @@ namespace Util
    /*
    * Mimic C array subscripting.
    */
-   template <class Data>
+   template <typename Data>
    inline Data& DSArray<Data>::operator[] (int i)
    {
       assert(i < size_);
@@ -330,7 +330,7 @@ namespace Util
    /*
    * Mimic C array subscripting.
    */
-   template <class Data>
+   template <typename Data>
    inline Data const & DSArray<Data>::operator[] (int i) const
    {
       assert(i < size_);
@@ -341,7 +341,7 @@ namespace Util
    /*
    * Append data to the end of the array.
    */
-   template <class Data>
+   template <typename Data>
    inline void DSArray<Data>::append(Data const & data)
    {
       if (size_ == capacity_) {
@@ -361,35 +361,35 @@ namespace Util
    * modifying any elements of the underlying physical array.
    * If the size increases, added elements are uninitialized.
    */
-   template <class Data>
+   template <typename Data>
    inline void DSArray<Data>::resize(int size)
    {  size_ = size; }
 
    /*
    * Set logical size to zero.
    */
-   template <class Data>
+   template <typename Data>
    inline void DSArray<Data>::clear()
    {  size_ = 0; }
 
    /*
    * Return physical capacity of array.
    */
-   template <class Data>
+   template <typename Data>
    inline int DSArray<Data>::capacity() const
    {  return capacity_; }
 
    /*
    * Return logical size of this array (i.e., number of elements).
    */
-   template <class Data>
+   template <typename Data>
    inline int DSArray<Data>::size() const
    {  return size_; }
 
    /*
    * Return true if the DSArray has been allocated, false otherwise.
    */
-   template <class Data>
+   template <typename Data>
    inline bool DSArray<Data>::isAllocated() const
    {  return (bool)data_; }
 

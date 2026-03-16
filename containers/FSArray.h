@@ -144,7 +144,7 @@ namespace Util
    /*
    * Constructor.
    */
-   template <class Data, int Capacity>
+   template <typename Data, int Capacity>
    inline FSArray<Data, Capacity>::FSArray()
     : size_(0)
    {}
@@ -154,7 +154,7 @@ namespace Util
    *
    *\param other the FSArray to be copied.
    */
-   template <class Data, int Capacity>
+   template <typename Data, int Capacity>
    FSArray<Data, Capacity>::FSArray(FSArray<Data, Capacity> const & other) 
    {
       size_  = other.size_;
@@ -170,7 +170,7 @@ namespace Util
    *
    * \param other the RHS FSArray 
    */
-   template <class Data, int Capacity>
+   template <typename Data, int Capacity>
    FSArray<Data, Capacity>& 
    FSArray<Data, Capacity>::operator=(FSArray<Data, Capacity> const & other) 
    {
@@ -189,21 +189,21 @@ namespace Util
    /*
    * Destructor.
    */
-   template <class Data, int Capacity>
+   template <typename Data, int Capacity>
    FSArray<Data, Capacity>::~FSArray()
    {}
 
    /*
    * Return physical capacity of array.
    */
-   template <class Data, int Capacity>
+   template <typename Data, int Capacity>
    int FSArray<Data, Capacity>::capacity() const
    { return Capacity; }
 
    /*
    * Return logical size of this array (i.e., number of elements).
    */
-   template <class Data, int Capacity>
+   template <typename Data, int Capacity>
    int FSArray<Data, Capacity>::size() const
    { return size_; }
 
@@ -212,7 +212,7 @@ namespace Util
    *
    * \param iterator ArrayIterator, initialized on output. 
    */
-   template <class Data, int Capacity>
+   template <typename Data, int Capacity>
    void FSArray<Data, Capacity>::begin(ArrayIterator<Data> &iterator)
    {
       iterator.setCurrent(data_);
@@ -222,7 +222,7 @@ namespace Util
    /*
    * Set a ConstArrayIterator to the beginning of this Array.
    */
-   template <class Data, int Capacity>
+   template <typename Data, int Capacity>
    void FSArray<Data, Capacity>::begin(ConstArrayIterator<Data> &iterator) const
    {
       iterator.setCurrent(data_);
@@ -232,7 +232,7 @@ namespace Util
    /*
    * Mimic C array subscripting.
    */
-   template <class Data, int Capacity>
+   template <typename Data, int Capacity>
    Data& FSArray<Data, Capacity>::operator[] (int i) 
    {
       assert(i < size_);
@@ -243,7 +243,7 @@ namespace Util
    /*
    * Mimic C array subscripting.
    */
-   template <class Data, int Capacity>
+   template <typename Data, int Capacity>
    Data const & FSArray<Data, Capacity>::operator[] (int i) const
    {
       assert(i < size_);
@@ -254,7 +254,7 @@ namespace Util
    /*
    * Append data to the end of the array.
    */
-   template <class Data, int Capacity>
+   template <typename Data, int Capacity>
    inline void FSArray<Data, Capacity>::append(Data const & data) 
    {
       if (size_ == Capacity) {
@@ -267,14 +267,14 @@ namespace Util
    /*
    * Set logical size to zero.
    */
-   template <class Data, int Capacity>
+   template <typename Data, int Capacity>
    inline void FSArray<Data, Capacity>::clear() 
    {  size_ = 0; }
 
    /*
    * Serialize a FSArray to/from an Archive.
    */
-   template <class Data, int Capacity>
+   template <typename Data, int Capacity>
    template <class Archive>
    inline 
    void FSArray<Data, Capacity>::serialize(Archive& ar, 

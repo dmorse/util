@@ -269,7 +269,7 @@ namespace Util
    /*
    * Is this GPArray allocated?
    */
-   template <class Data>
+   template <typename Data>
    inline bool GPArray<Data>::isAllocated() const
    {  return (bool)ptrs_; }
 

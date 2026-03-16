@@ -375,7 +375,7 @@ namespace Util
    /*
    * Serialize a GArray to/from an Archive.
    */
-   template <class Data>
+   template <typename Data>
    template <class Archive>
    void GArray<Data>::serialize(Archive& ar, const unsigned int version)
    {
@@ -400,7 +400,7 @@ namespace Util
    /*
    * Set an ArrayIterator to the beginning of this Array.
    */
-   template <class Data>
+   template <typename Data>
    inline 
    void GArray<Data>::begin(ArrayIterator<Data> &iterator)
    {
@@ -411,7 +411,7 @@ namespace Util
    /*
    * Set a ConstArrayIterator to the beginning of this Array.
    */
-   template <class Data>
+   template <typename Data>
    inline 
    void GArray<Data>::begin(ConstArrayIterator<Data> &iterator) const
    {
@@ -422,7 +422,7 @@ namespace Util
    /*
    * Mimic C array subscripting.
    */
-   template <class Data>
+   template <typename Data>
    inline Data& GArray<Data>::operator[] (int i)
    {
       assert(i >= 0);
@@ -433,7 +433,7 @@ namespace Util
    /*
    * Mimic C array subscripting.
    */
-   template <class Data>
+   template <typename Data>
    inline Data const & GArray<Data>::operator[] (int i) const
    {
       assert(i >= 0);
@@ -444,21 +444,21 @@ namespace Util
    /*
    * Return physical capacity of array.
    */
-   template <class Data>
+   template <typename Data>
    inline int GArray<Data>::capacity() const
    {  return capacity_; }
 
    /*
    * Return logical size of this array (i.e., number of elements).
    */
-   template <class Data>
+   template <typename Data>
    inline int GArray<Data>::size() const
    {  return size_; }
 
    /*
    * Is this array allocated?
    */
-   template <class Data>
+   template <typename Data>
    inline bool GArray<Data>::isAllocated() const
    {  return (bool)data_; }
 

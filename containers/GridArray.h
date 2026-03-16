@@ -332,7 +332,7 @@ namespace Util
    /*
    * Serialize a GridArray to/from an Archive.
    */
-   template <class Data>
+   template <typename Data>
    template <class Archive>
    void GridArray<Data>::serialize(Archive& ar, const unsigned int version)
    {
@@ -361,14 +361,14 @@ namespace Util
    /*
    * Get dimension in direction i.
    */
-   template <class Data>
+   template <typename Data>
    inline int GridArray<Data>::dimension(int i) const
    {  return dimensions_[i]; }
 
    /*
    * Get total number of grid points.
    */
-   template <class Data>
+   template <typename Data>
    inline int GridArray<Data>::size() const
    {  return size_; }
 
@@ -515,7 +515,7 @@ namespace Util
    /*
    * Return true if the GridArray has been allocated, false otherwise.
    */
-   template <class Data>
+   template <typename Data>
    inline bool GridArray<Data>::isAllocated() const
    {  return (bool)(data_ != 0); }
 

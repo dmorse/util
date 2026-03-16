@@ -184,7 +184,7 @@ namespace Util
    *
    * Throw an Exception if this DMatrix is not allocated.
    */
-   template <class Data>
+   template <typename Data>
    void DMatrix<Data>::deallocate()
    {
       if (!isAllocated()) {
@@ -198,14 +198,14 @@ namespace Util
    /*
    * Return true if the DMatrix has been allocated, false otherwise.
    */
-   template <class Data>
+   template <typename Data>
    inline bool DMatrix<Data>::isAllocated() const 
    {  return !(data_ == 0); }
 
    /*
    * Serialize a DMatrix to/from an Archive.
    */
-   template <class Data>
+   template <typename Data>
    template <class Archive>
    void DMatrix<Data>::serialize(Archive& ar, const unsigned int version)
    {

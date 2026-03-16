@@ -22,7 +22,7 @@ namespace Util
    *
    * \ingroup Array_Module
    */
-   template <class Data>
+   template <typename Data>
    class RingBuffer
    {
 
@@ -165,7 +165,7 @@ namespace Util
    /*
    * Default contructor
    */
-   template <class Data>
+   template <typename Data>
    RingBuffer<Data>::RingBuffer()
     : data_(0),
       capacity_(0),
@@ -180,7 +180,7 @@ namespace Util
    *
    *\param other the RingBuffer to be copied.
    */
-   template <class Data>
+   template <typename Data>
    RingBuffer<Data>::RingBuffer(RingBuffer<Data> const & other)
     : data_(0),
       capacity_(0),
@@ -206,7 +206,7 @@ namespace Util
    * capacity.  This operator will allocate this RingBuffer if it was not
    * allocated previously.
    */
-   template <class Data>
+   template <typename Data>
    RingBuffer<Data>&
    RingBuffer<Data>::operator = (RingBuffer<Data> const & other)
    {
@@ -244,7 +244,7 @@ namespace Util
    }
 
    /// Destructor
-   template <class Data>
+   template <typename Data>
    RingBuffer<Data>::~RingBuffer()
    {
       if (data_) {
@@ -253,7 +253,7 @@ namespace Util
    }
 
    /// Allocate a new array containing capacity elements.
-   template <class Data>
+   template <typename Data>
    void  RingBuffer<Data>::allocate(int capacity)
    {
       if (data_ == 0) {
@@ -269,7 +269,7 @@ namespace Util
    /*
    * Set buffer to empty state, by resetting counters.
    */
-   template <class Data>
+   template <typename Data>
    inline
    void RingBuffer<Data>::clear()
    {
@@ -280,7 +280,7 @@ namespace Util
    /*
    * Append a new value to the end of the buffer
    */
-   template <class Data>
+   template <typename Data>
    inline
    void RingBuffer<Data>::append(Data const & data)
    {
@@ -301,7 +301,7 @@ namespace Util
    /*
    * Advance the last_ pointer and size_ without assigning a value.
    */
-   template <class Data>
+   template <typename Data>
    inline
    void RingBuffer<Data>::advance()
    {
@@ -320,7 +320,7 @@ namespace Util
    /*
    * Return number of values in buffer.
    */
-   template <class Data>
+   template <typename Data>
    inline
    int RingBuffer<Data>::size() const
    { return size_; }
@@ -328,7 +328,7 @@ namespace Util
    /*
    * Return the capacity of the buffer.
    */
-   template <class Data>
+   template <typename Data>
    inline
    int RingBuffer<Data>::capacity() const
    { return capacity_; }
@@ -336,7 +336,7 @@ namespace Util
    /*
    * Return true if the RingBuffer has been allocated, false otherwise.
    */
-   template <class Data>
+   template <typename Data>
    inline
    bool RingBuffer<Data>::isAllocated() const
    {  return (data_ != 0); }
@@ -344,7 +344,7 @@ namespace Util
    /*
    * Return true if the RingBuffer is full.
    */
-   template <class Data>
+   template <typename Data>
    inline
    bool RingBuffer<Data>::isFull() const
    {  return (size_ == capacity_); }
@@ -352,7 +352,7 @@ namespace Util
    /*
    * Retrive a value by const reference, index backwards from 0 (current)
    */
-   template <class Data>
+   template <typename Data>
    inline
    Data const & RingBuffer<Data>::operator [] (int offset) const
    {
@@ -370,7 +370,7 @@ namespace Util
    /*
    * Retrive a value by reference, index backwards from 0 (current)
    */
-   template <class Data>
+   template <typename Data>
    inline
    Data& RingBuffer<Data>::operator [] (int offset)
    {
@@ -388,7 +388,7 @@ namespace Util
    /*
    * Serialize a RingBuffer to/from an Archive.
    */
-   template <class Data>
+   template <typename Data>
    template <class Archive>
    void RingBuffer<Data>::serialize(Archive& ar, const unsigned int version)
    {

@@ -125,7 +125,7 @@ namespace Util
    /*
    * Serialize a FMatrix to/from an Archive.
    */
-   template <class Data, int M, int N>
+   template <typename Data, int M, int N>
    template <class Archive>
    void 
    FMatrix<Data, M, N>::serialize(Archive& ar, const unsigned int version)

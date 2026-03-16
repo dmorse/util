@@ -21,8 +21,14 @@ namespace Util
    * An Array is a sequence that supports random access via an overloaded
    * operator [], and that wraps a dynamically allocated C array. 
    *
-   * Array is a base class for DArray, which is dynamically allocated, 
-   * and RArray, which acts as a reference to another DArray or FSArray.
+   * The Array class template is designed to be used as only as a base 
+   * class, and does not provide functions for memory management. 
+   * Instantiations of the DArray, RArray, and DRArray class templates
+   * are derived from corresponding instantiations of the Array template.
+   * The Array template has a protected constructor and a protected
+   * destructor. As a result, an Array can only be created as part of 
+   * an instance of a derived class, and cannot be destroyed via a base 
+   * class pointer or reference.
    *
    * When compiled in debug mode (i.e., when NDEBUG is not defined) the
    * subscript operator [] checks the validity of the element index.
@@ -35,16 +41,8 @@ namespace Util
 
    public:
 
-      // Protected default constructor, to prohibit direct instantiation.
-
-      // Private unimplemented copy constructor, to prohibit copying.
-
-      /**
-      * Destructor.
-      */
-      virtual ~Array();
-
-      // Private unimplemented assignment operator, to prohibit assignment.
+      Array<Data>& operator = (Array<Data> const & other) = delete;
+      Array(Array const & other) = delete;
 
       /**
       * Return allocated size.
@@ -112,27 +110,14 @@ namespace Util
       int capacity_;
 
       /**
-      * Default constructor.
-      *
-      * Protected to prevent direct instantiation.
+      * Constructor (protected to provent direct instantiation).
       */
       Array();
 
-   private:
-
       /**
-      * Copy constructor.
-      *
-      * Private and not implemented to prevent copy construction.
+      * Destructor (protected to prevent direct destruction).
       */
-      Array(Array const & other);
-
-      /**
-      * Assignment operator. 
-      *
-      * Private and not implemented to prevent assignment.
-      */
-      Array<Data>& operator = (Array<Data> const & other);
+      ~Array() = default;
 
    };
 
@@ -141,15 +126,8 @@ namespace Util
    */
    template <typename Data>
    Array<Data>::Array()
-    : data_(0),
+    : data_(nullptr),
       capacity_(0)
-   {}
-
-   /*
-   * Destructor.
-   */
-   template <typename Data>
-   Array<Data>::~Array()
    {}
 
    /*

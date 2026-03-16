@@ -125,7 +125,7 @@ namespace Util
    /*
    * Return true if the DRaggedMatrix has been allocated, false otherwise.
    */
-   template <class Data>
+   template <typename Data>
    inline bool DRaggedMatrix<Data>::isAllocated() const 
    {  return !(data_ == 0); }
 

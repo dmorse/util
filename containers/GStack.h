@@ -377,7 +377,7 @@ namespace Util
    /*
    * Is this GStack allocated?
    */
-   template <class Data>
+   template <typename Data>
    inline bool GStack<Data>::isAllocated() const
    {  return (bool)ptrs_; }
 
