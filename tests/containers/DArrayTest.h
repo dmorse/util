@@ -58,7 +58,7 @@ void DArrayTest::testConstructor()
       TEST_ASSERT(v.capacity() == 0 );
       TEST_ASSERT(!v.isAllocated() );
    }
-   TEST_ASSERT(Memory::total() == memory_);
+   TEST_ASSERT((int)Memory::total() == memory_);
 }
 
 void DArrayTest::testAllocate()
@@ -81,13 +81,13 @@ void DArrayTest::testAllocate()
       TEST_ASSERT((int)Memory::total() == 0);
 
    }
-   TEST_ASSERT(Memory::total() == memory_);
+   TEST_ASSERT((int)Memory::total() == memory_);
 }
 
 void DArrayTest::testReallocate()
 {
    printMethod(TEST_FUNC);
-   TEST_ASSERT(Memory::total() == 0);
+   TEST_ASSERT((int)Memory::total() == 0);
    {
       DArray<Data> v;
 
@@ -110,13 +110,13 @@ void DArrayTest::testReallocate()
       TEST_ASSERT((int)Memory::total() == 0);
 
    }
-   TEST_ASSERT(Memory::total() == memory_);
+   TEST_ASSERT((int)Memory::total() == memory_);
 }
 
 void DArrayTest::testSubscript()
 {
    printMethod(TEST_FUNC);
-   TEST_ASSERT(Memory::total() == 0);
+   TEST_ASSERT((int)Memory::total() == 0);
    {
       DArray<Data> v;
       v.allocate(capacity);
@@ -128,13 +128,13 @@ void DArrayTest::testSubscript()
       TEST_ASSERT(v[2] == 30.0);
       TEST_ASSERT((int)Memory::total() == capacity*sizeof(Data));
    }
-   TEST_ASSERT(Memory::total() == memory_);
+   TEST_ASSERT((int)Memory::total() == memory_);
 }
 
 void DArrayTest::testSubscriptCmplx()
 {
    printMethod(TEST_FUNC);
-   TEST_ASSERT(Memory::total() == 0);
+   TEST_ASSERT((int)Memory::total() == 0);
    {
       DArray< std::complex<Data> > v;
       v.allocate(capacity);
@@ -148,7 +148,7 @@ void DArrayTest::testSubscriptCmplx()
       TEST_ASSERT(eq(v[2].real(), 30.0));
       TEST_ASSERT((int)Memory::total() == capacity*sizeof(std::complex<Data>));
    }
-   TEST_ASSERT(Memory::total() == memory_);
+   TEST_ASSERT((int)Memory::total() == memory_);
 }
 
 void DArrayTest::testIterator()
@@ -178,7 +178,7 @@ void DArrayTest::testIterator()
       TEST_ASSERT(!it.notEnd());
       TEST_ASSERT((int)Memory::total() == capacity*sizeof(Data));
    }
-   TEST_ASSERT(Memory::total() == memory_);
+   TEST_ASSERT((int)Memory::total() == memory_);
 }
 
 void DArrayTest::testCopyConstructorCmplx()
@@ -208,7 +208,7 @@ void DArrayTest::testCopyConstructorCmplx()
       TEST_ASSERT(real(u[2]) == 30 );
       TEST_ASSERT((int)Memory::total() == 2*capacity*sizeof(std::complex<Data>));
    }
-   TEST_ASSERT(Memory::total() == memory_);
+   TEST_ASSERT((int)Memory::total() == memory_);
 }
 
 void DArrayTest::testAssignment()
@@ -239,7 +239,7 @@ void DArrayTest::testAssignment()
       TEST_ASSERT(u[0] == 10.0);
       TEST_ASSERT(u[2] == 30.0);
    }
-   TEST_ASSERT(Memory::total() == memory_);
+   TEST_ASSERT((int)Memory::total() == memory_);
 }
 
 void DArrayTest::testAssignmentCmplx()
@@ -273,7 +273,7 @@ void DArrayTest::testAssignmentCmplx()
       TEST_ASSERT(imag(u[1]) == 20.1);
       TEST_ASSERT(real(u[2]) == 30.0);
    }
-   TEST_ASSERT(Memory::total() == memory_);
+   TEST_ASSERT((int)Memory::total() == memory_);
 }
 
 void DArrayTest::testBaseClassReference()
@@ -290,7 +290,7 @@ void DArrayTest::testBaseClassReference()
       TEST_ASSERT(u[0] == 10.0);
       TEST_ASSERT(u[2] == 30.0);
    }
-   TEST_ASSERT(Memory::total() == memory_);
+   TEST_ASSERT((int)Memory::total() == memory_);
 }
 
 
@@ -380,7 +380,7 @@ void DArrayTest::testSerialize1MemoryCmplx()
       TEST_ASSERT(i2 == 13);
       TEST_ASSERT(u.capacity() == 3);
    }
-   TEST_ASSERT(Memory::total() == memory_);
+   TEST_ASSERT((int)Memory::total() == memory_);
 
 }
 
@@ -428,7 +428,7 @@ void DArrayTest::testSerialize2MemoryCmplx()
       TEST_ASSERT(imag(u[2]) == 30.1);
       TEST_ASSERT(u.capacity() == 3);
    }
-   TEST_ASSERT(Memory::total() == memory_);
+   TEST_ASSERT((int)Memory::total() == memory_);
 }
 
 void DArrayTest::testSerialize1FileCmplx()
@@ -490,7 +490,7 @@ void DArrayTest::testSerialize1FileCmplx()
       TEST_ASSERT(i2 == 13);
       TEST_ASSERT(u.capacity() == 3);
    }
-   TEST_ASSERT(Memory::total() == memory_);
+   TEST_ASSERT((int)Memory::total() == memory_);
 }
 
 void DArrayTest::testSerialize2FileCmplx()
@@ -555,7 +555,7 @@ void DArrayTest::testSerialize2FileCmplx()
       TEST_ASSERT(i2 == 13);
       TEST_ASSERT(u.capacity() == 3);
    }
-   TEST_ASSERT(Memory::total() == memory_);
+   TEST_ASSERT((int)Memory::total() == memory_);
 }
 
 TEST_BEGIN(DArrayTest)

@@ -129,12 +129,20 @@ namespace Util
    // Member function definitions
 
    /*
-   * Constructor.
+   * Default constructor.
    */
    template <class Data>
    DArray<Data>::DArray()
     : Array<Data>()
    {}
+
+   /*
+   * Allocating constructor.
+   */
+   template <class Data>
+   DArray<Data>::DArray(int capacity)
+    : Array<Data>()
+   {  allocate(capacity); }
 
    /*
    * Copy constructor.
