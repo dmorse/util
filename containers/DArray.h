@@ -18,12 +18,12 @@ namespace Util
    /**
    * Dynamically allocatable contiguous array template.
    *
-   * A DArray wraps a dynamically allocated C Array, and stores the 
+   * A DArray wraps a dynamically allocated C Array, and stores the
    * capacity of the array. A DArray can be allocated, deallocated or
    * reallocated (i.e., resized and moved) by member functions.j
    *
-   * The Array<Data> base class provides bounds checking when compiled
-   * in debug mode. 
+   * The Array<Data> base class provides array index bound checking when 
+   * compiled in debug mode.
    *
    * \ingroup Array_Module
    */
@@ -62,12 +62,12 @@ namespace Util
       virtual ~DArray();
 
       /**
-      * Assignment operator.
+      * Assignment from a DArray<Data> container.
       *
       * Copies all elements. The other DArrray must be allocated. If this
-      * DArray is not allocated, the function allocates it before copying
-      * all elements.  If this and the other DArray are both allocated, 
-      * the capacities must be exactly equal on entry.
+      * DArray is not allocated on entry, it is allocated before elements
+      * are copied.  If this and the other DArray are both allocated, the
+      * capacities must be equal on entry.
       *
       * \throw Exception if other DArray is not allocated
       * \throw Exception if DArrays are allocated with unequal capacities
@@ -75,6 +75,22 @@ namespace Util
       * \param other  the other (RHS) DArray
       */
       DArray<Data>& operator = (DArray<Data> const & other);
+
+      /**
+      * Assignment from an Array<Data> container.
+      *
+      * Performs a deep copy, by copying values of all elements of an
+      * Array<Data> container. If this (LHS) array is already allocated
+      * on entry, it must have the same capacity as the other (RHS) array.
+      * If this LHS array is not allocated on entry, required memory is
+      * allocated before copying values.
+      *
+      * \throw Exception if other array is not allocated
+      * \throw Exception if arrays are allocated with unequal capacities
+      *
+      * \param other  array container on RHS of assigment (input)
+      */
+      DArray<Data>& operator = (Array<Data> const & other);
 
       /**
       * Allocate the underlying C array.
@@ -86,7 +102,7 @@ namespace Util
       void allocate(int capacity);
 
       /**
-      * Dellocate the underlying C array.
+      * Deallocate the underlying C array.
       *
       * \throw Exception if the DArray is not allocated
       */
@@ -95,11 +111,11 @@ namespace Util
       /**
       * Reallocate the underlying C array and copy to new location.
       *
-      * The array is reallocated and copied to a new location if the new 
-      * capacity, given by the capacity parameter, is greater than the 
-      * existing array capacity. Nothing is done if the new and old 
+      * The array is reallocated and copied to a new location if the new
+      * capacity, given by the capacity parameter, is greater than the
+      * existing array capacity. Nothing is done if the new and old
       * capacities are equal. An Exception is thrown if the new capacity
-      * is less than the old capacity. 
+      * is less than the old capacity.
       *
       * \param capacity  number of elements for which to allocate space
       */
@@ -126,7 +142,16 @@ namespace Util
 
    };
 
-   // Member function definitions
+   // Inline member function definition
+
+   /*
+   * Return true iff the data pointer is non-null, false otherwise.
+   */
+   template <typename Data> inline
+   bool DArray<Data>::isAllocated() const
+   {  return (bool)data_; }
+
+   // Non-inline member function definitions
 
    /*
    * Default constructor.
@@ -198,12 +223,38 @@ namespace Util
          allocate(other.capacity());
       }
 
-      // Require equal capacities 
+      // Require equal capacities
       if (capacity_ != other.capacity_) {
          UTIL_THROW("Cannot assign DArrays of unequal capacity");
       }
 
       // Copy all elements
+      for (int i = 0; i < capacity_; ++i) {
+         data_[i] = other[i];
+      }
+
+      return *this;
+   }
+
+   /*
+   * Assignment from an Array<Data> (deep copy).
+   */
+   template <typename Data>
+   DArray<Data>& DArray<Data>::operator = (Array<Data> const & other)
+   {
+      // Check for self assignment
+      if (dynamic_cast< Array<Data>* >(this) == &other) return *this;
+
+      // Precondition - other RHS array must be allocated
+      UTIL_CHECK(other.capacity() > 0);
+
+      // If this LHS array is not allocated, then allocate
+      if (!isAllocated()) {
+         allocate(other.capacity());
+      }
+
+      // Copy elements
+      UTIL_CHECK(capacity_ == other.capacity());
       for (int i = 0; i < capacity_; ++i) {
          data_[i] = other[i];
       }
@@ -256,13 +307,6 @@ namespace Util
       }
       capacity_ = capacity;
    }
-
-   /*
-   * Return true if the DArray has been allocated, false otherwise.
-   */
-   template <typename Data>
-   inline bool DArray<Data>::isAllocated() const
-   {  return (bool)data_; }
 
    /*
    * Serialize a DArray to/from an Archive.

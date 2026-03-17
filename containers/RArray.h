@@ -22,13 +22,8 @@ namespace Util
    * associate() method. The RArray and its target array then wrap 
    * the same underlying C array, and so access the same data. The
    * associate() method simply copies the address and capacity of 
-   * a C array. An RArray can be associated only once, 
-   * after which it can be safely used as an alias for its target.
-   *
-   * An RArray can only be associated with a DArray after the target
-   * DArray has been allocated. Because a DArray can be allocated 
-   * only once, this association cannot be corrupted by re-allocation 
-   * or re-sizing of the target DArray. 
+   * a C array. An RArray can be associated only once, after which it
+   * can be used as an alias for its target.
    *
    * An RArray can be created from another RArray only after the
    * target RArray has already been associated with some other Array.
@@ -46,9 +41,6 @@ namespace Util
    class RArray : public Array<Data>
    { 
 
-      using Array<Data>::data_;
-      using Array<Data>::capacity_;
-   
    public: 
    
       /**
@@ -68,6 +60,8 @@ namespace Util
       RArray(RArray<Data> const & other) : 
          Array<Data>()
       {
+         UTIL_CHECK(other.data_);
+         UTIL_CHECK(other.capacity > 0);
          data_     = other.data_;
          capacity_ = other.capacity_;
       }
@@ -89,7 +83,7 @@ namespace Util
             UTIL_THROW("Unallocated target array: Capacity_ <= 0");
          }
          data_     =  &array[0];
-         capacity_ =   array.capacity();
+         capacity_ =  array.capacity();
       }
  
       /**
@@ -109,6 +103,9 @@ namespace Util
  
    private:
  
+      using Array<Data>::data_;
+      using Array<Data>::capacity_;
+   
       /**
       * Assignment, private and not implemented to prohibit operation.
       */
