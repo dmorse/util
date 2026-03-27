@@ -206,7 +206,7 @@ namespace Util
       return *this;
    }
 
-   // Pack function templates and template instantiations
+   // Pack function templates and template specializations
 
    /*
    * Save a single object of type T.

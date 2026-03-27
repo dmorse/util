@@ -23,8 +23,8 @@ namespace Util
    *
    * The Array class template is designed to be used as only as a base 
    * class, and does not provide functions for memory management. 
-   * Instantiations of the DArray, RArray, and DRArray class templates
-   * are derived from corresponding instantiations of the Array template.
+   * Specializations of the DArray, RArray, and DRArray class templates
+   * are derived from corresponding specializations of the Array template.
    * The Array template has a protected constructor and a protected
    * destructor. As a result, an Array can only be created as part of 
    * an instance of a derived class, and cannot be destroyed via a base 
