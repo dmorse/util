@@ -41,37 +41,34 @@ namespace Util
       GArray();
 
       /**
-      * Copy constructor, copy pointers.
+      * Copy constructor.
       *
-      * Allocates new C-array and copies pointers to Data objects.
+      * Performs a deep copy.
       *
-      *\param other the GArray to be copied.
+      *\param other  the GArray to be copied
       */
       GArray(GArray<Data> const & other);
    
       /**
       * Assignment, element by element.
       *
-      * \param other the rhs GArray 
+      * \param other  the RHS GArray 
       */
       GArray<Data>& operator = (GArray<Data> const & other);
 
       /**
       * Destructor.
-      *
-      * Deletes array of pointers, if allocated previously.
-      * Does not delete the associated Data objects.
       */
       virtual ~GArray();
 
       /**
       * Reserve memory for specified number of elements.
       *
-      * Resizes and copies array if requested capacity is less than the
-      * current capacity. Does nothing if requested capacity is greater
+      * Resizes and copies array if requested capacity is greater than 
+      * the current capacity. Does nothing if requested capacity is less
       * than current capacity.
       *
-      * \param capacity number of elements for which to reserve space.
+      * \param capacity number of elements for which to reserve space
       */
       void reserve(int capacity);
 
@@ -308,7 +305,7 @@ namespace Util
       assert(size_ <= capacity_);
       if (size_ == capacity_) {
          if (capacity_ == 0) {
-            assert(data_ == 0); 
+            UTIL_CHECK(data_ == 0); 
             Memory::allocate<Data>(data_, 64);
             capacity_ = 64;
          } else {
@@ -338,10 +335,8 @@ namespace Util
    template <typename Data>
    void GArray<Data>::resize(int n) 
    {
-      if (n < 0) {
-         UTIL_THROW("Cannot resize to n < 0");
-      }
-      assert(capacity_ >= size_);
+      UTIL_CHECK(n > 0);
+      UTIL_CHECK(capacity_ >= size_);
       if (n > size_) {
          if (n > capacity_) {
             int m = capacity_;

@@ -117,7 +117,7 @@ namespace Util
       /**
       * Destructor (protected to prevent direct destruction).
       */
-      ~Array() = default;
+      ~Array();
 
    };
 
@@ -128,6 +128,13 @@ namespace Util
    Array<Data>::Array()
     : data_(nullptr),
       capacity_(0)
+   {}
+
+   /*
+   * Destructor (do-hothing)
+   */
+   template <typename Data>
+   Array<Data>::~Array()
    {}
 
    /*

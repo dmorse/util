@@ -111,7 +111,7 @@ namespace Util
    
    private: 
 
-      /// Total amount of memory allocated, in bytes. 
+      /// Total amount of memory currently allocated, in bytes. 
       static int total_;
    
       /// Maximum amount of memory allocated, in bytes. 
@@ -131,16 +131,17 @@ namespace Util
    template <typename Data>
    void Memory::allocate(Data*& ptr, size_t size)
    {
-     if (ptr) {
+      if (ptr) {
          UTIL_THROW("Attempt to allocate to non-null pointer");
       }
       try {
          ptr = new Data[size];
-         total_ += (size*sizeof(Data));
+         UTIL_CHECK(ptr);
+         total_ += size * sizeof(Data);
          ++nAllocate_;
          if (total_ > max_) max_ = total_;
       } catch (std::bad_alloc&) {
-         std::cout << "Allocation error" << std::endl;
+         std::cout << "Allocation error in Util::Memory" << std::endl;
          throw;
       }
    }
@@ -157,7 +158,9 @@ namespace Util
 
       delete [] ptr;
       ptr = 0;
-      total_ -= size*sizeof(Data);
+      size_t change = size * sizeof(Data);
+      UTIL_CHECK(total_ >= change);
+      total_ -= change;
       ++nDeallocate_;
    }
 
