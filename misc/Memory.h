@@ -158,7 +158,7 @@ namespace Util
 
       delete [] ptr;
       ptr = 0;
-      size_t change = size * sizeof(Data);
+      int change = size * sizeof(Data);
       UTIL_CHECK(total_ >= change);
       total_ -= change;
       ++nDeallocate_;
