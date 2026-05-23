@@ -195,7 +195,7 @@ namespace Util
       // Nullify any unused elements
       if (Capacity > size_) {
          for (i = size_; i < Capacity; ++i) {
-            ptrs_[i] = 0;
+            ptrs_[i] = nullptr;
          }
       }
 
@@ -226,7 +226,7 @@ namespace Util
       // Nullify any unused elements
       if (Capacity > size_) {
          for (int i = size_; i < Capacity; ++i) {
-            ptrs_[i] = 0;
+            ptrs_[i] = nullptr;
          }
       }
 

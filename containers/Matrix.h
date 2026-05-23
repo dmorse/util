@@ -117,7 +117,7 @@ namespace Util
    */
    template <typename Data>
    inline Matrix<Data>::Matrix()
-    : data_(0),
+    : data_(nullptr),
       capacity1_(0),
       capacity2_(0)
    {}
@@ -149,7 +149,7 @@ namespace Util
    template <typename Data>
    inline Data const & Matrix<Data>::operator() (int i, int j) const
    {
-      assert(data_ != 0);
+      assert(data_);
       assert(i >= 0);
       assert(i < capacity1_);
       assert(j >= 0);
@@ -163,7 +163,7 @@ namespace Util
    template <typename Data>
    inline Data& Matrix<Data>::operator() (int i, int j)
    {
-      assert(data_ != 0);
+      assert(data_);
       assert(i >= 0);
       assert(i < capacity1_);
       assert(j >= 0);

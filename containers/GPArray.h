@@ -124,10 +124,10 @@ namespace Util
     : PArray<Data>()
    {
       assert(other.capacity_ >= other.size_);
-      if (other.ptrs_ == 0) {
+      if (!other.ptrs_) {
          assert(other.capacity_ == 0);
          assert(other.size_ == 0);
-         ptrs_ = 0;
+         ptrs_ = nullptr;
          capacity_ = 0;
          size_ = 0;
       } else { 
@@ -145,7 +145,7 @@ namespace Util
          // Nullify unused elements of ptrs_ array
          if (capacity_ > size_) {
             for (int i = size_; i < capacity_; ++i) {
-               ptrs_[i] = 0;
+               ptrs_[i] = nullptr;
             }
          }
       }
@@ -189,7 +189,7 @@ namespace Util
       if (capacity <= 0) {
          UTIL_THROW("Cannot reserve with capacity <=0");
       }
-      if (ptrs_ == 0) {
+      if (!ptrs_) {
          assert(capacity_ == 0);
          assert(size_ == 0);
          Memory::allocate<Data*>(ptrs_, capacity);

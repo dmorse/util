@@ -126,7 +126,7 @@ namespace Util
          // Nullify unused elements of ptrs_ array
          if (capacity_ > size_) {
             for (int i = size_; i < capacity_; ++i) {
-               ptrs_[i] = 0;
+               ptrs_[i] = nullptr;
             }
          }
       }
@@ -143,10 +143,10 @@ namespace Util
       if (this == &other) return *this;
 
       // Preconditions
-      if (ptrs_ == 0) {
+      if (!ptrs_) {
          UTIL_THROW("LHS DPArray in assignment is not allocated");
       }
-      if (other.ptrs_ == 0) {
+      if (!other.ptrs_) {
          UTIL_THROW("RHS DPArray in assignment is not allocated");
       }
       if (capacity_ < other.size_) {
@@ -163,7 +163,7 @@ namespace Util
       // Nullify any unused elements
       if (capacity_ > size_) {
          for (i = size_; i < capacity_; ++i) {
-            ptrs_[i] = 0;
+            ptrs_[i] = nullptr;
          }
       }
 
@@ -191,7 +191,7 @@ namespace Util
    void DPArray<Data>::allocate(int capacity) 
    {
       // Preconditions
-      if (!(ptrs_ == 0)) {
+      if (ptrs_) {
          UTIL_THROW("Cannot re-allocate a DPArray");
       }
       if (capacity <= 0) {

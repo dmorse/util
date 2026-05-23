@@ -114,7 +114,7 @@ namespace Util
    */
    template <typename Data>
    inline PArray<Data>::PArray()
-    : ptrs_(0),
+    : ptrs_(nullptr),
       capacity_(0),
       size_(0)
    {}

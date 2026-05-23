@@ -76,13 +76,13 @@ namespace Util
       */
       void associate(Array<Data> &array) 
       {
-         if (data_ != 0) {
+         if (data_) {
             UTIL_THROW("Attempt to re-associate an RArray");
          }
          if (array.capacity() <= 0) {
             UTIL_THROW("Unallocated target array: Capacity_ <= 0");
          }
-         data_     =  &array[0];
+         data_  =  &array[0];
          capacity_ =  array.capacity();
       }
  
@@ -94,10 +94,10 @@ namespace Util
       */
       void associate(Data* array, int capacity) 
       {
-         if (data_ != 0) {
+         if (data_) {
             UTIL_THROW("Attempt to re-associate an RArray");
          }
-         data_     = array;
+         data_ = array;
          capacity_ = capacity;
       }
  

@@ -103,7 +103,7 @@ namespace Util
      : Matrix<Data>()
    {
       // Precondition
-      if (other.data_ == 0) {
+      if (!other.data_) {
          UTIL_THROW("Other DMatrix must be allocated");
       }
 
@@ -124,11 +124,11 @@ namespace Util
       if (this == &other) return *this;
 
       // Precondition
-      if (other.data_ == 0) {
+      if (!other.data_) {
          UTIL_THROW("RHS DMatrix must be allocated before assignment");
       }
 
-      if (data_ == 0) {
+      if (!data_) {
          // If this DMatrix if not allocated, allocate now.
          allocate(other.capacity1_, other.capacity2_);
       } else {
@@ -172,7 +172,7 @@ namespace Util
       // Preconditions
       if (capacity1 <= 0) UTIL_THROW("Capacity1 must be positive");
       if (capacity2 <= 0) UTIL_THROW("Capacity2 must be positive");
-      if (data_  != 0) UTIL_THROW("Attempt to re-allocate a Matrix");
+      if (data_) UTIL_THROW("Attempt to re-allocate a Matrix");
 
       Memory::allocate<Data>(data_, capacity1*capacity2);
       capacity1_ = capacity1;
@@ -200,7 +200,7 @@ namespace Util
    */
    template <typename Data>
    inline bool DMatrix<Data>::isAllocated() const 
-   {  return !(data_ == 0); }
+   {  return (bool)data_; }
 
    /*
    * Serialize a DMatrix to/from an Archive.

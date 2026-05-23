@@ -168,7 +168,7 @@ namespace Util
    */
    template <typename Data>
    DSArray<Data>::DSArray()
-    : data_(0),
+    : data_(nullptr),
       size_(0),
       capacity_(0)
    {}
@@ -178,7 +178,7 @@ namespace Util
    */
    template <typename Data>
    DSArray<Data>::DSArray(DSArray< Data > const & other)
-    : data_(0),
+    : data_(nullptr),
       size_(0),
       capacity_(0)
    {

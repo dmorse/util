@@ -215,7 +215,7 @@ namespace Util
    */
    template <typename Data>
    inline GridArray<Data>::GridArray()
-    : data_(0),
+    : data_(nullptr),
       offsets_(),
       dimensions_(),
       size_(0)
@@ -240,13 +240,13 @@ namespace Util
    */
    template <typename Data>
    GridArray<Data>::GridArray(GridArray<Data> const & other)
-    : data_(0),
+    : data_(nullptr),
       offsets_(),
       dimensions_(),
       size_(0)
    {
       // Precondition
-      if (other.data_ == 0) {
+      if (!other.data_) {
          UTIL_THROW("Other GridArray must be allocated");
       }
       if (isAllocated()) {
@@ -278,7 +278,7 @@ namespace Util
       }
 
       // Precondition
-      if (other.data_ == 0) {
+      if (!other.data_) {
          UTIL_THROW("Other GridArray must be allocated before assignment");
       }
 
@@ -517,7 +517,7 @@ namespace Util
    */
    template <typename Data>
    inline bool GridArray<Data>::isAllocated() const
-   {  return (bool)(data_ != 0); }
+   {  return (bool)data_; }
 
 }
 #endif

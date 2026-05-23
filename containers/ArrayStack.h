@@ -128,7 +128,7 @@ namespace Util
    */
    template <typename Data>
    ArrayStack<Data>::ArrayStack()
-    : ptrs_(0),
+    : ptrs_(nullptr),
       capacity_(0),
       size_(0)
    {}
@@ -162,7 +162,7 @@ namespace Util
 
       // Nullify all Data* pointer elements
       for (int i = 0; i < capacity_; ++i) {
-         ptrs_[i] =  0;
+         ptrs_[i] =  nullptr;
       }
    }
 
@@ -203,7 +203,7 @@ namespace Util
          UTIL_THROW("Attempt to pop from empty stack");
       }
       Data *ptr = ptrs_[size_-1];
-      ptrs_[size_-1] = 0;
+      ptrs_[size_-1] = nullptr;
       --size_;
       return *ptr;
    }
@@ -238,15 +238,15 @@ namespace Util
          UTIL_THROW("size_ > capacity_");
       }
 
-      if (ptrs_ != 0) {
+      if (ptrs_) {
          int i;
          for (i = 0; i < size_ ; ++i) {
-            if (ptrs_[i] == 0) {
+            if (!ptrs_[i]) {
                UTIL_THROW("Null ptrs_[i] for i < size_");
             }
          }
          for (i = size_; i < capacity_ ; ++i) {
-            if (ptrs_[i] != 0) {
+            if (ptrs_[i]) {
                UTIL_THROW("Non-null ptrs_[i] for i >= size_");
             }
          }
@@ -263,7 +263,7 @@ namespace Util
    */
    template <typename Data>
    inline bool ArrayStack<Data>::isAllocated() const
-   {  return (ptrs_ != 0); }
+   {  return (bool) ptrs_; }
 
 }
 #endif

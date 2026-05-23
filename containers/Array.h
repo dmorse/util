@@ -150,7 +150,7 @@ namespace Util
    template <typename Data>
    inline void Array<Data>::begin(ArrayIterator<Data> &iterator)
    {
-      assert(data_ != 0);
+      assert(data_);
       assert(capacity_ > 0);
       iterator.setCurrent(data_);
       iterator.setEnd(data_ + capacity_);
@@ -162,7 +162,7 @@ namespace Util
    template <typename Data>
    inline void Array<Data>::begin(ConstArrayIterator<Data> &iterator) const
    {
-      assert(data_ != 0);
+      assert(data_);
       assert(capacity_ > 0);
       iterator.setCurrent(data_);
       iterator.setEnd(data_ + capacity_);
@@ -174,7 +174,7 @@ namespace Util
    template <typename Data>
    inline Data& Array<Data>::operator [] (int i)
    {
-      assert(data_ != 0);
+      assert(data_);
       assert(i >= 0);
       assert(i < capacity_);
       return *(data_ + i);
@@ -186,7 +186,7 @@ namespace Util
    template <typename Data>
    inline Data const & Array<Data>::operator [] (int i) const
    {
-      assert(data_ != 0);
+      assert(data_);
       assert(i >= 0 );
       assert(i < capacity_);
       return *(data_ + i);

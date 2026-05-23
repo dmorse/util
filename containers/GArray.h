@@ -186,7 +186,7 @@ namespace Util
    */
    template <typename Data>
    GArray<Data>::GArray()
-    : data_(0),
+    : data_(nullptr),
       size_(0),
       capacity_(0)
    {}
@@ -198,7 +198,7 @@ namespace Util
    */
    template <typename Data>
    GArray<Data>::GArray(GArray<Data> const & other) 
-    : data_(0),
+    : data_(nullptr),
       size_(0),
       capacity_(0)
    {
@@ -263,7 +263,7 @@ namespace Util
       } else if (capacity > capacity_) {
          assert(capacity_ > 0);
          assert(capacity_ >= size_);
-         Data* newPtr = 0;
+         Data* newPtr = nullptr;
          Memory::allocate<Data>(newPtr, capacity);
          if (size_ > 0) {
             for (int i = 0; i < size_; ++i) {
@@ -305,13 +305,13 @@ namespace Util
       assert(size_ <= capacity_);
       if (size_ == capacity_) {
          if (capacity_ == 0) {
-            UTIL_CHECK(data_ == 0); 
+            UTIL_CHECK(!data_); 
             Memory::allocate<Data>(data_, 64);
             capacity_ = 64;
          } else {
             assert(data_); 
             assert(capacity_ > 0); 
-            Data* newPtr = 0;
+            Data* newPtr = nullptr;
             Memory::allocate<Data>(newPtr, 2*capacity_);
             if (size_ > 0) {
                for (int i = 0; i < size_; ++i) {
@@ -347,7 +347,7 @@ namespace Util
                   m *= 2;
                }
             }
-            Data* newPtr = 0;
+            Data* newPtr = nullptr;
             Memory::allocate<Data>(newPtr, m);
             if (data_) {
                assert(capacity_ > 0);
