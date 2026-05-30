@@ -15,7 +15,7 @@ private:
 
    typedef double Data;
 
-   int memory_;
+   long int memory_;
 
 public:
 
@@ -61,13 +61,14 @@ void DRArrayTest::testAllocateConstructor()
       TEST_ASSERT(v.isAllocated());
       TEST_ASSERT(v.isOwner());
       TEST_ASSERT(!v.isAssociated());
-      TEST_ASSERT((int)Memory::total() == memory_ + capacity*sizeof(Data));
+      long int tot = Memory::total();
+      TEST_ASSERT(tot == (long int)(memory_ + capacity*sizeof(Data)));
 
       // Deallocate array
       v.deallocate();
       TEST_ASSERT(v.capacity() == 0);
       TEST_ASSERT(!v.isAllocated());
-      TEST_ASSERT((int)Memory::total() == memory_);
+      TEST_ASSERT(Memory::total() == memory_);
 
    }
    TEST_ASSERT(Memory::total() == memory_);
@@ -86,7 +87,8 @@ void DRArrayTest::testAllocate()
       TEST_ASSERT(v.isAllocated());
       TEST_ASSERT(v.isOwner());
       TEST_ASSERT(!v.isAssociated());
-      TEST_ASSERT((int)Memory::total() == memory_ + capacity*sizeof(Data));
+      long int tot = Memory::total();
+      TEST_ASSERT(tot == (long int)(memory_ + capacity*sizeof(Data)));
 
       // Deallocate array
       v.deallocate();
@@ -111,7 +113,8 @@ void DRArrayTest::testSubscript()
       TEST_ASSERT(v[0] == 10.0);
       TEST_ASSERT(v[1] == 20.0);
       TEST_ASSERT(v[2] == 30.0);
-      TEST_ASSERT((int)Memory::total() == memory_ + capacity*sizeof(Data));
+      long int tot = Memory::total();
+      TEST_ASSERT(tot == (long int)(memory_ + capacity*sizeof(Data)));
    }
    TEST_ASSERT(Memory::total() == memory_);
 }
@@ -145,7 +148,8 @@ void DRArrayTest::testAssociate()
       u[1] = 25.0;
       TEST_ASSERT(eq(v[1], 20.0));
       TEST_ASSERT(eq(v[2], 25.0));
-      TEST_ASSERT((int)Memory::total() == memory_ + capacity*sizeof(Data));
+      long int tot = Memory::total();
+      TEST_ASSERT(tot == (long int)(memory_ + capacity*sizeof(Data)));
 
       // v.deallocate(); // Intentional error
 
@@ -180,7 +184,8 @@ void DRArrayTest::testSubscriptCmplx()
       TEST_ASSERT(eq(v[0].real(), 10.0));
       TEST_ASSERT(eq(v[1].imag(), 20.1));
       TEST_ASSERT(eq(v[2].real(), 30.0));
-      TEST_ASSERT((int)Memory::total() == capacity*sizeof(std::complex<Data>));
+      long int tot = Memory::total();
+      TEST_ASSERT(tot == (long int)(capacity*sizeof(std::complex<Data>)));
    }
    TEST_ASSERT(Memory::total() == memory_);
 }
@@ -199,7 +204,8 @@ void DRArrayTest::testCopyConstructor()
       for (int i=0; i < capacity; i++ ) {
          v[i] = (i+1)*10.0 ;
       }
-      TEST_ASSERT((int)Memory::total() == memory_ + capacity*sizeof(Data));
+      long int tot = Memory::total();
+      TEST_ASSERT(tot == (long int)(memory_ + capacity*sizeof(Data)));
 
       DRArray<Data> u(v);
       TEST_ASSERT(u.capacity() == capacity);
@@ -216,12 +222,14 @@ void DRArrayTest::testCopyConstructor()
       u[1] = 25.0;
       TEST_ASSERT(eq(u[1], 25.0));
       TEST_ASSERT(eq(v[1], 20.0));
-      TEST_ASSERT((int)Memory::total() == memory_ + 2*capacity*sizeof(Data));
+      tot = Memory::total();
+      TEST_ASSERT(tot == (long int)(memory_ + 2*capacity*sizeof(Data)));
 
       u.deallocate();
-      TEST_ASSERT((int)Memory::total() == memory_ + capacity*sizeof(Data));
+      tot = Memory::total();
+      TEST_ASSERT(tot == (long int)(memory_ + capacity*sizeof(Data)));
    }
-   TEST_ASSERT(Memory::total() == memory_);
+   TEST_ASSERT(Memory::total() == (long int)memory_);
 }
 
 void DRArrayTest::testCopyConstructorCmplx()
@@ -251,7 +259,8 @@ void DRArrayTest::testCopyConstructorCmplx()
       TEST_ASSERT(real(u[0]) == 10.0 );
       TEST_ASSERT(imag(u[1]) == 20.1 );
       TEST_ASSERT(real(u[2]) == 30 );
-      TEST_ASSERT((int)Memory::total() == 2*capacity*sizeof(std::complex<Data>));
+      long int tot = Memory::total();
+      TEST_ASSERT(tot == (long int)(2*capacity*sizeof(std::complex<Data>)));
    }
    TEST_ASSERT(Memory::total() == memory_);
 }
@@ -352,7 +361,8 @@ void DRArrayTest::testIterator()
       ++it;
       TEST_ASSERT(it.isEnd());
       TEST_ASSERT(!it.notEnd());
-      TEST_ASSERT((int)Memory::total() == capacity*sizeof(Data));
+      long int tot = Memory::total();
+      TEST_ASSERT(tot == (long int)(capacity * sizeof(Data)));
    }
    TEST_ASSERT(Memory::total() == memory_);
 }

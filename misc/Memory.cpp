@@ -11,16 +11,16 @@ namespace Util
 {
 
    /// Number of calls to allocate.
-   int Memory::nAllocate_ = 0;
+   long int Memory::nAllocate_ = 0;
 
    /// Number of calls to de-allocate.
-   int Memory::nDeallocate_ = 0;
+   long int Memory::nDeallocate_ = 0;
 
    /// Total amount of memory allocated, in bytes.
-   int Memory::total_ = 0;
+   long int Memory::total_ = 0;
 
    /// Maximum of total over course of simulation.
-   int Memory::max_ = 0;
+   long int Memory::max_ = 0;
 
    /*
    * Call this to ensure compilation of this file. 
@@ -31,33 +31,37 @@ namespace Util
    /*
    * Return number of calls to allocate.
    */
-   int Memory::nAllocate()
+   long int Memory::nAllocate()
    {  return nAllocate_; }
 
    /*
    * Return number of calls to deallocate.
    */
-   int Memory::nDeallocate()
+   long int Memory::nDeallocate()
    {  return nDeallocate_; }
 
    /*
    * Return total amount of memory allocated thus far.
    */
-   int Memory::total()
+   long int Memory::total()
    {  return total_; }
 
    /*
    * Return maximum amount of allocated memory thus far.
    */
-   int Memory::max()
+   long int Memory::max()
    {  return max_; }
 
    #ifdef UTIL_MPI
-   int Memory::max(MPI::Intracomm& communicator)
+   /*
+   * Return maximum amount of memory allocated on any one processor.
+   */
+   long int Memory::max(MPI::Intracomm& communicator)
    { 
-      int maxGlobal;
-      int maxLocal = max_;
-      communicator.Allreduce(&maxLocal, &maxGlobal, 1, MPI::INT, MPI::MAX);
+      long int maxGlobal;
+      long int maxLocal = max_;
+      communicator.Allreduce(&maxLocal, &maxGlobal, 1, 
+		             MPI::LONG_INT, MPI::MAX);
       return maxGlobal;
    }
    #endif

@@ -44,10 +44,14 @@ namespace Util
       /**
       * Deallocate a C++ array.
       *
-      * Uses free to deallocate a Data array of size elements.
+      * Uses free to deallocate a Data array of size elements that was
+      * allocated by the Memory::allocate member function. On input, ptr
+      * must be the pointer to an array of elements of type Data, and 
+      * size must be the number of elements. On output, the array is 
+      * deallocated and ptr is set to nullptr.
       * 
-      * \param ptr reference to pointer (intput, ptr = 0 on output)
-      * \param size number of elements in existing array
+      * \param ptr  reference to pointer (ptr is set null on output)
+      * \param size  number of elements in existing array
       */
       template <typename Data>
       static void deallocate(Data*& ptr, size_t size);
@@ -55,12 +59,12 @@ namespace Util
       /**
       * Reallocate a C++ array.
       *
-      * This function calls allocate to allocate a new array, copies 
-      * all existing elements and deallocates old and calls deallocate 
-      * to free the old array. On outputs, ptr is the address of the
-      * new array.
+      * This function calls allocate to allocate a new array of size
+      * newSize. If oldSize > 0, it copies all existing elements and
+      * deallocates the old array. On return, ptr is the address of 
+      * the new array.
       *
-      * Precondition: On input, newSize > oldSize.
+      * Precondition: On input, newSize > 0 and newSize > oldSize.
       *
       * \param ptr reference to pointer (input/output)
       * \param oldSize number of elements in existing array
@@ -75,7 +79,7 @@ namespace Util
       * Each call to reallocate() also increments nAllocate(), because 
       * allocate() is called internally. 
       */
-      static int nAllocate();
+      static long int nAllocate();
 
       /**
       * Return number of times deallocate() was called.
@@ -83,25 +87,25 @@ namespace Util
       * Each call to reallocate() also increments nDeallocate(), because 
       * deallocate() is called internally. 
       */
-      static int nDeallocate();
+      static long int nDeallocate();
 
       /**
       * Return total amount of memory currently allocated.
       */
-      static int total();
+      static long int total();
 
       /**
       * Return the maximum amount of allocated heap memory thus far.
       *
       * This function returns the temporal maximum of total().
       */
-      static int max();
+      static long int max();
 
       #ifdef UTIL_MPI
       /**
       * Return max for any processor in communicator.
       */
-      static int max(MPI::Intracomm& communicator);
+      static long int max(MPI::Intracomm& communicator);
       #endif
 
       /**
@@ -112,16 +116,16 @@ namespace Util
    private: 
 
       /// Total amount of memory currently allocated, in bytes. 
-      static int total_;
+      static long int total_;
    
       /// Maximum amount of memory allocated, in bytes. 
-      static int max_;
+      static long int max_;
    
       /// Number of calls to allocate.
-      static int nAllocate_;
+      static long int nAllocate_;
    
       /// Number of calls to deallocate.
-      static int nDeallocate_;
+      static long int nDeallocate_;
    
    };
    
@@ -147,7 +151,7 @@ namespace Util
    }
 
    /*
-   * De-allocate a C array.
+   * De-allocate a C array that was allocated with Memory::allocate.
    */
    template <typename Data>
    void Memory::deallocate(Data*& ptr, size_t size)
@@ -157,15 +161,15 @@ namespace Util
       UTIL_CHECK(size > 0);
 
       delete [] ptr;
-      ptr = 0;
-      int change = size * sizeof(Data);
+      ptr = nullptr;
+      long int change = size * sizeof(Data);
       UTIL_CHECK(total_ >= change);
       total_ -= change;
       ++nDeallocate_;
    }
 
    /*
-   * Re-allocate a C array (allocate and copy).
+   * Re-allocate a C array (allocate new memory and copy).
    */
    template <typename Data>
    void Memory::reallocate(Data*& ptr, size_t oldSize, size_t newSize)
@@ -173,15 +177,14 @@ namespace Util
       UTIL_CHECK(newSize > 0);
       UTIL_CHECK(newSize > oldSize);
 
-      Data* newPtr = 0;
+      Data* newPtr = nullptr;
       allocate(newPtr, newSize);
       if (oldSize > 0) {
          UTIL_CHECK(ptr);
          for (size_t i = 0; i < oldSize; ++i) {
             newPtr[i] = ptr[i];
          }
-         Data* oldPtr = ptr;
-         deallocate(oldPtr, oldSize);
+         deallocate(ptr, oldSize);
       }
       ptr = newPtr;
    }
