@@ -66,4 +66,13 @@ namespace Util
    }
    #endif
 
+   /*
+   * Clear total and max counters.
+   */
+   void Memory::clearCounters()
+   {
+      total_ = 0;
+      max_ = 0;
+   }
+
 } 

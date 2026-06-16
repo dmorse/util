@@ -303,7 +303,13 @@ namespace Util {
                    << "Error: Destroying a DRArray that is referenced by "
                    << nRef << " other(s)" << std::endl;
             }
-            Memory::deallocate<Data>(data_, capacity_);
+            try {
+               Memory::deallocate<Data>(data_, capacity_);
+            } catch (...) {
+               std::cout 
+                 << std::endl
+                 << "Exception during deallocation in DRArray destructor";
+            }
          }
       }
       data_ = nullptr;

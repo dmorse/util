@@ -20,21 +20,24 @@ namespace Util
    * Provides method to allocate array.
    *
    * The Memory::allocate() method invokes the new operator within a
-   * try-catch block, and keeps track of the total memory allocated via 
+   * try-catch block, and keeps track of the total memory allocated via
    * this class.
    *
    * \ingroup Misc_Module
    */
    class Memory
-   { 
+   {
    public:
 
       /**
       * Allocate a C++ array.
       *
-      * Uses new to allocates a Data array of size elements, assigns ptr 
-      * the address of the first element. 
-      * 
+      * This function calls C++ new operator to allocate an array
+      * containing size elemnents of type Data. It assigns parameter ptr to
+      * the address of the first element, adds size * sizeof(Data) to the
+      * to the current total, and updates the max counter if the resulting
+      * total exceeds the previous maximum.
+      *
       * \param ptr reference to pointer (output)
       * \param size number of elements
       */
@@ -42,27 +45,53 @@ namespace Util
       static void allocate(Data*& ptr, size_t size);
 
       /**
+      * Add size of a newly allocated array in bytes to total.
+      *
+      * This function accounts for the size of an array that was allocated
+      * externally. It adds size * sizeof(Data) to the current counter and
+      * updates max if the resulting total exceeds the previous maximum.
+      *
+      * \param size number of elements
+      */
+      template <typename Data>
+      static void add(size_t size);
+
+      /**
       * Deallocate a C++ array.
       *
-      * Uses free to deallocate a Data array of size elements that was
-      * allocated by the Memory::allocate member function. On input, ptr
-      * must be the pointer to an array of elements of type Data, and 
-      * size must be the number of elements. On output, the array is 
-      * deallocated and ptr is set to nullptr.
-      * 
-      * \param ptr  reference to pointer (ptr is set null on output)
+      * Uses the C++ delete [] operator to deallocate a Data array of size
+      * elements of type Data that was allocated by the Memory::allocate 
+      * member function. On input, ptr must be the pointer to an array of 
+      * elements of type Data, and size must be the number of elements. On 
+      * output, the array is deleted, ptr is set to nullptr, and the total
+      * counter is decremented by size * sizeof(Data).
+      *
+      * \param ptr  reference to pointer (ptr is set to nullptr on output)
       * \param size  number of elements in existing array
       */
       template <typename Data>
       static void deallocate(Data*& ptr, size_t size);
 
       /**
+      * Subtract size of a newly deleted array in bytes from total.
+      *
+      * This function accounts for the size of an array that was deleted
+      * externally. It subtracts size * sizeof(Data) from the current 
+      * counter, or throws an Exception if the resulting total would be
+      * negative.
+      *
+      * \param size number of elements
+      */
+      template <typename Data>
+      static void sub(size_t size);
+
+      /**
       * Reallocate a C++ array.
       *
       * This function calls allocate to allocate a new array of size
-      * newSize. If oldSize > 0, it copies all existing elements and
-      * deallocates the old array. On return, ptr is the address of 
-      * the new array.
+      * newSize. If oldSize > 0, it copies all existing elements, and
+      * then deallocates the old array. On return, ptr is the address 
+      * of the new array.
       *
       * Precondition: On input, newSize > 0 and newSize > oldSize.
       *
@@ -74,18 +103,18 @@ namespace Util
       static void reallocate(Data*& ptr, size_t oldSize, size_t newSize);
 
       /**
-      * Return number of times allocate() was called.
+      * Return number of times reallocate() or add() have been called.
       *
-      * Each call to reallocate() also increments nAllocate(), because 
-      * allocate() is called internally. 
+      * Each call to reallocate() also increments nAllocate(), because
+      * allocate() is called internally.
       */
       static long int nAllocate();
 
       /**
-      * Return number of times deallocate() was called.
+      * Return number of times deallocate() or sub() have been called.
       *
-      * Each call to reallocate() also increments nDeallocate(), because 
-      * deallocate() is called internally. 
+      * Each call to reallocate() also increments nDeallocate(), because
+      * deallocate() is called internally.
       */
       static long int nDeallocate();
 
@@ -109,28 +138,35 @@ namespace Util
       #endif
 
       /**
+      * Reset total and max counters to zero.
+      */
+      static void clearCounters();
+
+      /**
       * Call this just to guarantee initialization of static memory.
       */
       static void initStatic();
-   
-   private: 
 
-      /// Total amount of memory currently allocated, in bytes. 
+   private:
+
+      /// Total amount of memory currently allocated, in bytes.
       static long int total_;
-   
-      /// Maximum amount of memory allocated, in bytes. 
+
+      /// Maximum amount of memory allocated, in bytes.
       static long int max_;
-   
+
       /// Number of calls to allocate.
       static long int nAllocate_;
-   
+
       /// Number of calls to deallocate.
       static long int nDeallocate_;
-   
+
    };
-   
+
+   // Member function template definitions
+
    /*
-   * Allocate a C array.
+   * Allocate an array.
    */
    template <typename Data>
    void Memory::allocate(Data*& ptr, size_t size)
@@ -141,17 +177,26 @@ namespace Util
       try {
          ptr = new Data[size];
          UTIL_CHECK(ptr);
-         total_ += size * sizeof(Data);
-         ++nAllocate_;
-         if (total_ > max_) max_ = total_;
       } catch (std::bad_alloc&) {
          std::cout << "Allocation error in Util::Memory" << std::endl;
          throw;
       }
+      add<Data>(size);
    }
 
    /*
-   * De-allocate a C array that was allocated with Memory::allocate.
+   * Add size of a newly allocated C-Array to the current total.
+   */
+   template <typename Data>
+   void Memory::add(size_t size)
+   {
+      total_ += size * sizeof(Data);
+      ++nAllocate_;
+      if (total_ > max_) max_ = total_;
+   }
+
+   /*
+   * De-allocate an array that was allocated with Memory::allocate.
    */
    template <typename Data>
    void Memory::deallocate(Data*& ptr, size_t size)
@@ -162,6 +207,16 @@ namespace Util
 
       delete [] ptr;
       ptr = nullptr;
+      sub<Data>(size);
+   }
+
+   /*
+   * Subtract size of a newly deleted array from current total.
+   */
+   template <typename Data>
+   void Memory::sub(size_t size)
+   {
+      UTIL_CHECK(size > 0);
       long int change = size * sizeof(Data);
       UTIL_CHECK(total_ >= change);
       total_ -= change;
@@ -169,7 +224,7 @@ namespace Util
    }
 
    /*
-   * Re-allocate a C array (allocate new memory and copy).
+   * Re-allocate an array (allocate new array, copy, and deallocate old).
    */
    template <typename Data>
    void Memory::reallocate(Data*& ptr, size_t oldSize, size_t newSize)
@@ -189,5 +244,5 @@ namespace Util
       ptr = newPtr;
    }
 
-} 
+}
 #endif

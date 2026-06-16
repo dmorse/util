@@ -197,7 +197,12 @@ namespace Util
    DArray<Data>::~DArray()
    {
       if (isAllocated()) {
-         Memory::deallocate<Data>(data_, capacity_);
+         try {
+            Memory::deallocate<Data>(data_, capacity_);
+         } catch (...) {
+            data_ = nullptr;
+            std::cout << "Exception in DArray destructor";
+         }
          capacity_ = 0;
       }
    }
