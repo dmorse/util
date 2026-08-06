@@ -14,5 +14,5 @@ clean:
 .PHONY: all clean
 
 -include $(util_tests_misc_OBJS:.o=.d)
--include $(util_OBJS:.o=.d)
+-include $(util_DEPS)
 

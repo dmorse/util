@@ -22,6 +22,8 @@ util_SRCS=\
      $(addprefix $(SRC_DIR)/, $(util_))
 util_OBJS=\
      $(addprefix $(BLD_DIR)/, $(util_:.cpp=.o))
+util_DEPS=\
+     $(addprefix $(BLD_DIR)/, $(util_:.cpp=.d))
 
 #-----------------------------------------------------------------------
 # Path and rule for libutil.a static library

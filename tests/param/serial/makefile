@@ -26,5 +26,5 @@ clean-outputs:
 	@rm -f $(TEST_DIR)/out/*
 
 -include $(util_tests_param_serial_OBJS:.o=.d)
--include $(util_OBJS:.o=.d)
+-include $(util_DEPS)
 

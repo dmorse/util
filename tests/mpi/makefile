@@ -14,5 +14,5 @@ clean:
 	rm -f $(BLD_DIR)/$(TEST)
 
 -include $(util_tests_mpi_OBJS:.o=.d)
--include $(util_OBJS:.o=.d)
+-include $(util_DEPS)
 

@@ -54,4 +54,4 @@ clean-outputs:
 .SECONDARY:$(util_tests_OBJS)
 
 -include $(util_tests_OBJS:.o=.d)
--include $(util_OBJS:.o=.d)
+-include $(util_DEPS)

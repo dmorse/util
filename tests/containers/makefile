@@ -18,5 +18,5 @@ clean-outputs:
 .PHONY: all clean clean-outputs
 
 -include $(util_tests_containers_OBJS:.o=.d)
--include $(util_OBJS:.o=.d)
+-include $(util_DEPS)
 

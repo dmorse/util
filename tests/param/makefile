@@ -33,5 +33,5 @@ clean-outputs:
 .PHONY: all run quiet clean clean-outputs
 
 -include $(util_tests_param_OBJS:.o=.d)
--include $(util_OBJS:.o=.d)
+-include $(util_DEPS)
 

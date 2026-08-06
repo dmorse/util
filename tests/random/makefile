@@ -16,5 +16,5 @@ clean-outputs:
 	@rm -f out/*
 
 -include $(util_tests_random_OBJS:.o=.d)
--include $(util_OBJS:.o=.d)
+-include $(util_DEPS)
 

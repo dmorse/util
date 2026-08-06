@@ -15,7 +15,7 @@ include $(SRC_DIR)/util/patterns.mk
 all: $(util_OBJS) $(util_LIB)
 
 clean:
-	rm -f $(util_OBJS) $(util_OBJS:.o=.d) $(util_LIB)
+	rm -f $(util_OBJS) $(util_DEPS) $(util_LIB)
 	rm -f */*.o */*/*.o */*/*/*.o
 	rm -f */*.d */*/*.d */*/*/*.d
 	rm -f lib*.a
@@ -30,4 +30,4 @@ test:
 #-----------------------------------------------------------------------
 # Include dependency files
 
--include $(util_OBJS:.o=.d)
+-include $(util_DEPS)
