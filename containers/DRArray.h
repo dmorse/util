@@ -192,15 +192,6 @@ namespace Util {
       void dissociate();
 
       /**
-      * Return true if this container has data, false otherwise.
-      *
-      * A DRArray is considered allocated if it has non-null pointer
-      * to a C array, which may either be an array that it owns or a
-      * slice of an array that is owned by another DRArray object.
-      */
-      bool isAllocated() const;
-
-      /**
       * Does this container own a dynamically allocated C array?
       *
       * If isAllocated() is false, isOwner() is also false.
@@ -216,6 +207,14 @@ namespace Util {
       */
       bool isAssociated() const;
 
+      /*
+      * A DRArray is considered allocated if it has non-null pointer
+      * to a C array, which may either be an array that it owns or a
+      * slice of an array that is owned by another DRArray object.
+      */
+
+      using Array<Data>::isAllocated;
+
    protected:
 
       using Array<Data>::data_;
@@ -230,13 +229,6 @@ namespace Util {
    };
 
    // Inline member function definitions
-
-   /*
-   * Does this DRArray have data (either owned or associated) ?
-   */
-   template <typename Data> inline
-   bool DRArray<Data>::isAllocated() const
-   {  return (bool)data_; }
 
    /*
    * Does this object own data?

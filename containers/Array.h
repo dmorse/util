@@ -52,6 +52,13 @@ namespace Util
       int capacity() const;
 
       /**
+      * Does this array have associated data?
+      *
+      * Return false if the pointer to data is null, true otherwise.
+      */
+      bool isAllocated() const;
+
+      /**
       * Set an iterator to begin this Array.
       *
       * On return, iterator points to the first element of the array, and
@@ -110,7 +117,7 @@ namespace Util
       int capacity_;
 
       /**
-      * Constructor (protected to provent direct instantiation).
+      * Constructor (protected to prevent direct instantiation).
       */
       Array();
 
@@ -124,7 +131,7 @@ namespace Util
    /*
    * Default constructor.
    */
-   template <typename Data>
+   template <typename Data> inline
    Array<Data>::Array()
     : data_(nullptr),
       capacity_(0)
@@ -138,17 +145,24 @@ namespace Util
    {}
 
    /*
-   * Return allocated size.
+   * Return allocated capacity.
    */
-   template <typename Data>
-   inline int Array<Data>::capacity() const
+   template <typename Data> inline 
+   int Array<Data>::capacity() const
    {  return capacity_; }
+
+   /*
+   * Return true iff the data pointer is non-null, false otherwise.
+   */
+   template <typename Data> inline
+   bool Array<Data>::isAllocated() const
+   {  return (bool)data_; }
 
    /*
    * Set an ArrayIterator to begin this Array.
    */
-   template <typename Data>
-   inline void Array<Data>::begin(ArrayIterator<Data> &iterator)
+   template <typename Data> inline 
+   void Array<Data>::begin(ArrayIterator<Data> &iterator)
    {
       assert(data_);
       assert(capacity_ > 0);
@@ -159,8 +173,8 @@ namespace Util
    /*
    * Set a ConstArrayIterator to begin this Array.
    */
-   template <typename Data>
-   inline void Array<Data>::begin(ConstArrayIterator<Data> &iterator) const
+   template <typename Data> inline 
+   void Array<Data>::begin(ConstArrayIterator<Data> &iterator) const
    {
       assert(data_);
       assert(capacity_ > 0);
@@ -171,8 +185,8 @@ namespace Util
    /*
    * Get an element by reference (C-array subscripting)
    */
-   template <typename Data>
-   inline Data& Array<Data>::operator [] (int i)
+   template <typename Data> inline 
+   Data& Array<Data>::operator [] (int i)
    {
       assert(data_);
       assert(i >= 0);
@@ -183,8 +197,8 @@ namespace Util
    /*
    * Get an element by const reference (C-array subscripting)
    */
-   template <typename Data>
-   inline Data const & Array<Data>::operator [] (int i) const
+   template <typename Data> inline 
+   Data const & Array<Data>::operator [] (int i) const
    {
       assert(data_);
       assert(i >= 0 );
@@ -195,15 +209,15 @@ namespace Util
    /*
    * Get a pointer to the underlying C array.
    */
-   template <typename Data>
-   inline Data* Array<Data>::cArray()
+   template <typename Data> inline 
+   Data* Array<Data>::cArray()
    {  return data_; }
 
    /*
    * Get a pointer to const to the underlying C array.
    */
-   template <typename Data>
-   inline Data const * Array<Data>::cArray() const
+   template <typename Data> inline 
+   Data const * Array<Data>::cArray() const
    {  return data_; }
 
 }

@@ -46,7 +46,7 @@ namespace Util
       /**
       * Constructor.
       */
-      RArray() : 
+      RArray() :
          Array<Data>()
       {}
    
@@ -62,10 +62,19 @@ namespace Util
       {
          UTIL_CHECK(other.data_);
          UTIL_CHECK(other.capacity > 0);
-         data_     = other.data_;
+         data_ = other.data_;
          capacity_ = other.capacity_;
       }
   
+      /**
+      * Destructor.
+      */
+      ~RArray() 
+      { 
+         data_ = nullptr;
+         capacity_ = 0; 
+      }
+   
       /**
       * Associate this RArray with an existing Array object.
       *
@@ -82,8 +91,8 @@ namespace Util
          if (array.capacity() <= 0) {
             UTIL_THROW("Unallocated target array: Capacity_ <= 0");
          }
-         data_  =  &array[0];
-         capacity_ =  array.capacity();
+         data_ = &array[0];
+         capacity_ = array.capacity();
       }
  
       /**
@@ -109,7 +118,7 @@ namespace Util
       /**
       * Assignment, private and not implemented to prohibit operation.
       */
-      RArray<Data>& operator=(RArray<Data> const & other);
+      RArray<Data>& operator = (RArray<Data> const & other);
    
    }; // end class RArray
 

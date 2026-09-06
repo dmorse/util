@@ -122,11 +122,6 @@ namespace Util
       void reallocate(int capacity);
 
       /**
-      * Return true if this DArray has been allocated, false otherwise.
-      */
-      bool isAllocated() const;
-
-      /**
       * Serialize a DArray to/from an Archive.
       *
       * \param ar       archive
@@ -135,21 +130,14 @@ namespace Util
       template <class Archive>
       void serialize(Archive& ar, const unsigned int version);
 
+      using Array<Data>::isAllocated;
+
    protected:
 
       using Array<Data>::data_;
       using Array<Data>::capacity_;
 
    };
-
-   // Inline member function definition
-
-   /*
-   * Return true iff the data pointer is non-null, false otherwise.
-   */
-   template <typename Data> inline
-   bool DArray<Data>::isAllocated() const
-   {  return (bool)data_; }
 
    // Non-inline member function definitions
 
@@ -219,9 +207,8 @@ namespace Util
       if (this == &other) return *this;
 
       // Precondition - require that other (RHS) array is allocated
-      if (!other.isAllocated()) {
-         UTIL_THROW("Other DArray must be allocated.");
-      }
+      UTIL_CHECK(other.isAllocated());
+      UTIL_CHECK(other.capacity() > 0);
 
       // Allocate this (LHS) array if necessary
       if (!isAllocated()) {
@@ -229,9 +216,7 @@ namespace Util
       }
 
       // Require equal capacities
-      if (capacity_ != other.capacity_) {
-         UTIL_THROW("Cannot assign DArrays of unequal capacity");
-      }
+      UTIL_CHECK (capacity_ == other.capacity_);
 
       // Copy all elements
       for (int i = 0; i < capacity_; ++i) {
@@ -250,7 +235,8 @@ namespace Util
       // Check for self assignment
       if (dynamic_cast< Array<Data>* >(this) == &other) return *this;
 
-      // Precondition - other RHS array must be allocated
+      // Preconditions - require that other (RHS) array is allocated
+      UTIL_CHECK(other.isAllocated());
       UTIL_CHECK(other.capacity() > 0);
 
       // If this LHS array is not allocated, then allocate
@@ -258,8 +244,10 @@ namespace Util
          allocate(other.capacity());
       }
 
+      // Require equal capacities
+      UTIL_CHECK (capacity_ == other.capacity());
+
       // Copy elements
-      UTIL_CHECK(capacity_ == other.capacity());
       for (int i = 0; i < capacity_; ++i) {
          data_[i] = other[i];
       }
