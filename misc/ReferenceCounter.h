@@ -16,8 +16,8 @@ namespace Util {
    * A ReferenceCounter may be associated with zero or more 
    * CountedReference objects. A class that owns a shareable resource
    * such as a dynamically allocated array, known as a resource owner, may
-   * have a private ReferenceCounter member variable that it uses to keep
-   * track of the number of objects that currently have access to the
+   * have a ReferenceCounter member variable or base class that it uses to 
+   * keep track of the number of objects that currently have access to the
    * resource. A class that can access a reference counted resource that
    * it does not own, known as a resource user, may have a private 
    * CountedReference member variable to keep track of the relationship. 
@@ -29,19 +29,25 @@ namespace Util {
    * associated Referrence counter. The CountedReference class is a 
    * friend of the RefererenceCounter class. This allows a CountedReference
    * to directly increment or decrement the integer counter maintained by 
-   * an associated ReferenceCounter when the association is created or 
+   * an associated ReferenceCounter when such an association is created or 
    * destroyed.
    *
-   * While nRef() returns a nonzero value, the parent resource owner 
-   * class should attempt to prevent actions that de-allocate or otherwise
-   * invalidate a shared resource, and output a warning of such actions
-   * when they cannot be prevented (e.g., during destruction).
+   * The parent resource owner class should check that nRef() > 0 before
+   * attempting to delete or destroy the shared resource, and signal an
+   * error if nRef() > 0. The nature of the response to such an error
+   * (e.g., throwing an Exception, returning an error code, printing an
+   * error message, etc.) depends on the context. 
+   *
+   * Design note: The nRef_ integer counter variable is declared "mutable"
+   * to allow a CountedReference to created and destroyed associations for 
+   * a resource owner that is an instance of a const data type without
+   * it being treated as a change in the state of the resource owner.
    * 
    * \ingroup Misc_Module
    */
    class ReferenceCounter 
    {
-   
+
    public:
   
       /**
@@ -62,7 +68,7 @@ namespace Util {
    private:
   
       /// The number of associated CountedReference objects. 
-      int nRef_;
+      mutable int nRef_;
    
       friend class CountedReference;
    

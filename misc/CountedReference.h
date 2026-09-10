@@ -73,7 +73,7 @@ namespace Util {
       *
       * \param counter  associated ReferenceCounter
       */
-      void associate(ReferenceCounter& counter);
+      void associate(ReferenceCounter const& counter);
    
       /**
       * Destroy an association with a ReferenceCounter.
@@ -90,7 +90,7 @@ namespace Util {
    private:
   
       // Pointer to associated ReferenceCounter, if any. 
-      ReferenceCounter* ptr_;
+      ReferenceCounter const * ptr_;
    
    };
 

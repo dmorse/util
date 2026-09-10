@@ -22,11 +22,12 @@ namespace Util {
    /*
    * Create an association with a ReferenceCounter.
    */
-   void CountedReference::associate(ReferenceCounter& owner)
+   void CountedReference::associate(ReferenceCounter const & owner)
    {
       UTIL_CHECK(!isAssociated());
       ptr_ = &owner;
-      ++(ptr_->nRef_);
+      //++(ptr_->nRef_);
+      ++(owner.nRef_);
    }
 
    /*

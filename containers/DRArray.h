@@ -8,8 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <util/containers/Array.h>        // base class
-#include <util/misc/ReferenceCounter.h>   // member
+#include <util/containers/ArraySource.h>  // base class
 #include <util/misc/CountedReference.h>   // member
 #include <util/global.h>
 
@@ -35,16 +34,16 @@ namespace Util {
    *   so capacity() returns 0, while isAllocated(), isOwner() and
    *   isAssociated() all return false.
    *
-   *   (2) A data owner: In this case, this object owns a C array that
+   *   (2) An array owner: In this case, this object owns a C array that
    *   it is responsible for de-allocating. In this state, capacity()
    *   returns a positive integer, isAllocated() and isOwner() return
    *   true, and isAssociated() returns false.
    *
-   *   (3) A data user: In this case, this object has a pointer to a C
+   *   (3) An array view: In this case, this object has a pointer to a C
    *   array that is owned by a different DRArray object. We describe this
-   *   by saying that this DRArray (the data user) is "associated" with a
-   *   C array that is owned by another object (the data owner), or that
-   *   the data user "references" that array. In this state, capacity()
+   *   by saying that this DRArray (the array view) is "associated" with a
+   *   C array that is owned by another object (the array owner), or that
+   *   the array view "references" that array. In this state, capacity()
    *   returns a positive value, isAllocated() and isAssociated() return
    *   true, and isOwner() returns false.
    *
@@ -63,14 +62,14 @@ namespace Util {
    * Exception to be thrown, if deallocation is attempted by invoking the
    * deallocate() member function, or cause an error message to be written
    * to std::cout, if deallocation is attempted during destruction of the
-   * data owner object. Such references must instead be released by
+   * array owner object. Such references must instead be released by
    * invoking the dissociate() member function of every associated data
-   * user object before the data owner is destroyed.
+   * user object before the array owner is destroyed.
    *
    * \ingroup Array_Module
    */
    template <typename Data>
-   class DRArray : public Array<Data>
+   class DRArray : public ArraySource<Data>
    {
 
    public:
@@ -100,10 +99,10 @@ namespace Util {
       * Destructor.
       *
       * Deletes any C array that is owned by this object, and releases any
-      * association with a C Array that is referred to but not owned by
+      * association with a C array that is referred to but not owned by
       * this object. If this object owns an array that is referred to by
       * one or more other DRArray objects, an error message is written to
-      * std::cout.
+      * std::cout, but no exception is thrown.
       */
       ~DRArray();
 
@@ -217,14 +216,11 @@ namespace Util {
 
    protected:
 
-      using Array<Data>::data_;
-      using Array<Data>::capacity_;
-
-      /// Counter for any containers that reference data owned by this.
-      ReferenceCounter refCounter_;
-
       /// Reference to a container that owns memory referenced by this.
       CountedReference ref_;
+
+      using Array<Data>::data_;
+      using Array<Data>::capacity_;
 
    };
 
@@ -251,7 +247,7 @@ namespace Util {
    */
    template <typename Data>
    DRArray<Data>::DRArray()
-    : Array<Data>()
+    : ArraySource<Data>()
    {}
 
    /*
@@ -259,7 +255,7 @@ namespace Util {
    */
    template <typename Data>
    DRArray<Data>::DRArray(int capacity)
-    : Array<Data>()
+    : ArraySource<Data>()
    {  allocate(capacity); }
 
    /*
@@ -267,7 +263,7 @@ namespace Util {
    */
    template <typename Data>
    DRArray<Data>::DRArray(DRArray<Data> const & other)
-    : Array<Data>()
+    : ArraySource<Data>()
    {
       if (!other.isAllocated()) {
          UTIL_THROW("Other DRArray must be allocated.");
@@ -288,19 +284,25 @@ namespace Util {
          if (ref_.isAssociated()) {
             ref_.dissociate();
          } else {
-            if (refCounter_.hasRefs()) {
-               int nRef = refCounter_.nRef();
+            if (ReferenceCounter::hasRefs()) {
+               int nr = ReferenceCounter::nRef();
                std::cout
-                   << std::endl
-                   << "Error: Destroying a DRArray that is referenced by "
-                   << nRef << " other(s)" << std::endl;
+                  << std::endl
+                  << "Error: Destruction of a DRArray that is referenced"
+                  << "by " << nr << " other(s), thereby creating one or" 
+                  << "more dangling pointers." << std::endl;
+                  << "To fix this, DRArray::dissociate must be called"
+                  << "on all referencing (user) DRArray objects before" 
+                  << "the source DRArray (owner) object is destroyed".
+                  << std::endl;
             }
             try {
                Memory::deallocate<Data>(data_, capacity_);
             } catch (...) {
                std::cout 
                  << std::endl
-                 << "Exception during deallocation in DRArray destructor";
+                 << "Error during array deletion in DRArray destructor"
+                 << std::endl;
             }
          }
       }
@@ -384,33 +386,43 @@ namespace Util {
    {
       UTIL_CHECK(data_);
       UTIL_CHECK(!ref_.isAssociated());
+      if (ReferenceCounter::hasRefs()) {
+         std::cout 
+           << "Error: DRArray::deallocate called on an array that is "
+           << "referenced by one or more counted references, thereby " 
+           << "creating one or more dangling pointers." << std::endl;
+           << "To fix this, DRArray::dissociate must be called on all "
+           << "referencing DRArray objects before the source array is "
+           << "de-allocated or destroyed."
+         UTIL_THROW("Error: Creating dangling reference(s) to a DRArray";)
+      }
       Memory::deallocate<Data>(data_, capacity_);
       capacity_ = 0;
-      UTIL_CHECK(!refCounter_.hasRefs());
+      UTIL_CHECK(!ReferenceCounter::hasRefs());
    }
 
    /*
    * Associate this object with a slice of a different DRArray.
    */
    template <typename Data>
-   void DRArray<Data>::associate(DRArray<Data>& owner,
+   void DRArray<Data>::associate(DRArray<Data>& source,
                                  int beginId, int capacity)
    {
-      UTIL_CHECK(owner.isAllocated());
-      UTIL_CHECK(owner.isOwner());
+      UTIL_CHECK(source.isAllocated());
+      UTIL_CHECK(source.isOwner());
       UTIL_CHECK(beginId >= 0);
       UTIL_CHECK(capacity > 0);
-      UTIL_CHECK(beginId + capacity <= owner.capacity());
+      UTIL_CHECK(beginId + capacity <= source.capacity());
       UTIL_CHECK(!data_);
       UTIL_CHECK(!ref_.isAssociated());
 
       // Copy data pointer and capacity
-      data_ = owner.cArray() + beginId;
+      data_ = source.cArray() + beginId;
       capacity_ = capacity;
 
-      // Associate private ReferencecCounter of the data owner with the
-      // CountedReference ref_ member variable of this data user.
-      ref_.associate(owner.refCounter_);
+      // Associate private ReferencecCounter of the array owner with the
+      // CountedReference ref_ member variable of this array view.
+      ref_.associate(source);
 
       // On exit from CountedReference::associate, the ReferenceCounter
       // is incremented and the CountedReference has a pointer to the
