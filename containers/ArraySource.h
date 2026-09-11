@@ -19,7 +19,7 @@ namespace Util {
    * An ArraySource<Data> is an array that can be referencd by another
    * array or array view, and that implements reference counting. This
    * class is designed to be used as a base class for classes that
-   * implement this behavior. Subclasses must implement allocation,
+   * implement this behavior. Subclasses should implement allocation,
    * de-allocation and and error checking on de-allocation.
    *
    * \ingroup Array_Module

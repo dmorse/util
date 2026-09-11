@@ -214,10 +214,17 @@ namespace Util {
 
       using Array<Data>::isAllocated;
 
-   protected:
+   private:
 
       /// Reference to a container that owns memory referenced by this.
       CountedReference ref_;
+
+      // Prohibit public access to the reference counter.
+      using ReferenceCounter::hasRefs;
+      using ReferenceCounter::nRef;
+
+      // Note: ReferenceCounter::nRef_ is declared mutable, so changes
+      // to this variable should not be visible in the public interface.
 
       using Array<Data>::data_;
       using Array<Data>::capacity_;
@@ -290,10 +297,10 @@ namespace Util {
                   << std::endl
                   << "Error: Destruction of a DRArray that is referenced"
                   << "by " << nr << " other(s), thereby creating one or" 
-                  << "more dangling pointers." << std::endl;
+                  << "more dangling pointers." << std::endl
                   << "To fix this, DRArray::dissociate must be called"
                   << "on all referencing (user) DRArray objects before" 
-                  << "the source DRArray (owner) object is destroyed".
+                  << "the source DRArray (owner) object is destroyed."
                   << std::endl;
             }
             try {
@@ -390,15 +397,14 @@ namespace Util {
          std::cout 
            << "Error: DRArray::deallocate called on an array that is "
            << "referenced by one or more counted references, thereby " 
-           << "creating one or more dangling pointers." << std::endl;
+           << "creating one or more dangling pointers." << std::endl
            << "To fix this, DRArray::dissociate must be called on all "
            << "referencing DRArray objects before the source array is "
-           << "de-allocated or destroyed."
-         UTIL_THROW("Error: Creating dangling reference(s) to a DRArray";)
+           << "de-allocated or destroyed." << std::endl;
+         UTIL_THROW("Error: Creating dangling reference(s) by deallocation");
       }
       Memory::deallocate<Data>(data_, capacity_);
       capacity_ = 0;
-      UTIL_CHECK(!ReferenceCounter::hasRefs());
    }
 
    /*
@@ -420,13 +426,13 @@ namespace Util {
       data_ = source.cArray() + beginId;
       capacity_ = capacity;
 
-      // Associate private ReferencecCounter of the array owner with the
-      // CountedReference ref_ member variable of this array view.
+      // Associate ReferencecCounter base class subobject of source
+      // with the CountedReference ref_ member variable 
       ref_.associate(source);
 
       // On exit from CountedReference::associate, the ReferenceCounter
-      // is incremented and the CountedReference has a pointer to the
-      // ReferenceCounter.
+      // base sub-object of source is incremented and CountedReference 
+      // ref_ holds a pointer to that ReferenceCounter.
    }
 
    /*
@@ -441,6 +447,9 @@ namespace Util {
       data_ = nullptr;
       capacity_ = 0;
       ref_.dissociate();
+
+      // The CountedReference::dissociate() function decrements the
+      // the reference counter of the associated array owner.
    }
 
 } // namespace Util

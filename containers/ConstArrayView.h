@@ -138,6 +138,11 @@ namespace Util {
       */
       bool isAssociated() const;
 
+      /**
+      * Get a pointer to the underlying const C-array.
+      */
+      Data const * cArray() const;
+
    private:
 
       // Read-only pointer to an associated array slice.
@@ -178,6 +183,13 @@ namespace Util {
    template <typename Data> inline
    bool ConstArrayView<Data>::isAssociated() const
    {  return ((bool) data_ && ref_.isAssociated()); }
+
+   /*
+   * Get the pointer to the underlying C array.
+   */
+   template <typename Data> inline
+   Data const * ConstArrayView<Data>::cArray() const
+   {  return data_; }
 
    // Non-inline member functions
 

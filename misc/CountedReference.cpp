@@ -26,7 +26,6 @@ namespace Util {
    {
       UTIL_CHECK(!isAssociated());
       ptr_ = &owner;
-      //++(ptr_->nRef_);
       ++(owner.nRef_);
    }
 

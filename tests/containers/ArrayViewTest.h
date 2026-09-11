@@ -37,13 +37,11 @@ void ArrayViewTest::testConstArrayView()
    {
       // Array source/owner (DRArray)
       DRArray<Data> v(capacity);
-      TEST_ASSERT(v.nRef() == 0);
       TEST_ASSERT(v.capacity() == capacity);
 
       // Array view (const)
       ConstArrayView<Data> u;
       u.associate(v, 1, capacity - 1);
-      TEST_ASSERT(v.nRef() == 1);
       TEST_ASSERT(u.size() == capacity - 1);
       TEST_ASSERT(u.isAssociated());
 
@@ -61,7 +59,6 @@ void ArrayViewTest::testConstArrayView()
       u.dissociate();
       TEST_ASSERT(u.size() == 0);
       TEST_ASSERT(!u.isAssociated());
-      TEST_ASSERT(v.nRef() == 0);
 
       v.deallocate();
       TEST_ASSERT(v.capacity() == 0);
@@ -80,13 +77,11 @@ void ArrayViewTest::testArrayView()
    {
       // Data owner 1 (DRArray)
       DRArray<Data> v(capacity);
-      TEST_ASSERT(v.nRef() == 0);
       TEST_ASSERT(v.capacity() == capacity);
 
       // Array view (non-const)
       ArrayView<Data> u;
       u.associate(v, 1, capacity - 1);
-      TEST_ASSERT(v.nRef() == 1);
       TEST_ASSERT(u.size() == capacity - 1);
       TEST_ASSERT(u.isAssociated());
 
@@ -107,7 +102,6 @@ void ArrayViewTest::testArrayView()
       u.dissociate();
       TEST_ASSERT(u.size() == 0);
       TEST_ASSERT(!u.isAssociated());
-      TEST_ASSERT(v.nRef() == 0);
 
       v.deallocate();
       TEST_ASSERT(v.capacity() == 0);
