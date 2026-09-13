@@ -4,6 +4,7 @@
 #include <test/CompositeTestRunner.h>
 
 #include "DArrayTest.h"
+#include "ConstDArrayTest.h"
 //#include "FArrayTest.h"
 #include "RArrayTest.h"
 #include "DRArrayTest.h"
@@ -33,6 +34,7 @@
 TEST_COMPOSITE_BEGIN(ContainersTestComposite)
 
 TEST_COMPOSITE_ADD_UNIT(DArrayTest)
+TEST_COMPOSITE_ADD_UNIT(ConstDArrayTest)
 //TEST_COMPOSITE_ADD_UNIT(FArrayTest)
 TEST_COMPOSITE_ADD_UNIT(RArrayTest)
 TEST_COMPOSITE_ADD_UNIT(DSArrayTest)
