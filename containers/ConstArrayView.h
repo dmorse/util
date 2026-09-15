@@ -11,10 +11,13 @@
 #include <util/misc/CountedReference.h>   // member
 #include <util/global.h>
 
+// Forward declarations
 namespace Util {
-
-   // Forward Declaration
    template <typename Data> class ArraySource;
+   template <typename Data> class ConstArrayIterator;
+}
+
+namespace Util {
 
    /**
    * A read-only view of a slice of another array.
@@ -26,7 +29,7 @@ namespace Util {
    * A ConstArrayView<Data> object may access a slice of an associated
    * instance of ArraySource<Data>, hereafter referred to as the source
    * array. The address of the beginning of the slice is stored as a
-   * Data const * pointer, thus providing read-only access to that slice.
+   * pointer to const Data, thus providing read-only access to that slice.
    * This pair of data structures implements a reference counting scheme 
    * that signals an error at run time in  response to any action that 
    * would create a dangling reference, i.e., in response to deletion of 
@@ -54,6 +57,9 @@ namespace Util {
       */
       ConstArrayView();
 
+      // Prohibit copy construction
+      ConstArrayView(ConstArrayView<Data> const & other) = delete;
+
       /**
       * Destructor.
       *
@@ -61,9 +67,6 @@ namespace Util {
       * decrements the reference counter of this data source.
       */
       ~ConstArrayView();
-
-      // Prohibit copy construction
-      ConstArrayView(ConstArrayView<Data> const & other) = delete;
 
       // Prohibit assignment
       ConstArrayView<Data>& 
@@ -129,14 +132,14 @@ namespace Util {
       Data const & operator [] (int i) const;
 
       /**
-      * What is the size of the associated array slice?
-      */
-      int size() const;
-
-      /**
       * Is this view associated with a source array?
       */
       bool isAssociated() const;
+
+      /**
+      * What is the size of the associated array slice?
+      */
+      int size() const;
 
       /**
       * Get a pointer to the underlying const C-array.
@@ -190,6 +193,13 @@ namespace Util {
    template <typename Data> inline
    Data const * ConstArrayView<Data>::cArray() const
    {  return data_; }
+
+} // namespace Util
+
+#include "ArraySource.h"
+#include "ConstArrayIterator.h"
+
+namespace Util {
 
    // Non-inline member functions
 

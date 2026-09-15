@@ -45,29 +45,6 @@ namespace Util
 
       ConstArray(ConstArray const & other) = delete;
 
-      /**
-      * Return allocated size of this array.
-      *
-      * \return number of elements allocated in array
-      */
-      int capacity() const;
-
-      /**
-      * Return logical size of this array.
-      *
-      * Currently, capacity() == size(), always.
-      *
-      * \return number of elements in this array
-      */
-      int size() const;
-
-      /**
-      * Does this array have associated data?
-      *
-      * Return false if the pointer to data is null, true otherwise.
-      */
-      bool isAllocated() const;
-
       #if 0
       /**
       * Set an iterator to begin this ConstArray.
@@ -123,6 +100,29 @@ namespace Util
       * Return pointer to const to the underlying C array.
       */
       Data const * cArray() const;
+
+      /**
+      * Does this array have associated data?
+      *
+      * Return false if the pointer to data is null, true otherwise.
+      */
+      bool isAllocated() const;
+
+      /**
+      * Return logical size of this array.
+      *
+      * Currently, capacity() == size(), always.
+      *
+      * \return number of elements in this array
+      */
+      int size() const;
+
+      /**
+      * Return allocated size of this array.
+      *
+      * \return number of elements allocated in array
+      */
+      int capacity() const;
 
    protected:
 

@@ -41,9 +41,11 @@ void ArrayViewTest::testConstArrayView()
 
       // Array view (const)
       ConstArrayView<Data> u;
+      TEST_ASSERT(!u.isAssociated());
+      TEST_ASSERT(u.size() == 0);
       u.associate(v, 1, capacity - 1);
-      TEST_ASSERT(u.size() == capacity - 1);
       TEST_ASSERT(u.isAssociated());
+      TEST_ASSERT(u.size() == capacity - 1);
 
       for (int i=0; i < capacity; i++ ) {
          v[i] = (i+1)*10.0 ;
@@ -59,6 +61,7 @@ void ArrayViewTest::testConstArrayView()
       u.dissociate();
       TEST_ASSERT(u.size() == 0);
       TEST_ASSERT(!u.isAssociated());
+      TEST_ASSERT(u.size() == 0);
 
       v.deallocate();
       TEST_ASSERT(v.capacity() == 0);
@@ -81,6 +84,8 @@ void ArrayViewTest::testArrayView()
 
       // Array view (non-const)
       ArrayView<Data> u;
+      TEST_ASSERT(!u.isAssociated());
+      TEST_ASSERT(u.size() == 0);
       u.associate(v, 1, capacity - 1);
       TEST_ASSERT(u.size() == capacity - 1);
       TEST_ASSERT(u.isAssociated());
@@ -96,12 +101,13 @@ void ArrayViewTest::testArrayView()
 
       u[1] = 25.0;
       TEST_ASSERT(eq(u[1], 25.0));
+      TEST_ASSERT(eq(v[2], 25.0));
 
       //v.deallocate(); // Intentional error
 
       u.dissociate();
-      TEST_ASSERT(u.size() == 0);
       TEST_ASSERT(!u.isAssociated());
+      TEST_ASSERT(u.size() == 0);
 
       v.deallocate();
       TEST_ASSERT(v.capacity() == 0);

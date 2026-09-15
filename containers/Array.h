@@ -18,17 +18,17 @@ namespace Util
    /**
    * Array container class template.
    *
-   * An Array is a sequence that supports random access via an overloaded
-   * operator [], and that wraps a dynamically allocated C array. 
+   * An Array is a sequence container that wraps a dynamically allocated 
+   * C array, and supports random read-write access via an overloaded 
+   * subscript [] operator [].
    *
    * The Array class template is designed to be used as only as a base 
-   * class, and does not provide functions for memory management. 
-   * Specializations of the DArray, RArray, and DRArray class templates
-   * are derived from corresponding specializations of the Array template.
-   * The Array template has a protected constructor and a protected
-   * destructor. As a result, an Array can only be created as part of 
-   * an instance of a derived class, and cannot be destroyed via a base 
-   * class pointer or reference.
+   * class that provides an interface to an array, but does not provide 
+   * functions for memory management.  The Array template has a protected 
+   * constructor and destructor to prevent direct instantiation and
+   * destruction via a base class pointer, but allow creation and 
+   * destruction as a subobject of a derived class. Responsibility for
+   * management of the associated memory block is delegated to subclasses. 
    *
    * When compiled in debug mode (i.e., when NDEBUG is not defined) the
    * subscript operator [] checks the validity of the element index.
@@ -41,32 +41,13 @@ namespace Util
 
    public:
 
-      Array<Data>& operator = (Array<Data> const & other) = delete;
+      // Default constructor and destructor are protected.
+
+      // Prohibit copy construction
       Array(Array const & other) = delete;
 
-      /**
-      * Return allocated size.
-      *
-      * \return number of elements allocated in array
-      */
-      int capacity() const;
-
-      /**
-      * Return logical size of array.
-      *
-      * For a standard dynamically allocated array such as DArray<Data>,
-      * size() == capacity().
-      *
-      * \return number of elements in array
-      */
-      int size() const;
-
-      /**
-      * Does this array have associated data?
-      *
-      * Return false if the pointer to data is null, true otherwise.
-      */
-      bool isAllocated() const;
+      // Prohibit assignment
+      Array<Data>& operator = (Array<Data> const & other) = delete;
 
       /**
       * Set an iterator to begin this Array.
@@ -118,6 +99,29 @@ namespace Util
       */
       Data const * cArray() const;
 
+      /**
+      * Does this array have associated data?
+      *
+      * Return false if the pointer to data is null, true otherwise.
+      */
+      bool isAllocated() const;
+
+      /**
+      * Return logical size of array.
+      *
+      * Currently, size() == capacity(), always.
+      *
+      * \return number of elements in array
+      */
+      int size() const;
+
+      /**
+      * Return allocated size.
+      *
+      * \return number of elements allocated in array
+      */
+      int capacity() const;
+
    protected:
 
       /// Pointer to an array of Data elements.
@@ -141,7 +145,9 @@ namespace Util
    // Member function definitions
 
    /*
-   * Default constructor.
+   * Default constructor (protected).
+   *
+   * Subclasses are responsible for memory management.
    */
    template <typename Data> inline
    Array<Data>::Array()
@@ -150,32 +156,13 @@ namespace Util
    {}
 
    /*
-   * Destructor (do-hothing)
-   */
-   template <typename Data>
-   Array<Data>::~Array()
-   {}
-
-   /*
-   * Return allocated capacity.
-   */
-   template <typename Data> inline 
-   int Array<Data>::capacity() const
-   {  return capacity_; }
-
-   /*
-   * Return logical size of this array.
-   */
-   template <typename Data> inline 
-   int Array<Data>::size() const
-   {  return capacity_; }
-
-   /*
-   * Return true iff the data pointer is non-null, false otherwise.
+   * Destructor (do-nothing, protected).
+   *
+   * Subclasses are responsible for memory management.
    */
    template <typename Data> inline
-   bool Array<Data>::isAllocated() const
-   {  return (bool)data_; }
+   Array<Data>::~Array()
+   {}
 
    /*
    * Set an ArrayIterator to begin this Array.
@@ -238,6 +225,27 @@ namespace Util
    template <typename Data> inline 
    Data const * Array<Data>::cArray() const
    {  return data_; }
+
+   /*
+   * Return true iff the data pointer is non-null, false otherwise.
+   */
+   template <typename Data> inline
+   bool Array<Data>::isAllocated() const
+   {  return (bool)data_; }
+
+   /*
+   * Return logical size of this array.
+   */
+   template <typename Data> inline 
+   int Array<Data>::size() const
+   {  return capacity_; }
+
+   /*
+   * Return allocated capacity.
+   */
+   template <typename Data> inline 
+   int Array<Data>::capacity() const
+   {  return capacity_; }
 
 }
 #endif

@@ -11,26 +11,30 @@
 #include <util/misc/CountedReference.h>   // member
 #include <util/global.h>
 
+// Forward declarations
+namespace Util {
+   template <typename Data> class ArraySource;
+   template <typename Data> class ArrayIterator;
+   template <typename Data> class ConstArrayIterator;
+}
+
 namespace Util {
 
    // Forward Declaration
-   template <typename Data> class ArraySource;
 
    /**
-   * A read-only view of a slice of another array.
+   * A view of an array owned by a different container.
    *
-   * A ArrayView is a sequence that supports read-only random access
-   * via an overloaded operator [], and that wraps an underlying C array
-   * that it does not own.
+   * An ArrayView is a sequence container that supports random read-write
+   * access to an underlying C array that it does not own, via an overloaded
+   * subscript ([]) operator.
    *
-   * A ArrayView<Data> object may access a slice of an associated
+   * An ArrayView<Data> object may access a slice of an associated
    * instance of ArraySource<Data>, hereafter referred to as the source
-   * array. The address of the beginning of the slice is stored as a
-   * Data const * pointer, thus providing read-only access to that slice.
-   * This pair of data structures implements a reference counting scheme 
-   * that signals an error at run time in  response to any action that 
-   * would create a dangling reference, i.e., in response to deletion of 
-   * a source array that is still referred to by one or more views.
+   * array.  This pair of data structures implements a reference counting 
+   * scheme that signals an error at run time in response to any action 
+   * that would create a dangling reference, i.e., in response to deletion 
+   * of a source array that is still referred to by one or more views.
    *
    * When compiled in debug mode (i.e., when NDEBUG is not defined), the
    * subscript operator [] checks the validity of the element index.
@@ -54,6 +58,9 @@ namespace Util {
       */
       ArrayView();
 
+      // Prohibit copy construction
+      ArrayView(ArrayView<Data> const & other) = delete;
+
       /**
       * Destructor.
       *
@@ -62,9 +69,6 @@ namespace Util {
       */
       ~ArrayView();
 
-      // Prohibit copy construction
-      ArrayView(ArrayView<Data> const & other) = delete;
-
       // Prohibit assignment
       ArrayView<Data>& 
       operator = (ArrayView<Data> const & other) = delete;
@@ -72,7 +76,7 @@ namespace Util {
       /**
       * Associate this object with a slice of a source array.
       *
-      * This associates this object a slice of a source array that is an 
+      * Associates this object with a slice of a source array that is an 
       * instance of ArraySource<Data>.
       *
       * \throw Exception if this array is already associated.
@@ -109,7 +113,7 @@ namespace Util {
       void dissociate();
 
       /**
-      * Set a const iterator to begin this Array.
+      * Set a non-const iterator to begin this Array.
       *
       * On return, iterator points to the first element of the array, and
       * the iterator end pointer is set to one past the last element.
@@ -119,14 +123,14 @@ namespace Util {
       void begin(ArrayIterator<Data>& iterator);
 
       /**
-      * Get an element by const reference.
+      * Set a const iterator to begin this Array.
       *
-      * Mimics C-array subscripting.
+      * On return, iterator points to the first element of the array, and
+      * the iterator end pointer is set to one past the last element.
       *
-      * \param i array index
-      * \return const reference to element i
+      * \param iterator ArrayIterator, initialized on output
       */
-      Data const & operator [] (int i) const;
+      void begin(ConstArrayIterator<Data>& iterator) const;
 
       /**
       * Get an element by non-const reference.
@@ -139,14 +143,24 @@ namespace Util {
       Data & operator [] (int i);
 
       /**
-      * What is the size of the associated array slice?
+      * Get an element by const reference.
+      *
+      * Mimics C-array subscripting.
+      *
+      * \param i array index
+      * \return const reference to element i
       */
-      int size() const;
+      Data const & operator [] (int i) const;
 
       /**
       * Is this view associated with a source array?
       */
       bool isAssociated() const;
+
+      /**
+      * What is the size of the associated array slice?
+      */
+      int size() const;
 
    private:
 
@@ -200,6 +214,14 @@ namespace Util {
    template <typename Data> inline
    bool ArrayView<Data>::isAssociated() const
    {  return ((bool) data_ && ref_.isAssociated()); }
+
+} // namespace Util
+
+#include "ArraySource.h"
+#include "ArrayIterator.h"
+#include "ConstArrayIterator.h"
+
+namespace Util {
 
    // Non-inline member functions
 
@@ -276,6 +298,18 @@ namespace Util {
    */
    template <typename Data> 
    void ArrayView<Data>::begin(ArrayIterator<Data> &iterator) 
+   {
+      assert(data_);
+      assert(size_ > 0);
+      iterator.setCurrent(data_);
+      iterator.setEnd(data_ + size_);
+   }
+
+   /*
+   * Set a ConstArrayIterator to begin this Array.
+   */
+   template <typename Data> 
+   void ArrayView<Data>::begin(ConstArrayIterator<Data> &iterator) const
    {
       assert(data_);
       assert(size_ > 0);
