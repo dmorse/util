@@ -52,6 +52,16 @@ namespace Util
       int capacity() const;
 
       /**
+      * Return logical size of array.
+      *
+      * For a standard dynamically allocated array such as DArray<Data>,
+      * size() == capacity().
+      *
+      * \return number of elements in array
+      */
+      int size() const;
+
+      /**
       * Does this array have associated data?
       *
       * Return false if the pointer to data is null, true otherwise.
@@ -128,6 +138,8 @@ namespace Util
 
    };
 
+   // Member function definitions
+
    /*
    * Default constructor.
    */
@@ -149,6 +161,13 @@ namespace Util
    */
    template <typename Data> inline 
    int Array<Data>::capacity() const
+   {  return capacity_; }
+
+   /*
+   * Return logical size of this array.
+   */
+   template <typename Data> inline 
+   int Array<Data>::size() const
    {  return capacity_; }
 
    /*

@@ -46,11 +46,20 @@ namespace Util
       ConstArray(ConstArray const & other) = delete;
 
       /**
-      * Return allocated size.
+      * Return allocated size of this array.
       *
       * \return number of elements allocated in array
       */
       int capacity() const;
+
+      /**
+      * Return logical size of this array.
+      *
+      * Currently, capacity() == size(), always.
+      *
+      * \return number of elements in this array
+      */
+      int size() const;
 
       /**
       * Does this array have associated data?
@@ -145,7 +154,9 @@ namespace Util
    {}
 
    /*
-   * Destructor (do-hothing)
+   * Destructor (do-hothing, and protected).
+   *
+   * Subclasses are responsible for memory management.
    */
    template <typename Data>
    ConstArray<Data>::~ConstArray()
@@ -156,6 +167,13 @@ namespace Util
    */
    template <typename Data> inline 
    int ConstArray<Data>::capacity() const
+   {  return capacity_; }
+
+   /*
+   * Return logical size of this array.
+   */
+   template <typename Data> inline 
+   int ConstArray<Data>::size() const
    {  return capacity_; }
 
    /*

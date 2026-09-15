@@ -80,16 +80,16 @@ namespace Util {
       *
       * \param other  parent array that owns the data
       * \param beginId  index in of source array at which slice begins
-      * \param capacity  number of elements in the slice
+      * \param size  number of elements in the slice
       */
       void associate(ArraySource<Data> const & source, 
-                     int beginId, int capacity);
+                     int beginId, int size);
 
       /**
       * Associate this object with all of a source array.
       *
       * This function associates this ConstArrayView with all of a source
-      * array. This is equivalent to associate(other, 0, other.capacity()).
+      * array. This is equivalent to associate(other, 0, other.size()).
       *
       * \throw Exception if this array is allocated
       * \throw Exception if source array is not a data owner
@@ -166,7 +166,7 @@ namespace Util {
    {
       assert(data_);
       assert(i >= 0 );
-      assert(i < capacity_);
+      assert(i < size_);
       return *(data_ + i);
    }
 
@@ -224,7 +224,7 @@ namespace Util {
       UTIL_CHECK(source.isAllocated());
       UTIL_CHECK(beginId >= 0);
       UTIL_CHECK(size > 0);
-      UTIL_CHECK(beginId + size <= source.capacity());
+      UTIL_CHECK(beginId + size <= source.size());
       UTIL_CHECK(!ref_.isAssociated());
 
       // Copy data pointer and size
@@ -245,7 +245,7 @@ namespace Util {
    */
    template <typename Data>
    void ConstArrayView<Data>::associate(ArraySource<Data> const & source)
-   {  associate(source, 0, source.capacity()); }
+   {  associate(source, 0, source.size()); }
 
    /*
    * Dissociate this view from the associated source.
@@ -269,7 +269,7 @@ namespace Util {
    const
    {
       assert(data_);
-      assert(capacity_ > 0);
+      assert(size_ > 0);
       iterator.setCurrent(data_);
       iterator.setEnd(data_ + size_);
    }

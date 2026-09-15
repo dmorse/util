@@ -157,7 +157,11 @@ namespace Util
       template <class Archive>
       void serialize(Archive& ar, const unsigned int version);
 
+      // Inherited functions
+      using ConstArray<Data>::size;
+      using ConstArray<Data>::capacity;
       using ConstArray<Data>::isAllocated;
+      using ConstArray<Data>::operator [];
       using ConstArray<Data>::cArray;
 
    protected:
