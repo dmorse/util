@@ -103,17 +103,12 @@ namespace Util {
       /**
       * Dissociate this object from an associated source array.
       *
-      * After exit, isAssociated() will all return false. Dissociation
-      * also decrements the reference counter of the associated source.
+      * After exit, isAllocated() will return false. Dissociation also
+      * decrements the reference counter of the associated source array.
       *
       * \throw Exception if this is not associated with a source array.
       */
       void dissociate();
-
-      /**
-      * Is this view associated with a source array?
-      */
-      bool isAssociated() const;
 
    protected:
 
@@ -127,19 +122,9 @@ namespace Util {
 
    };
 
-   // Inline member function definitions
-
-   /*
-   * Is this view associated with a source array ?
-   */
-   template <typename Data> inline
-   bool ConstArrayView<Data>::isAssociated() const
-   {  return ((bool) data_ && ref_.isAssociated()); }
-
 } // namespace Util
 
 #include "ArraySource.h"
-#include "ConstArrayIterator.h"
 #include <util/global.h>
 
 namespace Util {
@@ -205,7 +190,7 @@ namespace Util {
    {  associate(source, 0, source.size()); }
 
    /*
-   * Dissociate this view from the associated source.
+   * Dissociate this view from the associated source array.
    */
    template <typename Data>
    void ConstArrayView<Data>::dissociate()

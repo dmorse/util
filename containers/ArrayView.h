@@ -8,26 +8,23 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+#include <util/containers/Array.h>        // base class
 #include <util/misc/CountedReference.h>   // member
 #include <util/global.h>
 
-// Forward declarations
+// Forward declaration
 namespace Util {
    template <typename Data> class ArraySource;
-   template <typename Data> class ArrayIterator;
-   template <typename Data> class ConstArrayIterator;
 }
 
 namespace Util {
 
-   // Forward Declaration
-
    /**
-   * A view of an array owned by a different container.
+   * A read-write view of an array owned by a different container.
    *
    * An ArrayView is a sequence container that supports random read-write
-   * access to an underlying C array that it does not own, via an overloaded
-   * subscript ([]) operator.
+   * access to an underlying C array that it does not own, via an
+   * overloaded subscript ([]) operator.
    *
    * An ArrayView<Data> object may access a slice of an associated
    * instance of ArraySource<Data>, hereafter referred to as the source
@@ -43,7 +40,7 @@ namespace Util {
    * \ingroup Util_Containers_Module
    */
    template <typename Data>
-   class ArrayView
+   class ArrayView : public Array<Data>
    {
 
    public:
@@ -112,114 +109,21 @@ namespace Util {
       */
       void dissociate();
 
-      /**
-      * Set a non-const iterator to begin this Array.
-      *
-      * On return, iterator points to the first element of the array, and
-      * the iterator end pointer is set to one past the last element.
-      *
-      * \param iterator ArrayIterator, initialized on output
-      */
-      void begin(ArrayIterator<Data>& iterator);
+   protected:
 
-      /**
-      * Set a const iterator to begin this Array.
-      *
-      * On return, iterator points to the first element of the array, and
-      * the iterator end pointer is set to one past the last element.
-      *
-      * \param iterator ArrayIterator, initialized on output
-      */
-      void begin(ConstArrayIterator<Data>& iterator) const;
-
-      /**
-      * Get an element by non-const reference.
-      *
-      * Mimics C-array subscripting.
-      *
-      * \param i array index
-      * \return const reference to element i
-      */
-      Data & operator [] (int i);
-
-      /**
-      * Get an element by const reference.
-      *
-      * Mimics C-array subscripting.
-      *
-      * \param i array index
-      * \return const reference to element i
-      */
-      Data const & operator [] (int i) const;
-
-      /**
-      * Is this view associated with a source array?
-      */
-      bool isAssociated() const;
-
-      /**
-      * What is the size of the associated array slice?
-      */
-      int size() const;
+      using Array<Data>::data_;
+      using Array<Data>::capacity_;
 
    private:
-
-      // Pointer to an associated array slice.
-      Data* data_;
-
-      // Size of the array slice (number of elements).
-      int size_;
 
       /// Reference to a container that owns memory referenced by this.
       CountedReference ref_;
 
    };
 
-   // Inline member function definitions
-
-   /*
-   * Get an element by const reference (C-array subscripting)
-   */
-   template <typename Data> inline 
-   Data const & ArrayView<Data>::operator [] (int i) const
-   {
-      assert(data_);
-      assert(i >= 0 );
-      assert(i < size_);
-      return *(data_ + i);
-   }
-
-   /*
-   * Get an element by non-const reference (C-array subscripting)
-   */
-   template <typename Data> inline 
-   Data & ArrayView<Data>::operator [] (int i) 
-   {
-      assert(data_);
-      assert(i >= 0 );
-      assert(i < size_);
-      return *(data_ + i);
-   }
-
-   /*
-   * What is the size of the associated slice?
-   */
-   template <typename Data> inline
-   int ArrayView<Data>::size() const
-   {  return size_; }
-
-   /*
-   * Is this view associated with a source array ?
-   */
-   template <typename Data> inline
-   bool ArrayView<Data>::isAssociated() const
-   {  return ((bool) data_ && ref_.isAssociated()); }
-
 } // namespace Util
 
 #include "ArraySource.h"
-#include "ArrayIterator.h"
-#include "ConstArrayIterator.h"
 
 namespace Util {
 
@@ -230,8 +134,7 @@ namespace Util {
    */
    template <typename Data>
    ArrayView<Data>::ArrayView()
-    : data_(nullptr),
-      size_(0),
+    : Array<Data>(),
       ref_()
    {}
 
@@ -261,7 +164,7 @@ namespace Util {
 
       // Copy data pointer and size
       data_ = source.cArray() + beginId;
-      size_ = size;
+      capacity_ = size;
 
       // Associate ReferencecCounter base class of the source array with 
       // the CountedReference ref_ member variable of this data user.
@@ -289,32 +192,8 @@ namespace Util {
       UTIL_CHECK(ref_.isAssociated());
 
       data_ = nullptr;
-      size_ = 0;
+      capacity_ = 0;
       ref_.dissociate(); // decrements reference counter of source array
-   }
-
-   /*
-   * Set a ArrayIterator to begin this Array.
-   */
-   template <typename Data> 
-   void ArrayView<Data>::begin(ArrayIterator<Data> &iterator) 
-   {
-      assert(data_);
-      assert(size_ > 0);
-      iterator.setCurrent(data_);
-      iterator.setEnd(data_ + size_);
-   }
-
-   /*
-   * Set a ConstArrayIterator to begin this Array.
-   */
-   template <typename Data> 
-   void ArrayView<Data>::begin(ConstArrayIterator<Data> &iterator) const
-   {
-      assert(data_);
-      assert(size_ > 0);
-      iterator.setCurrent(data_);
-      iterator.setEnd(data_ + size_);
    }
 
 } // namespace Util
