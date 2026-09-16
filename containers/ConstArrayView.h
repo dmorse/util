@@ -8,13 +8,12 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+#include <util/containers/ConstArray.h>   // base class
 #include <util/misc/CountedReference.h>   // member
-#include <util/global.h>
 
 // Forward declarations
 namespace Util {
    template <typename Data> class ArraySource;
-   template <typename Data> class ConstArrayIterator;
 }
 
 namespace Util {
@@ -42,7 +41,7 @@ namespace Util {
    * \ingroup Util_Containers_Module
    */
    template <typename Data>
-   class ConstArrayView
+   class ConstArrayView : public ConstArray<Data>
    {
 
    public:
@@ -112,47 +111,16 @@ namespace Util {
       void dissociate();
 
       /**
-      * Set a const iterator to begin this Array.
-      *
-      * On return, iterator points to the first element of the array, and
-      * the iterator end pointer is set to one past the last element.
-      *
-      * \param iterator ConstArrayIterator, initialized on output
-      */
-      void begin(ConstArrayIterator<Data>& iterator) const;
-
-      /**
-      * Get an element by const reference.
-      *
-      * Mimics C-array subscripting.
-      *
-      * \param i array index
-      * \return const reference to element i
-      */
-      Data const & operator [] (int i) const;
-
-      /**
       * Is this view associated with a source array?
       */
       bool isAssociated() const;
 
-      /**
-      * What is the size of the associated array slice?
-      */
-      int size() const;
+   protected:
 
-      /**
-      * Get a pointer to the underlying const C-array.
-      */
-      Data const * cArray() const;
+      using ConstArray<Data>::data_;
+      using ConstArray<Data>::capacity_;
 
    private:
-
-      // Read-only pointer to an associated array slice.
-      Data const * data_;
-
-      // Size of the array slice (number of elements).
-      int size_;
 
       /// Reference to a container that owns memory referenced by this.
       CountedReference ref_;
@@ -162,54 +130,28 @@ namespace Util {
    // Inline member function definitions
 
    /*
-   * Get an element by const reference (C-array subscripting)
-   */
-   template <typename Data> inline 
-   Data const & ConstArrayView<Data>::operator [] (int i) const
-   {
-      assert(data_);
-      assert(i >= 0 );
-      assert(i < size_);
-      return *(data_ + i);
-   }
-
-   /*
-   * What is the size of the associated slice?
-   */
-   template <typename Data> inline
-   int ConstArrayView<Data>::size() const
-   {  return size_; }
-
-   /*
    * Is this view associated with a source array ?
    */
    template <typename Data> inline
    bool ConstArrayView<Data>::isAssociated() const
    {  return ((bool) data_ && ref_.isAssociated()); }
 
-   /*
-   * Get the pointer to the underlying C array.
-   */
-   template <typename Data> inline
-   Data const * ConstArrayView<Data>::cArray() const
-   {  return data_; }
-
 } // namespace Util
 
 #include "ArraySource.h"
 #include "ConstArrayIterator.h"
+#include <util/global.h>
 
 namespace Util {
 
-   // Non-inline member functions
+   // Member functions
 
    /*
    * Default constructor.
    */
    template <typename Data>
    ConstArrayView<Data>::ConstArrayView()
-    : data_(nullptr),
-      size_(0),
+    : ConstArray<Data>(),
       ref_()
    {}
 
@@ -238,8 +180,13 @@ namespace Util {
       UTIL_CHECK(!ref_.isAssociated());
 
       // Copy data pointer and size
-      data_ = source.cArray() + beginId;
-      size_ = size;
+      Data * ptr = const_cast<Data*>( source.cArray() );
+      data_ = ptr + beginId;
+      capacity_ = size;
+
+      // Note: const_cast to non-const pointer is permissible because 
+      // the ConstArray<Data> class public interface is designed to 
+      // prevent modification of individual array elements.
 
       // Associate ReferencecCounter base class of the source array with 
       // the CountedReference ref_ member variable of this data user.
@@ -267,21 +214,8 @@ namespace Util {
       UTIL_CHECK(ref_.isAssociated());
 
       data_ = nullptr;
-      size_ = 0;
+      capacity_ = 0;
       ref_.dissociate(); // decrements reference counter of source array
-   }
-
-   /*
-   * Set a ConstArrayIterator to begin this Array.
-   */
-   template <typename Data> 
-   void ConstArrayView<Data>::begin(ConstArrayIterator<Data> &iterator) 
-   const
-   {
-      assert(data_);
-      assert(size_ > 0);
-      iterator.setCurrent(data_);
-      iterator.setEnd(data_ + size_);
    }
 
 } // namespace Util
