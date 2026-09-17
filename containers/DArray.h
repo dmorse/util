@@ -18,9 +18,9 @@ namespace Util
    /**
    * Dynamically allocatable contiguous array template.
    *
-   * A DArray wraps a dynamically allocated C Array, and stores the
-   * capacity of the array. A DArray can be allocated, deallocated or
-   * reallocated (i.e., resized and moved) by member functions.j
+   * A DArray wraps a dynamically allocated C Array, which it owns.
+   * A DArray can be allocated, deallocated or reallocated (i.e., 
+   * resized and moved) by member functions.
    *
    * The Array<Data> base class provides array index bound checking when 
    * compiled in debug mode.

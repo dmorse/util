@@ -38,7 +38,6 @@ namespace Util {
    * subscript operator [] checks the validity of the element index.
    *
    * \ingroup Array_Module
-   * \ingroup Util_Containers_Module
    */
    template <typename Data>
    class ConstArrayView : public ConstArray<Data>

@@ -18,10 +18,10 @@ namespace Util
    /**
    * Dynamically allocatable contiguous read-only array template.
    *
-   * A ConstDArray wraps a dynamically allocated C array. Read-only 
-   * access is provided by the ConstArray base class. A ConstDArray can 
-   * be allocated, deallocated or reallocated (i.e., resized and moved) 
-   * by member functions.
+   * A ConstDArray wraps a dynamically allocated C array, whic it owns.
+   *  Read-only access to elements is provided by the ConstArray base 
+   * class. A ConstDArray can be allocated, deallocated or reallocated 
+   * (i.e., resized and moved) by member functions.
    *
    * The subscript operator [] inherited from the ConstArray<Data> base
    * class provides read-only access to individual elements, with array 
@@ -57,13 +57,13 @@ namespace Util
       ConstDArray(ConstDArray<Data> const & other);
 
       /**
-      * Copy constructor, copy from DArray.
+      * Copy constructor, copy from Array<Data>.
       *
       * Allocates new memory and copies all elements by value.
       *
       * \param other  the DArray to be copied
       */
-      ConstDArray(DArray<Data> const & other);
+      ConstDArray(Array<Data> const & other);
 
       /**
       * Destructor.
@@ -211,21 +211,21 @@ namespace Util
    }
 
    /*
-   * Copy constructor, from DArray.
+   * Copy constructor, from Array<Data>.
    *
    * Allocates memory and copies all elements by value.
    *
    *\param other the DArray to be copied.
    */
    template <typename Data>
-   ConstDArray<Data>::ConstDArray(DArray<Data> const & other)
+   ConstDArray<Data>::ConstDArray(Array<Data> const & other)
     : ConstArray<Data>()
    {
       if (!other.isAllocated()) {
-         UTIL_THROW("Other ConstDArray must be allocated.");
+         UTIL_THROW("Other Array must be allocated.");
       }
-      Memory::allocate(data_, other.capacity());
-      capacity_ = other.capacity();
+      Memory::allocate(data_, other.size());
+      capacity_ = other.size();
       for (int i = 0; i < capacity_; ++i) {
          data_[i] = other[i];
       }
@@ -241,9 +241,9 @@ namespace Util
          try {
             Memory::deallocate<Data>(data_, capacity_);
          } catch (...) {
-            data_ = nullptr;
             std::cout << "Exception in ConstDArray destructor";
          }
+         data_ = nullptr;
          capacity_ = 0;
       }
    }
@@ -281,7 +281,7 @@ namespace Util
    }
 
    /*
-   * Assignment from a ConstArray<Data> (deep copy).
+   * Assignment from an ConstArray<Data> (deep copy).
    */
    template <typename Data>
    ConstDArray<Data>& 
@@ -358,9 +358,7 @@ namespace Util
    template <typename Data>
    void ConstDArray<Data>::deallocate()
    {
-      if (!isAllocated()) {
-         UTIL_THROW("Array is not allocated");
-      }
+      UTIL_CHECK(isAllocated());
       Memory::deallocate<Data>(data_, capacity_);
       capacity_ = 0;
    }

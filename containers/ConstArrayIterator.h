@@ -30,7 +30,6 @@ namespace Util
    * read-only access to the object to which it points. Use an ArrayIterator
    * if you need read-write access. 
    *
-   * \ingroup Array_Module
    * \ingroup Iterator_Module
    */
    template <typename Data>

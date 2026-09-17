@@ -18,11 +18,11 @@ namespace Util
 {
 
    /**
-   * An array of objects that are accessible by one or more linked List objects.
+   * Array of objects that are accessed by one or more linked lists.
    *
-   * A ListArray is an allocatable array of data objects that also provides access
-   * to some or all of its via one or more associated List objects. Each element 
-   * of the array may be part of at most one List.
+   * A ListArray is an allocatable array of data objects that also provides 
+   * access to some or all of its via one or more associated List objects. 
+   * Each element of the array may be part of at most one List.
    *
    * \ingroup List_Module
    */

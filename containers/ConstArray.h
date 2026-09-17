@@ -23,11 +23,9 @@ namespace Util
    *
    * The ConstArray class template is designed to be used as only as a 
    * base class, and does not provide functions for memory management. 
-   * The ConstArray template has a protected constructor, a protected
-   * destructor, and deleted copy constructor and assignment operator. 
-   * As a result, an ConstArray can only be created as part of an
-   * instance of a derived class, and cannot be destroyed via a base 
-   * class pointer or reference.
+   * The ConstArray template has a protected constructor and destructor
+   * to prevent direct direct construction or destruction, but allow
+   * construction and destruction as a subojbect of a derived class.
    *
    * When compiled in debug mode (i.e., when NDEBUG is not defined) the
    * subscript operator [] checks the validity of the element index.
@@ -45,18 +43,6 @@ namespace Util
 
       ConstArray(ConstArray const & other) = delete;
 
-      #if 0
-      /**
-      * Set an iterator to begin this ConstArray.
-      *
-      * On return, iterator points to the first element of the array, and
-      * the iterator end pointer is set to one past the last element.
-      *
-      * \param iterator ArrayIterator, initialized on output
-      */
-      void begin(ArrayIterator<Data>& iterator);
-      #endif
-
       /**
       * Set a const iterator to begin this ConstArray.
       *
@@ -67,18 +53,6 @@ namespace Util
       */
       void begin(ConstArrayIterator<Data>& iterator) const;
 
-      #if 0
-      /**
-      * Get an element by non-const reference.
-      *
-      * Mimic C-array subscripting.
-      *
-      * \param  i array index
-      * \return non-const reference to element i
-      */
-      Data& operator [] (int i);
-      #endif
-
       /**
       * Get an element by const reference.
       *
@@ -88,13 +62,6 @@ namespace Util
       * \return const reference to element i
       */
       Data const & operator [] (int i) const;
-
-      #if 0
-      /**
-      * Return a pointer to the underlying C array.
-      */
-      Data* cArray();
-      #endif
 
       /**
       * Return pointer to const to the underlying C array.
@@ -163,11 +130,11 @@ namespace Util
    {}
 
    /*
-   * Return allocated capacity.
+   * Return true iff the data pointer is non-null, false otherwise.
    */
-   template <typename Data> inline 
-   int ConstArray<Data>::capacity() const
-   {  return capacity_; }
+   template <typename Data> inline
+   bool ConstArray<Data>::isAllocated() const
+   {  return (bool)data_; }
 
    /*
    * Return logical size of this array.
@@ -177,25 +144,11 @@ namespace Util
    {  return capacity_; }
 
    /*
-   * Return true iff the data pointer is non-null, false otherwise.
-   */
-   template <typename Data> inline
-   bool ConstArray<Data>::isAllocated() const
-   {  return (bool)data_; }
-
-   #if 0
-   /*
-   * Set an ArrayIterator to begin this ConstArray.
+   * Return allocated capacity.
    */
    template <typename Data> inline 
-   void ConstArray<Data>::begin(ArrayIterator<Data> &iterator)
-   {
-      assert(data_);
-      assert(capacity_ > 0);
-      iterator.setCurrent(data_);
-      iterator.setEnd(data_ + capacity_);
-   }
-   #endif
+   int ConstArray<Data>::capacity() const
+   {  return capacity_; }
 
    /*
    * Set a ConstArrayIterator to begin this ConstArray.
@@ -209,20 +162,6 @@ namespace Util
       iterator.setEnd(data_ + capacity_);
    }
 
-   #if 0
-   /*
-   * Get an element by reference (C-array subscripting)
-   */
-   template <typename Data> inline 
-   Data& ConstArray<Data>::operator [] (int i)
-   {
-      assert(data_);
-      assert(i >= 0);
-      assert(i < capacity_);
-      return *(data_ + i);
-   }
-   #endif
-
    /*
    * Get an element by const reference (C-array subscripting)
    */
@@ -234,15 +173,6 @@ namespace Util
       assert(i < capacity_);
       return *(data_ + i);
    }
-
-   #if 0
-   /*
-   * Get a pointer to the underlying C array.
-   */
-   template <typename Data> inline 
-   Data* ConstArray<Data>::cArray()
-   {  return data_; }
-   #endif
 
    /*
    * Get a pointer to const to the underlying C array.

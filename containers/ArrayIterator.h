@@ -29,7 +29,6 @@ namespace Util
    * read-write access to the objects to which it points. A ConstArrayIterator
    * behaves like a pointer to const, and provides read-only access
    *
-   * \ingroup Array_Module
    * \ingroup Iterator_Module
    */
    template <typename Data>

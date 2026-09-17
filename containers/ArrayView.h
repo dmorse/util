@@ -10,7 +10,6 @@
 
 #include <util/containers/Array.h>        // base class
 #include <util/misc/CountedReference.h>   // member
-#include <util/global.h>
 
 // Forward declaration
 namespace Util {
@@ -37,7 +36,6 @@ namespace Util {
    * subscript operator [] checks the validity of the element index.
    *
    * \ingroup Array_Module
-   * \ingroup Util_Containers_Module
    */
    template <typename Data>
    class ArrayView : public Array<Data>
@@ -74,10 +72,11 @@ namespace Util {
       * Associate this object with a slice of a source array.
       *
       * Associates this object with a slice of a source array that is an 
-      * instance of ArraySource<Data>.
+      * instance of ArraySource<Data>. Association increments the reference 
+      * counter of the source array.
       *
-      * \throw Exception if this array is already associated.
-      * \throw Exception if other array is not allocated on entry.
+      * \throw Exception if other array is not allocated on entry
+      * \throw Exception if this array already has associated data
       *
       * \param other  parent array that owns the data
       * \param beginId  index in of source array at which slice begins
@@ -92,8 +91,8 @@ namespace Util {
       * This function associates this ArrayView with all of a source
       * array. This is equivalent to associate(other, 0, other.size()).
       *
-      * \throw Exception if this array is allocated
-      * \throw Exception if source array is not a data owner
+      * \throw Exception if source array is not allocated on entry
+      * \throw Exception if this array already has associated data
       *
       * \param source  array that owns the data
       */
@@ -102,10 +101,10 @@ namespace Util {
       /**
       * Dissociate this object from an associated source array.
       *
-      * After exit, isAssociated() will all return false. Dissociation
-      * also decrements the reference counter of the associated source.
+      * After exit, isAllocated() will all return false. Dissociation
+      * decrements the reference counter of the associated source array.
       *
-      * \throw Exception if this is not associated with a source array.
+      * \throw Exception if this is not associated with a source array
       */
       void dissociate();
 
@@ -124,10 +123,11 @@ namespace Util {
 } // namespace Util
 
 #include "ArraySource.h"
+#include <util/global.h>
 
 namespace Util {
 
-   // Non-inline member functions
+   // Member functions
 
    /*
    * Default constructor.

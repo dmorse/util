@@ -14,16 +14,16 @@ namespace Util
 {
 
    /**
-   * Two-dimensional array container template (abstract).
+   * Two-dimensional array container template (interface).
    *
    * An Matrix object A is a two-dimensional array in which the operator
-   * A(i, j) returns a reference to element in column j of row i.
+   * A(i, j) returns a reference to element in column j of row i. The 
+   * memory for a Matrix is stored in a single one-dimensional C array, in 
+   * which each row is stored as a consecutive block.
    *
-   * The memory for a Matrix is stored in a single one-dimensional C array,
-   * in which each row is stored as a consecutive block.
-   *
-   * Class Matrix is an abstract class because it cannot allocate memory.
-   * Concrete subclasses include DMatrix and FMatrix.
+   * Class Matrix is designed to be used as a base class that provides an
+   * interface for accessing elements of an array. Memory management is
+   * delegated to subclasses.
    *
    * \ingroup Matrix_Module
    */
@@ -33,14 +33,15 @@ namespace Util
 
    public:
 
-      // Protected default constructor, to prohibit direct instantiation.
+      // Protected default constructor and destructor.
 
       // Private copy constructor, to prohibit copy construction.
 
-      /**
-      * Destructor.
-      */
-      virtual ~Matrix();
+      // Prohibit copy construction. 
+      Matrix(Matrix<Data> const & other) = delete;
+
+      // Prohibit assignment. 
+      Matrix<Data>& operator = (Matrix<Data> const & other) = delete;
 
       /**
       * Get number of rows (range of the first array index).
@@ -96,21 +97,16 @@ namespace Util
       */
       Matrix();
 
-   private:
-
       /**
-      * Copy constructor, private and not implemented.
+      * Destructor.
+      *
+      * Protected to prevent direct destruction.
       */
-      Matrix(Matrix<Data> const & other);
-
-      /**
-      * Assignment, private and not implemented.
-      */
-      Matrix<Data>& operator = (Matrix<Data> const & other);
+      ~Matrix();
 
    };
 
-   // Method definitions
+   // Member function definitions
 
    /**
    * Constructor (protected).
@@ -123,7 +119,7 @@ namespace Util
    {}
 
    /*
-   * Destructor.
+   * Destructor (protected).
    */
    template <typename Data>
    Matrix<Data>::~Matrix()
