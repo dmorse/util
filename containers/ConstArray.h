@@ -17,16 +17,16 @@ namespace Util
    /**
    * Read-only array container class template.
    *
-   * An ConstArray is a sequence that supports random read-only access
-   * to elements via an operator [] that returns a const reference, or
-   * via a ConstArrayIterator.
+   * A ConstArray is a sequence container that supports random read-only
+   * access to elements via a operator [] that returns a const reference, 
+   * or via a ConstArrayIterator. Similar to an Array, without any of the 
+   * functions that provide write access to element values.
    *
    * The ConstArray class template is designed to be used as only as a 
    * base class, and does not provide functions for memory management. 
-   * The ConstArray template has a protected constructor and destructor 
-   * to prevent direct direct construction or destruction, while allowing
-   * construction and destruction as a subojbect of a derived class
-   * instance.
+   * The ConstArray template has a protected constructor and destructor
+   * to prevent direct direct construction or destruction, but to allow
+   * construction and destruction as a subojbect of a derived class.
    *
    * When compiled in debug mode (i.e., when NDEBUG is not defined) the
    * subscript operator [] checks the validity of the element index.
@@ -61,8 +61,8 @@ namespace Util
       /**
       * Set a const iterator to begin this ConstArray.
       *
-      * On return, iterator points to the first element of the array, and
-      * the iterator end pointer is set to one past the last element.
+      * On return, iterator points to the first element of the array,
+      * and the iterator end pointer points one past the last element.
       *
       * \param iterator ConstArrayIterator, initialized on output
       */
@@ -100,6 +100,8 @@ namespace Util
 
       /**
       * Constructor (protected to prevent direct instantiation).
+      *
+      * Subclasses have responsibility for memory management.
       */
       ConstArray();
 
@@ -159,7 +161,7 @@ namespace Util
    }
 
    /*
-   * Get a pointer to const to the underlying C array.
+   * Get a pointer to the underlying C array (pointer to const data).
    */
    template <typename Data> inline 
    Data const * ConstArray<Data>::cArray() const
