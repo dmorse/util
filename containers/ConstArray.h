@@ -17,14 +17,15 @@ namespace Util
    /**
    * Read-only array container class template.
    *
-   * An ConstArray is a sequence that supports random read-only access
-   * to elements via a operator [] that returns a const reference, or
-   * via a ConstArrayIterator.
+   * An ConstArray<Data> is a sequence that supports random read-only 
+   * access to elements via a operator [] that returns a const reference, 
+   * or via a ConstArrayIterator. Similar to an Array, without any of
+   * the functions that provide write access to element values.
    *
    * The ConstArray class template is designed to be used as only as a 
    * base class, and does not provide functions for memory management. 
    * The ConstArray template has a protected constructor and destructor
-   * to prevent direct direct construction or destruction, but allow
+   * to prevent direct direct construction or destruction, but to allow
    * construction and destruction as a subojbect of a derived class.
    *
    * When compiled in debug mode (i.e., when NDEBUG is not defined) the
@@ -38,9 +39,13 @@ namespace Util
 
    public:
 
+      // Protected copy constructor and destructor (see below).
+
+      // Prohibit copy construction
       ConstArray<Data>& 
       operator = (ConstArray<Data> const & other) = delete;
 
+      // Prohibit assignment
       ConstArray(ConstArray const & other) = delete;
 
       /**
@@ -101,6 +106,8 @@ namespace Util
 
       /**
       * Constructor (protected to prevent direct instantiation).
+      *
+      * Subclasses have responsibility for memory management.
       */
       ConstArray();
 
