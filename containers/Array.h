@@ -23,12 +23,13 @@ namespace Util
    * subscript [] operator [].
    *
    * The Array class template is designed to be used as only as a base 
-   * class that provides an interface to an array, but does not provide 
-   * functions for memory management.  The Array template has a protected 
+   * class that provides an interface to an array, but does not manage
+   * the associated memory block. The Array template has a protected 
    * constructor and destructor to prevent direct instantiation or
-   * destruction, but to allow creation and destruction as a subobject of 
-   * a derived class. Responsibility for management of the associated 
-   * memory block is delegated to subclasses. 
+   * destruction, but to allow creation and destruction as a subobject 
+   * of a derived class. Subclasses must take responsibility for managing 
+   * the pointer to the associated memory block, which is a protected 
+   * variable.
    *
    * When compiled in debug mode (i.e., when NDEBUG is not defined) the
    * subscript operator [] checks the validity of the element index.
@@ -50,26 +51,6 @@ namespace Util
       Array<Data>& operator = (Array<Data> const & other) = delete;
 
       /**
-      * Set an iterator to begin this Array.
-      *
-      * On return, iterator points to the first element of the array, and
-      * the iterator end pointer is set to one past the last element.
-      *
-      * \param iterator ArrayIterator, initialized on output
-      */
-      void begin(ArrayIterator<Data>& iterator);
-
-      /**
-      * Set a const iterator to begin this Array.
-      *
-      * On return, iterator points to the first element of the array, and
-      * the iterator end pointer is set to one past the last element.
-      *
-      * \param iterator ConstArrayIterator, initialized on output
-      */
-      void begin(ConstArrayIterator<Data>& iterator) const;
-
-      /**
       * Get an element by non-const reference.
       *
       * Mimic C-array subscripting.
@@ -88,6 +69,26 @@ namespace Util
       * \return const reference to element i
       */
       Data const & operator [] (int i) const;
+
+      /**
+      * Set an iterator to begin this Array.
+      *
+      * On return, iterator points to the first element of the array, and
+      * the iterator end pointer is set to one past the last element.
+      *
+      * \param iterator ArrayIterator, initialized on output
+      */
+      void begin(ArrayIterator<Data>& iterator);
+
+      /**
+      * Set a const iterator to begin this array.
+      *
+      * On return, iterator points to the first element of the array, and
+      * the iterator end pointer is set to one past the last element.
+      *
+      * \param iterator ConstArrayIterator, initialized on output
+      */
+      void begin(ConstArrayIterator<Data>& iterator) const;
 
       /**
       * Return a pointer to the underlying C array (non-const data).
@@ -126,12 +127,6 @@ namespace Util
 
    protected:
 
-      /// Pointer to an array of Data elements.
-      Data* data_;
-
-      /// Allocated size of the data_ array.
-      int capacity_;
-
       /**
       * Constructor (protected to prevent direct instantiation).
       */
@@ -141,6 +136,12 @@ namespace Util
       * Destructor (protected to prevent direct destruction).
       */
       ~Array();
+
+      /// Pointer to an array of Data elements.
+      Data* data_;
+
+      /// Allocated size of the data_ array.
+      int capacity_;
 
    };
 

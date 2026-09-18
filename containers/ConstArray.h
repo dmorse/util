@@ -18,14 +18,15 @@ namespace Util
    * Read-only array container class template.
    *
    * An ConstArray is a sequence that supports random read-only access
-   * to elements via a operator [] that returns a const reference, or
+   * to elements via an operator [] that returns a const reference, or
    * via a ConstArrayIterator.
    *
    * The ConstArray class template is designed to be used as only as a 
    * base class, and does not provide functions for memory management. 
-   * The ConstArray template has a protected constructor and destructor
-   * to prevent direct direct construction or destruction, but allow
-   * construction and destruction as a subojbect of a derived class.
+   * The ConstArray template has a protected constructor and destructor 
+   * to prevent direct direct construction or destruction, while allowing
+   * construction and destruction as a subojbect of a derived class
+   * instance.
    *
    * When compiled in debug mode (i.e., when NDEBUG is not defined) the
    * subscript operator [] checks the validity of the element index.
@@ -38,20 +39,14 @@ namespace Util
 
    public:
 
-      ConstArray<Data>& 
-      operator = (ConstArray<Data> const & other) = delete;
+      // Protected default construction and destructor (see below)
 
+      // Prohibit copy construction
       ConstArray(ConstArray const & other) = delete;
 
-      /**
-      * Set a const iterator to begin this ConstArray.
-      *
-      * On return, iterator points to the first element of the array, and
-      * the iterator end pointer is set to one past the last element.
-      *
-      * \param iterator ConstArrayIterator, initialized on output
-      */
-      void begin(ConstArrayIterator<Data>& iterator) const;
+      // Prohibit assignment
+      ConstArray<Data>& 
+      operator = (ConstArray<Data> const & other) = delete;
 
       /**
       * Get an element by const reference.
@@ -64,7 +59,17 @@ namespace Util
       Data const & operator [] (int i) const;
 
       /**
-      * Return pointer to const to the underlying C array.
+      * Set a const iterator to begin this ConstArray.
+      *
+      * On return, iterator points to the first element of the array, and
+      * the iterator end pointer is set to one past the last element.
+      *
+      * \param iterator ConstArrayIterator, initialized on output
+      */
+      void begin(ConstArrayIterator<Data>& iterator) const;
+
+      /**
+      * Return a pointer to the underlying C array (pointer to const data).
       */
       Data const * cArray() const;
 
@@ -93,12 +98,6 @@ namespace Util
 
    protected:
 
-      /// Pointer to an array of Data elements.
-      Data* data_;
-
-      /// Allocated size of the data_ array.
-      int capacity_;
-
       /**
       * Constructor (protected to prevent direct instantiation).
       */
@@ -109,10 +108,16 @@ namespace Util
       */
       ~ConstArray();
 
+      /// Pointer to an array of Data elements.
+      Data* data_;
+
+      /// Allocated size of the data_ array.
+      int capacity_;
+
    };
 
    /*
-   * Default constructor.
+   * Default constructor (protected).
    */
    template <typename Data> inline
    ConstArray<Data>::ConstArray()
@@ -128,6 +133,37 @@ namespace Util
    template <typename Data>
    ConstArray<Data>::~ConstArray()
    {}
+
+   /*
+   * Get an element by const reference (C-array subscripting)
+   */
+   template <typename Data> inline 
+   Data const & ConstArray<Data>::operator [] (int i) const
+   {
+      assert(data_);
+      assert(i >= 0 );
+      assert(i < capacity_);
+      return *(data_ + i);
+   }
+
+   /*
+   * Set a ConstArrayIterator to begin this ConstArray.
+   */
+   template <typename Data> inline 
+   void ConstArray<Data>::begin(ConstArrayIterator<Data> &iterator) const
+   {
+      assert(data_);
+      assert(capacity_ > 0);
+      iterator.setCurrent(data_);
+      iterator.setEnd(data_ + capacity_);
+   }
+
+   /*
+   * Get a pointer to const to the underlying C array.
+   */
+   template <typename Data> inline 
+   Data const * ConstArray<Data>::cArray() const
+   {  return data_; }
 
    /*
    * Return true iff the data pointer is non-null, false otherwise.
@@ -149,37 +185,6 @@ namespace Util
    template <typename Data> inline 
    int ConstArray<Data>::capacity() const
    {  return capacity_; }
-
-   /*
-   * Set a ConstArrayIterator to begin this ConstArray.
-   */
-   template <typename Data> inline 
-   void ConstArray<Data>::begin(ConstArrayIterator<Data> &iterator) const
-   {
-      assert(data_);
-      assert(capacity_ > 0);
-      iterator.setCurrent(data_);
-      iterator.setEnd(data_ + capacity_);
-   }
-
-   /*
-   * Get an element by const reference (C-array subscripting)
-   */
-   template <typename Data> inline 
-   Data const & ConstArray<Data>::operator [] (int i) const
-   {
-      assert(data_);
-      assert(i >= 0 );
-      assert(i < capacity_);
-      return *(data_ + i);
-   }
-
-   /*
-   * Get a pointer to const to the underlying C array.
-   */
-   template <typename Data> inline 
-   Data const * ConstArray<Data>::cArray() const
-   {  return data_; }
 
 }
 #endif

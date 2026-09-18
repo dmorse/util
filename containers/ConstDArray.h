@@ -18,10 +18,10 @@ namespace Util
    /**
    * Dynamically allocatable contiguous read-only array template.
    *
-   * A ConstDArray wraps a dynamically allocated C array, whic it owns.
-   *  Read-only access to elements is provided by the ConstArray base 
-   * class. A ConstDArray can be allocated, deallocated or reallocated 
-   * (i.e., resized and moved) by member functions.
+   * A ConstDArray owns a dynamically allocated C array. Read-only 
+   * random access to elements is provided by the ConstArray base class. 
+   * A ConstDArray can be allocated, deallocated or reallocated (i.e., 
+   * resized and moved) by member functions.
    *
    * The subscript operator [] inherited from the ConstArray<Data> base
    * class provides read-only access to individual elements, with array 
@@ -81,14 +81,14 @@ namespace Util
       * allocated on entry, the capacities must be equal on entry.
       *
       * \throw Exception if other ConstDArray is not allocated
-      * \throw Exception if LHS and RHS have unequal capacities
+      * \throw Exception if LHS and RHS have unequal nonzero capacities
       *
       * \param other  the other (RHS) ConstDArray
       */
       ConstDArray<Data>& operator = (ConstDArray<Data> const & other);
 
       /**
-      * Assignment from an ConstArray<Data> container.
+      * Assignment from a ConstArray<Data> container.
       *
       * Performs a deep copy, by copying values of all elements of an
       * ConstArray<Data> container. If this LHS array is already allocated
@@ -96,7 +96,7 @@ namespace Util
       * If this LHS array is not allocated on entry, required memory is
       * allocated before elements are copied.
       *
-      * \throw Exception if other RHS array is not allocated
+      * \throw Exception if other array is not allocated
       * \throw Exception if this and other have unequal capacities
       *
       * \param other  array container on RHS of assigment (input)
@@ -112,7 +112,7 @@ namespace Util
       * If this LHS array is not allocated on entry, required memory is
       * allocated before elements are copied.
       *
-      * \throw Exception if other RHS array is not allocated
+      * \throw Exception if other array is not allocated
       * \throw Exception if this and other have unequal capacities
       *
       * \param other  array container on RHS of assigment (input)
@@ -224,8 +224,8 @@ namespace Util
       if (!other.isAllocated()) {
          UTIL_THROW("Other Array must be allocated.");
       }
-      Memory::allocate(data_, other.size());
-      capacity_ = other.size();
+      Memory::allocate(data_, other.capacity());
+      capacity_ = other.capacity();
       for (int i = 0; i < capacity_; ++i) {
          data_[i] = other[i];
       }

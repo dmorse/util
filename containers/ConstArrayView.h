@@ -79,8 +79,8 @@ namespace Util {
       * \throw Exception if this array is already associated.
       * \throw Exception if other array is not allocated on entry.
       *
-      * \param other  parent array that owns the data
-      * \param beginId  index in of source array at which slice begins
+      * \param source  array that owns the data
+      * \param beginId  index in source array of the first element
       * \param size  number of elements in the slice
       */
       void associate(ArraySource<Data> const & source, 
@@ -90,10 +90,10 @@ namespace Util {
       * Associate this object with all of a source array.
       *
       * This function associates this ConstArrayView with all of a source
-      * array. This is equivalent to associate(other, 0, other.size()).
+      * array. This is equivalent to associate(other, 0, source.size()).
       *
-      * \throw Exception if this array is allocated
-      * \throw Exception if source array is not a data owner
+      * \throw Exception if this array already has associated data
+      * \throw Exception if source array is not allocated
       *
       * \param source  array that owns the data
       */
@@ -105,7 +105,7 @@ namespace Util {
       * After exit, isAllocated() will return false. Dissociation also
       * decrements the reference counter of the associated source array.
       *
-      * \throw Exception if this is not associated with a source array.
+      * \throw Exception if this array does not have associated data
       */
       void dissociate();
 
