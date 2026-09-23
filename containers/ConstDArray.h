@@ -9,6 +9,7 @@
 */
 
 #include <util/containers/ConstArray.h>
+#include <util/containers/Array.h>
 #include <util/misc/Memory.h>
 #include <util/global.h>
 
