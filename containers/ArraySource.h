@@ -24,7 +24,6 @@ namespace Util {
    * on de-allocation. 
    *
    * \ingroup Array_Module
-   * \ingroup Util_Containers_Module
    */
    template <typename Data>
    class ArraySource : public Array<Data>, public ReferenceCounter

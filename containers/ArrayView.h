@@ -60,7 +60,7 @@ namespace Util {
       * Destructor.
       *
       * Releases any association with a DataSource<Data> array, and 
-      * decrements the reference counter of this data source.
+      * decrements the reference counter of this source array.
       */
       ~ArrayView();
 
@@ -82,8 +82,7 @@ namespace Util {
       * \param beginId  index in of source array at which slice begins
       * \param size  number of elements in the slice
       */
-      void associate(ArraySource<Data> & source, 
-                     int beginId, int size);
+      void associate(ArraySource<Data> & other, int beginId, int size);
 
       /**
       * Associate this object with all of a source array.
@@ -94,9 +93,9 @@ namespace Util {
       * \throw Exception if source array is not allocated on entry
       * \throw Exception if this array already has associated data
       *
-      * \param source  array that owns the data
+      * \param other  source array that owns the data
       */
-      void associate(ArraySource<Data>& source);
+      void associate(ArraySource<Data>& other);
 
       /**
       * Dissociate this object from an associated source array.
@@ -153,24 +152,24 @@ namespace Util {
    * Associate this object with a slice of an ArraySource.
    */
    template <typename Data>
-   void ArrayView<Data>::associate(ArraySource<Data> & source,
+   void ArrayView<Data>::associate(ArraySource<Data> & other,
                                    int beginId, int size)
    {
-      UTIL_CHECK(source.isAllocated());
+      UTIL_CHECK(other.isAllocated());
       UTIL_CHECK(beginId >= 0);
       UTIL_CHECK(size > 0);
-      UTIL_CHECK(beginId + size <= source.size());
+      UTIL_CHECK(beginId + size <= other.size());
       UTIL_CHECK(!ref_.isAssociated());
 
       // Copy data pointer and size
-      data_ = source.cArray() + beginId;
+      data_ = other.cArray() + beginId;
       capacity_ = size;
 
-      // Associate ReferencecCounter base class of the source array with 
+      // Associate ReferencecCounter base class of the other array with 
       // the CountedReference ref_ member variable of this data user.
-      ref_.associate(source);
+      ref_.associate(other);
 
-      // On exit, the ReferenceCounter of the data source is incremented
+      // On exit, the ReferenceCounter of the other array is incremented
       // and the ref_ CountedReference member variable of this object
       // holds a pointer to that ReferenceCounter.
    }
@@ -179,11 +178,11 @@ namespace Util {
    * Associate this object with all of an ArraySource<Data>.
    */
    template <typename Data>
-   void ArrayView<Data>::associate(ArraySource<Data>& source)
-   {  associate(source, 0, source.size()); }
+   void ArrayView<Data>::associate(ArraySource<Data>& other)
+   {  associate(other, 0, other.size()); }
 
    /*
-   * Dissociate this view from the associated source.
+   * Dissociate this view from the associated data source.
    */
    template <typename Data>
    void ArrayView<Data>::dissociate()

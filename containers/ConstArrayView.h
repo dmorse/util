@@ -62,7 +62,7 @@ namespace Util {
       * Destructor.
       *
       * Releases any association with a DataSource<Data> array, and 
-      * decrements the reference counter of this data source.
+      * decrements the reference counter of the source array.
       */
       ~ConstArrayView();
 
@@ -79,11 +79,11 @@ namespace Util {
       * \throw Exception if this array is already associated.
       * \throw Exception if other array is not allocated on entry.
       *
-      * \param source  array that owns the data
+      * \param other  source array that owns the data
       * \param beginId  index in source array of the first element
       * \param size  number of elements in the slice
       */
-      void associate(ArraySource<Data> const & source, 
+      void associate(ArraySource<Data> const & other, 
                      int beginId, int size);
 
       /**
@@ -95,9 +95,9 @@ namespace Util {
       * \throw Exception if this array already has associated data
       * \throw Exception if source array is not allocated
       *
-      * \param source  array that owns the data
+      * \param other  array that owns the data
       */
-      void associate(ArraySource<Data> const & source);
+      void associate(ArraySource<Data> const & other);
 
       /**
       * Dissociate this object from an associated source array.
@@ -154,17 +154,17 @@ namespace Util {
    * Associate this object with a slice of an ArraySource.
    */
    template <typename Data>
-   void ConstArrayView<Data>::associate(ArraySource<Data> const & source,
+   void ConstArrayView<Data>::associate(ArraySource<Data> const & other,
                                         int beginId, int size)
    {
-      UTIL_CHECK(source.isAllocated());
+      UTIL_CHECK(other.isAllocated());
       UTIL_CHECK(beginId >= 0);
       UTIL_CHECK(size > 0);
-      UTIL_CHECK(beginId + size <= source.size());
+      UTIL_CHECK(beginId + size <= other.size());
       UTIL_CHECK(!ref_.isAssociated());
 
       // Copy data pointer and size
-      Data * ptr = const_cast<Data*>( source.cArray() );
+      Data * ptr = const_cast<Data*>( other.cArray() );
       data_ = ptr + beginId;
       capacity_ = size;
 
@@ -174,9 +174,9 @@ namespace Util {
 
       // Associate ReferencecCounter base class of the source array with 
       // the CountedReference ref_ member variable of this data user.
-      ref_.associate(source);
+      ref_.associate(other);
 
-      // On exit, the ReferenceCounter of the data source is incremented
+      // On exit, the ReferenceCounter of the source array is incremented
       // and the ref_ CountedReference member variable of this object
       // holds a pointer to that ReferenceCounter.
    }
@@ -185,8 +185,8 @@ namespace Util {
    * Associate this object with all of an ArraySource<Data>.
    */
    template <typename Data>
-   void ConstArrayView<Data>::associate(ArraySource<Data> const & source)
-   {  associate(source, 0, source.size()); }
+   void ConstArrayView<Data>::associate(ArraySource<Data> const & other)
+   {  associate(other, 0, other.size()); }
 
    /*
    * Dissociate this view from the associated source array.
