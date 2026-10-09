@@ -8,7 +8,8 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <util/containers/ArraySource.h>  // base class
+#include <util/containers/Array.h>        // base class
+#include <util/misc/ReferenceCounter.h>   // base class
 #include <util/misc/CountedReference.h>   // member
 #include <util/global.h>
 
@@ -69,7 +70,7 @@ namespace Util {
    * \ingroup Array_Module
    */
    template <typename Data>
-   class DRArray : public ArraySource<Data>
+   class DRArray : public Array<Data>, public ReferenceCounter
    {
 
    public:
@@ -254,7 +255,6 @@ namespace Util {
    */
    template <typename Data>
    DRArray<Data>::DRArray()
-    : ArraySource<Data>()
    {}
 
    /*
@@ -262,7 +262,6 @@ namespace Util {
    */
    template <typename Data>
    DRArray<Data>::DRArray(int capacity)
-    : ArraySource<Data>()
    {  allocate(capacity); }
 
    /*
@@ -270,7 +269,6 @@ namespace Util {
    */
    template <typename Data>
    DRArray<Data>::DRArray(DRArray<Data> const & other)
-    : ArraySource<Data>()
    {
       if (!other.isAllocated()) {
          UTIL_THROW("Other DRArray must be allocated.");
