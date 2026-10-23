@@ -22,7 +22,7 @@ namespace Util
    * variances for sequences of block averages for multiple levels of
    * block sizes, as described in the following reference:
    *
-   * ``Error estimates on averages of correlated data", H. Flyvbjerg 
+   * Error estimates on averages of correlated data, H. Flyvbjerg 
    *  and H.G. Petersen, J. Chem. Phys. 91, pgs. 461-466 (1989).
    *
    * The blocking algorithm is implemented here by a creating a linked 
@@ -167,6 +167,8 @@ namespace Util
 
    private:
 
+      // Private member variables
+
       /// Sum of all sampled values.
       double sum_;
 
@@ -196,6 +198,8 @@ namespace Util
 
       /// Number of samples per block.
       int blockFactor_;
+
+      // Private member functions
 
       /**
       * Constructor for child objects (private).

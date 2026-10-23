@@ -136,7 +136,7 @@ namespace Util
       * Upon return, the coordinate will be shifted to lie within the
       * range 0 <= coordinate < dimension(i) by subtracting an integer
       * multiple of dimension(i), giving coordinate - shift*dimension(i).
-      * The return value is the required integer `shift'.
+      * The return value is the required integer shift.
       *
       * \param  coordinate  coordinate in Cartesian direction i.
       * \param  i           index of Cartesian direction, i >= 0.
