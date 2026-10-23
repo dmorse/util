@@ -1,3 +1,4 @@
+#ifdef UTIL_MPI
 /*
 * Util Package - C++ Utilities for Scientific Computation
 *
@@ -65,3 +66,4 @@ namespace Util
    const bool MpiTraits<wchar_t>::hasType = true;
    #endif
 }
+#endif

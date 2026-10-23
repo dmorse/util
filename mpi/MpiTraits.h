@@ -24,9 +24,15 @@ namespace Util
    class MpiTraitsNoType
    {
    protected:
+
       MpiTraitsNoType(){};
+
       ~MpiTraitsNoType(){}; 
-      static const MPI::Datatype type;   ///< MPI Datatype (dummy - unused)
+
+      /// MPI Data type (dummy unused).
+      static const MPI::Datatype type;
+
+      /// Is the MPI type initialized?
       static const bool hasType;         ///< Is the MPI type initialized?
    };
 
