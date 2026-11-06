@@ -1,7 +1,7 @@
 /*
 * Util Package - C++ Utilities for Scientific Computation
 *
-* Copyright 2010 - 2017, The Regents of the University of Minnesota
+* Copyright 2010 - 2017, David Morse (morse012@um.edu) 
 * Distributed under the terms of the GNU General Public License.
 */
 
