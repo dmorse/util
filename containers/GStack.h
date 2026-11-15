@@ -55,10 +55,6 @@ namespace Util
       /**
       * Assignment, element by element.
       *
-      * Preconditions: 
-      * - Both this and other GStacks must be allocated.
-      * - Capacity of this GStack must be >= size of RHS GStack.
-      *
       * \param other the rhs GStack 
       */
       GStack<Data>& operator=(GStack<Data> const & other);
@@ -223,7 +219,7 @@ namespace Util
 
       clear();
       for (int i = 0; i < other.size_; ++i) {
-         append(other[i]);
+         push(*other.ptrs_[i]);
       }
       return *this;
    }
