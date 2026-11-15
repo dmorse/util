@@ -8,7 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
-#include <util/containers/GStack.h>
+#include <util/misc/Memory.h>
 #include <util/global.h>
 
 namespace Util
