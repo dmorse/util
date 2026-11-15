@@ -25,6 +25,7 @@ public:
    void testAssign();
    void testRadialSaveLoad();
    void testRadialAssign();
+   void testRadialOutputManyBins();
 
    template <class T>
    std::string outputString(T& distribution)
@@ -127,11 +128,38 @@ void DistributionTest::testRadialAssign()
    TEST_ASSERT(outputString(copy) == outputString(source));
 }
 
+/*
+* Output of a RadialDistribution with more than 26754 bins, for which
+* 3*i*i overflows an int.
+*/
+void DistributionTest::testRadialOutputManyBins()
+{
+   printMethod(TEST_FUNC);
+
+   const int nBin = 30000;
+   RadialDistribution distribution;
+   distribution.setParam(1.0, nBin);
+   distribution.setNorm(1.0);
+   distribution.beginSnapshot();
+   distribution.sample(1.0 - 0.5/double(nBin));
+
+   // Density in the last bin: one value in a shell of volume dV
+   std::istringstream in(outputString(distribution));
+   double r, rho;
+   for (int i = 0; i < nBin; ++i) {
+      in >> r >> rho;
+   }
+   double rIn = 1.0 - 1.0/double(nBin);
+   double dV = 4.0*std::acos(-1.0)*(1.0 - rIn*rIn*rIn)/3.0;
+   TEST_ASSERT(std::abs(rho*dV - 1.0) < 1.0E-6);
+}
+
 TEST_BEGIN(DistributionTest)
 TEST_ADD(DistributionTest, testBinIndex)
 TEST_ADD(DistributionTest, testAssign)
 TEST_ADD(DistributionTest, testRadialSaveLoad)
 TEST_ADD(DistributionTest, testRadialAssign)
+TEST_ADD(DistributionTest, testRadialOutputManyBins)
 TEST_END(DistributionTest)
 
 #endif
