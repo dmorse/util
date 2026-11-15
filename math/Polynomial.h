@@ -296,7 +296,9 @@ namespace Util
    inline
    Polynomial<T>::Polynomial(Polynomial<T> const & other)
    {
-      GArray<T>::reserve(other.capacity());
+      if (other.capacity() > 0) {
+         GArray<T>::reserve(other.capacity());
+      }
       if (other.size() > 0) {
         for (int i = 0; i < other.size(); ++i) {
             GArray<T>::append(other[i]);
