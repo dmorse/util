@@ -199,6 +199,11 @@ namespace Util
 
       // Constructor sets rootPtr_, stageInterval_ and stageId_
 
+      // Destroy any descendants, which the archive replaces
+      if (Archive::is_loading()) {
+         clearDescendants();
+      }
+
       // Does this stage have a child?
       int hasChild;
       if (Archive::is_saving()) {
