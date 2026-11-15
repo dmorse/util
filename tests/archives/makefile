@@ -1,4 +1,5 @@
 include ../../../config.mk
+include $(SRC_DIR)/util/sources.mk
 include $(SRC_DIR)/util/tests/archives/sources.mk
 include $(SRC_DIR)/util/patterns.mk
 
