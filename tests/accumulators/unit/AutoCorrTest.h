@@ -13,6 +13,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <cmath>
 
 using namespace Util;
 
@@ -34,6 +35,7 @@ public:
    void testSerialize();
    void testSerializeFile();
    void testSaveLoad(); 
+   void testCorrTime();
 
 };
 
@@ -151,12 +153,42 @@ void AutoCorrTest::testSaveLoad()
    clone.output(std::cout);
 }
 
+/*
+* corrTime() must subtract the average, as autoCorrelation(t) does.
+*/
+void AutoCorrTest::testCorrTime()
+{
+   printMethod(TEST_FUNC);
+
+   // Sample the values of in/data, shifted to an average near 10
+   int i, n;
+   double x;
+   std::ifstream dataFile;
+   openInputFile("in/data", dataFile);
+   dataFile >> n;
+   for (i = 0; i < n; ++i) {
+      dataFile >> x;
+      accumulator_.sample(x + 10.0);
+   }
+   dataFile.close();
+
+   // Sum of C(t)/C(0) for 0 < t < capacity/2 (the buffer is full)
+   double sum = 0.0;
+   for (i = 1; i < accumulator_.bufferCapacity()/2; ++i) {
+      sum += accumulator_.autoCorrelation(i);
+   }
+   sum /= accumulator_.autoCorrelation(0);
+
+   TEST_ASSERT(std::abs(accumulator_.corrTime() - sum) < 1.0E-8);
+}
+
 TEST_BEGIN(AutoCorrTest)
 TEST_ADD(AutoCorrTest, testReadParam)
 TEST_ADD(AutoCorrTest, testSample)
 TEST_ADD(AutoCorrTest, testSerialize)
 TEST_ADD(AutoCorrTest, testSerializeFile)
 TEST_ADD(AutoCorrTest, testSaveLoad)
+TEST_ADD(AutoCorrTest, testCorrTime)
 TEST_END(AutoCorrTest)
 
 #endif
