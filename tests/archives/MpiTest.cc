@@ -7,8 +7,9 @@ int main()
    MPI::Init();
    
    TEST_RUNNER(MpiMemoryArchiveTest) test;
-   test.run();
+   int failures = test.run();
 
    MPI::Finalize();
+   return (failures != 0) ? 1 : 0;
 }
 #endif

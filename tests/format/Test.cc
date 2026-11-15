@@ -3,5 +3,6 @@
 int main() 
 {
    TEST_RUNNER(FormatTest) test;
-   test.run();
+   int failures = test.run();
+   return (failures != 0) ? 1 : 0;
 }

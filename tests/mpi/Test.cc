@@ -13,7 +13,7 @@ int main()
    IntVector::commitMpiType();
 
    MpiTestComposite test;
-   test.run();
+   int failures = test.run();
 
    //TEST_RUNNER(MpiSendRecvTest) test1;
    //test1.run();
@@ -28,4 +28,5 @@ int main()
    //test3.run();
 
    MPI::Finalize();
+   return (failures != 0) ? 1 : 0;
 }
