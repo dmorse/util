@@ -86,7 +86,7 @@ namespace Util
       * \return true if current node is the front Node, false otherwise.
       */
       bool isFront() const
-      { return (current_->previous() == 0); }
+      { return (current_->prev() == 0); }
 
       /// \name Operators
       //@{
