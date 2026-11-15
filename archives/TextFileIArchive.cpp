@@ -62,6 +62,22 @@ namespace Util
    {  return *filePtr_; }
 
    /*
+   * Read trailing whitespace and the newline at the end of a record.
+   */
+   void TextFileIArchive::endRecord()
+   {
+      if (!filePtr_->good()) return;
+      int c = filePtr_->peek();
+      while (c == ' ' || c == '\t' || c == '\r') {
+         filePtr_->get();
+         c = filePtr_->peek();
+      }
+      if (c == '\n') {
+         filePtr_->get();
+      }
+   }
+
+   /*
    * Load a std::string from TextFileIArchive.
    */
    template <>
@@ -71,16 +87,10 @@ namespace Util
       size_t size;
       ar.unpack(size);
       if (size > 0) {
-         static std::vector<char> charvec;
-         if (size > charvec.capacity()) {
-            charvec.reserve(size + 8);
-         }
-         // Read endline character after size
-         char   endline;
-         ar.unpack(endline);
-         // Read actual string.
-         ar.unpack(&charvec[0], size);
-         data = &charvec[0];
+         // Read size characters, including any whitespace
+         data.resize(size);
+         ar.file().read(&data[0], size);
+         ar.endRecord();
       } else {
          data = "";
       }
