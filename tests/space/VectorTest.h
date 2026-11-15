@@ -7,6 +7,7 @@
 #include <util/space/Vector.h>
 
 #include <fstream>
+#include <sstream>
 
 using namespace Util;
 
@@ -205,6 +206,21 @@ public:
       std::cout << v << std::endl ;
    }
 
+   /*
+   * Output to a stream in fixed format can be read back.
+   */
+   void testWriteFixed() {
+      printMethod(TEST_FUNC);
+
+      Vector v(1.5, -2.25, 0.125);
+      std::stringstream s;
+      s << std::fixed << v;
+      Vector u;
+      s >> u;
+      TEST_ASSERT(!s.fail());
+      TEST_ASSERT(u == v);
+   }
+
 };
 
 TEST_BEGIN(VectorTest)
@@ -225,6 +241,7 @@ TEST_ADD(VectorTest, testAbs)
 TEST_ADD(VectorTest, testVersor)
 TEST_ADD(VectorTest, testTransverse)
 TEST_ADD(VectorTest, testReadWrite)
+TEST_ADD(VectorTest, testWriteFixed)
 TEST_END(VectorTest)
 
 #endif
