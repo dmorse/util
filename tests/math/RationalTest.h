@@ -240,6 +240,15 @@ public:
       TEST_ASSERT(Memory::total() == 0);
    } 
 
+   void testSelfDivideAssignment()
+   {
+      printMethod(TEST_FUNC);
+      Rational a(3, -7);
+      a /= a;
+      TEST_ASSERT(a.num() == 1);
+      TEST_ASSERT(a.den() == 1);
+   } 
+
    #ifndef UTIL_MPI
    void testStreamInserter()
    {
@@ -303,6 +312,7 @@ TEST_ADD(RationalTest, testAddSubtract)
 TEST_ADD(RationalTest, testMultiplyDivideAssignment)
 TEST_ADD(RationalTest, testMultiplyDivideIntAssignment)
 TEST_ADD(RationalTest, testMultiplyDivide)
+TEST_ADD(RationalTest, testSelfDivideAssignment)
 #ifndef UTIL_MPI
 TEST_ADD(RationalTest, testStreamInserter)
 #endif
