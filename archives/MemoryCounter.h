@@ -14,6 +14,7 @@
 #include <util/space/IntVector.h>
 
 #include <complex>
+#include <vector>
 
 namespace Util
 {
@@ -298,6 +299,20 @@ namespace Util
    {  ar.count(data); }
 
    // Serialize functions for std library types
+
+   /*
+   * Compute size of a std::vector, saved as by MemoryOArchive.
+   */
+   template <typename T>
+   void serialize(MemoryCounter& ar, std::vector<T>& data,
+                  const unsigned int version)
+   {
+      size_t size = data.size();
+      ar.count(size);
+      for (size_t i = 0; i < size; ++i) {
+         ar & data[i];
+      }
+   }
 
    /*
    * Compute size of a std::complex<float>.
