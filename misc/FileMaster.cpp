@@ -272,15 +272,22 @@ namespace Util
    void
    FileMaster::openInputFile(const std::string& name, std::ifstream& in,
                              std::ios_base::openmode mode) const
+   {  open(inputFilePath(name), in, mode); }
+
+   /*
+   * Get the path to an input data file.
+   */
+   std::string FileMaster::inputFilePath(const std::string& name) const
    {
-      // Construct filename = inputPrefix_ + name
+      // Construct filename = rootPrefix_ + directoryIdPrefix_
+      //                      + inputPrefix_ + name
       std::string filename(rootPrefix_);
       if (hasDirectoryId_) {
          filename += directoryIdPrefix_;
       }
       filename += inputPrefix_;
       filename += name;
-      open(filename, in, mode);
+      return filename;
    }
 
    /*

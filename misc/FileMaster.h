@@ -338,6 +338,18 @@ namespace Util
       const;
 
       /**
+      * Get the path to an input file, as used by openInputFile.
+      *
+      * The path is constructed by concatenating:
+      * [rootPrefix] + [directoryIdPrefix] + inputPrefix + filename.
+      * This function does not check whether the file exists.
+      *
+      * \param  filename  file name, without any prefix
+      * \return path to the file
+      */
+      std::string inputFilePath(const std::string& filename) const;
+
+      /**
       * Open an output file.
       *
       * The path to this file constructed by concatenating:
