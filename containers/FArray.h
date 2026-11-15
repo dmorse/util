@@ -314,10 +314,10 @@ namespace Util
          MpiStructBuilder       builder;
          FArray<Data, Capacity> object;
    
+         // One member with Capacity elements (a builder can hold at
+         // most MpiStructBuilder::MaxNBlock members)
          builder.setBase(&object);
-         for (int i = 0; i < Capacity; ++i) {
-            builder.addMember(&(object.data_[i]), MpiTraits<Data>::type);
-         }
+         builder.addMember(object.data_, MpiTraits<Data>::type, Capacity);
          builder.commit(MpiTraits< FArray<Data, Capacity> >::type);
          MpiTraits< FArray<Data, Capacity> >::hasType = true;
       }
