@@ -262,16 +262,6 @@ namespace Util
       // Read a first line of the form "ClassName{" into Label::buffer
       if (paramFileIo_.isIoProcessor()) { 
          Label::read(in);
-
-         if (Label::isClear()) { // Label did not successfully read a string
-            if (isRequired) {
-               Log::file() << "Empty required label read into Factory" 
-                           << std::endl;
-               UTIL_THROW("Empty required label read into Factory");
-            } else { // return null pointer
-               return 0;
-            }
-         }
       }
 
       #ifdef UTIL_MPI
@@ -281,6 +271,18 @@ namespace Util
       }
       // Hereafter, each processor independently processes the same string.
       #endif
+
+      if (Label::isClear()) { // Label did not successfully read a string
+         if (isRequired) {
+            if (paramFileIo_.isIoProcessor()) {
+               Log::file() << "Empty required label read into Factory"
+                           << std::endl;
+            }
+            UTIL_THROW("Empty required label read into Factory");
+         } else { // return null pointer
+            return 0;
+         }
+      }
       length = Label::buffer().size();
 
       // If Label::buffer() = '}', set isEnd=true and return null ptr.
