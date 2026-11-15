@@ -64,13 +64,11 @@ namespace Util
       std::string string;
       line.str(string);
       line.clear();
-      if (!in.eof()) {
-         getline(in, string);
-         line.str(string);
-         return true;
-      } else {
+      if (!std::getline(in, string)) {
          return false;
       }
+      line.str(string);
+      return true;
    }
 
    /*

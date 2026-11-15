@@ -55,6 +55,7 @@ namespace Util
    *
    * \param in input stream from which to read.
    * \param line stringstream containing line, on output.
+   * \return true if a line was read, false if none was left.
    */
    bool getLine(std::istream& in, std::stringstream& line);
 
