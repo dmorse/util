@@ -18,7 +18,8 @@ namespace Util
    * Constructor for rootPtr AverageStage, with stageId = 0.
    */
    AverageStage::AverageStage(int blockFactor)
-    : sum_(0.0),
+    : shift_(0.0),
+      sum_(0.0),
       sumSq_(0.0),
       blockSum_(0.0),
       nSample_(0),
@@ -35,7 +36,8 @@ namespace Util
    */
    AverageStage::AverageStage(long stageInterval, int stageId, 
                               AverageStage* rootPtr, int blockFactor)
-    : sum_(0.0),
+    : shift_(0.0),
+      sum_(0.0),
       sumSq_(0.0),
       blockSum_(0.0),
       nSample_(0),
@@ -79,6 +81,7 @@ namespace Util
    */
    void AverageStage::clear()
    {
+      shift_        = 0.0;
       sum_          = 0.0;
       sumSq_        = 0.0;
       blockSum_     = 0.0;
@@ -97,9 +100,17 @@ namespace Util
    void AverageStage::sample(double value)
    {
 
-      // Increment global accumulators
-      sum_ += value;
-      sumSq_ += (value*value);
+      // Increment global accumulators. The sums are taken relative to
+      // shift_, the first sampled value (or, after loading, the average
+      // of the loaded values): sumSq/n - (sum/n)^2 of raw values loses
+      // all precision when the standard deviation is small compared to
+      // the mean (it can even be negative).
+      if (nSample_ == 0) {
+         shift_ = value;
+      }
+      const double d = value - shift_;
+      sum_ += d;
+      sumSq_ += d*d;
       ++nSample_;
 
       // Increment block accumulators
@@ -131,7 +142,7 @@ namespace Util
    * Return the average of all sampled values.
    */
    double AverageStage::average() const
-   {  return sum_/double(nSample_); }
+   {  return shift_ + sum_/double(nSample_); }
 
    /*
    * Return the variance of all sampled values
@@ -141,7 +152,9 @@ namespace Util
       double rSample_ = double(nSample_);
       double ave   = sum_/rSample_;
       double aveSq = sumSq_/rSample_;
-      return aveSq - ave*ave;
+      double var = aveSq - ave*ave;
+      // Rounding errors can make var slightly negative
+      return (var < 0.0) ? 0.0 : var;
    }
 
    /*
