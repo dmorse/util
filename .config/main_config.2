@@ -30,6 +30,17 @@ else
    endif
 endif
 
+# Define the preprocessor macros of the enabled features
+ifdef UTIL_MPI
+   CPPFLAGS+= -D UTIL_MPI
+endif
+ifdef UTIL_DEBUG
+   CPPFLAGS+= -D UTIL_DEBUG
+endif
+ifdef UTIL_CXX11
+   CPPFLAGS+= -D UTIL_CXX11
+endif
+
 # ======================================================================
 # Makefile Patterns and Recipes
 #

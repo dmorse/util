@@ -111,7 +111,7 @@ while getopts "m:g:b:a:d:e:f:l:s:u:k:c:j:q" opt; do
          echo "-m OFF - MPI" >&2
          MPI=
       fi
-      if [ `grep "^ *UTIL_DEBUG *= *1" util/config.mk` ]; then
+      if [ `grep "^ *UTIL_DEBUG *= *1" config.mk` ]; then
          echo "-g ON  - debugging" >&2
       else
          echo "-g OFF - debugging" >&2
