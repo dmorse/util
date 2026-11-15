@@ -4,6 +4,8 @@
 #include <util/global.h>
 #include <util/mpi/MpiSendRecv.h>
 #include <util/misc/Memory.h>
+#include <util/containers/FArray.h>
+#include <util/containers/Pair.h>
 #include <util/space/Vector.h>
 #include <util/space/IntVector.h>
 
@@ -408,6 +410,51 @@ public:
       }
    }
 
+   void testSendRecvFArray()
+   {
+      printMethod(TEST_FUNC);
+      typedef FArray<int, 3> Array;
+      Array::commitMpiType();
+      Array value[2];
+      if (mpiRank() == 1) {
+         for (int j = 0; j < 2; ++j) {
+            for (int i = 0; i < 3; ++i) {
+               value[j][i] = 10*j + i;
+            }
+         }
+         send<Array>(communicator(), value, 2, 0, 37);
+      } else
+      if (mpiRank() == 0) {
+         recv<Array>(communicator(), value, 2, 1, 37);
+         for (int j = 0; j < 2; ++j) {
+            for (int i = 0; i < 3; ++i) {
+               TEST_ASSERT(value[j][i] == 10*j + i);
+            }
+         }
+      }
+   }
+
+   void testSendRecvPair()
+   {
+      printMethod(TEST_FUNC);
+      Pair<int>::commitMpiType();
+      Pair<int> value[2];
+      if (mpiRank() == 1) {
+         for (int j = 0; j < 2; ++j) {
+            value[j][0] = 10*j;
+            value[j][1] = 10*j + 1;
+         }
+         send< Pair<int> >(communicator(), value, 2, 0, 38);
+      } else
+      if (mpiRank() == 0) {
+         recv< Pair<int> >(communicator(), value, 2, 1, 38);
+         for (int j = 0; j < 2; ++j) {
+            TEST_ASSERT(value[j][0] == 10*j);
+            TEST_ASSERT(value[j][1] == 10*j + 1);
+         }
+      }
+   }
+
    void testMemoryMax()
    {
       printMethod(TEST_FUNC);
@@ -456,6 +503,8 @@ TEST_ADD(MpiSendRecvTest, testBcastDArrayInt)
 TEST_ADD(MpiSendRecvTest, testBcastBool)
 TEST_ADD(MpiSendRecvTest, testBcastString)
 TEST_ADD(MpiSendRecvTest, testBcastDArrayBool)
+TEST_ADD(MpiSendRecvTest, testSendRecvFArray)
+TEST_ADD(MpiSendRecvTest, testSendRecvPair)
 TEST_ADD(MpiSendRecvTest, testMemoryMax)
 TEST_END(MpiSendRecvTest)
 
