@@ -85,7 +85,9 @@ namespace Util
       nSample_      = 0;
       nBlockSample_ = 0;
       if (childPtr_) {
+         // The child's destructor deletes its own descendants.
          delete childPtr_;
+         childPtr_ = 0;
       }
    }
 
