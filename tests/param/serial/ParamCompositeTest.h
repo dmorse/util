@@ -22,6 +22,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 
 using namespace Util;
@@ -503,6 +504,35 @@ public:
       clone.writeParam(std::cout);
    }
 
+   /*
+   * Read a block that ends with an optional parameter and an optional
+   * block, as the System block of pscfpp, from a file whose closing
+   * bracket is its last character.
+   */
+   void testReadEndOfFile()
+   {
+      printMethod(TEST_FUNC);
+
+      ParamComposite composite;
+      BComposite absent;
+      int value0 = 0;
+      int optInt = 0;
+      std::istringstream in("AComposite{\n  value0  37\n}");
+      bool thrown = false;
+      try {
+         composite.readBegin(in, "AComposite");
+         composite.read<int>(in, "value0", value0);
+         composite.readOptional<int>(in, "optInt", optInt);
+         composite.readParamCompositeOptional(in, absent);
+         composite.readEnd(in);
+      } catch (Exception& e) {
+         thrown = true;
+      }
+      Label::clear();
+      TEST_ASSERT(!thrown);
+      TEST_ASSERT(value0 == 37);
+      TEST_ASSERT(!absent.isActive());
+   }
 
 };
 
@@ -516,6 +546,9 @@ TEST_ADD(ParamCompositeTest, testFSArray)
 TEST_ADD(ParamCompositeTest, testSaveLoadWrite)
 TEST_ADD(ParamCompositeTest, testReadSaveLoadWrite1)
 TEST_ADD(ParamCompositeTest, testReadSaveLoadWrite2)
+#ifndef UTIL_MPI
+TEST_ADD(ParamCompositeTest, testReadEndOfFile)
+#endif
 //TEST_ADD(ParamCompositeTest, testMemoryArchiveSerialize)
 TEST_END(ParamCompositeTest)
 
