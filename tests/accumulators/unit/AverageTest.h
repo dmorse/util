@@ -12,6 +12,9 @@
 #include <util/archives/BinaryFileIArchive.h>
 #include <util/archives/BinaryFileOArchive.h>
 
+#include <cmath>
+#include <sstream>
+
 using namespace Util;
 
 class AverageTest : public UnitTest
@@ -31,6 +34,7 @@ public:
    void testSerialize();
    void testSerializeFile();
    void testSaveLoad();
+   void testClearReuse();
 
 };
 
@@ -145,12 +149,54 @@ void AverageTest::testSaveLoad()
    clone.output(std::cout);
 }
 
+/*
+* Clear an Average that has descendant stages and sample again, as an
+* averaging analyzer does in a second simulation. The results must be
+* those of a new Average that samples the same values.
+*/
+void AverageTest::testClearReuse()
+{
+   printMethod(TEST_FUNC);
+
+   Average reused;
+   Average fresh;
+   reused.setNSamplePerBlock(4);
+   fresh.setNSamplePerBlock(4);
+   int i;
+   for (i = 0; i < 100; ++i) {
+      reused.sample(1.0 + std::sin(0.37*i));
+   }
+   reused.clear();
+   TEST_ASSERT(reused.nSample() == 0);
+
+   double x;
+   for (i = 0; i < 70; ++i) {
+      x = 2.0 + std::cos(0.53*i);
+      reused.sample(x);
+      fresh.sample(x);
+   }
+   TEST_ASSERT(reused.nSample() == 70);
+   TEST_ASSERT(reused.average() == fresh.average());
+   TEST_ASSERT(reused.variance() == fresh.variance());
+   TEST_ASSERT(reused.blockingError() == fresh.blockingError());
+   std::ostringstream reusedOut, freshOut;
+   reused.output(reusedOut);
+   fresh.output(freshOut);
+   TEST_ASSERT(reusedOut.str() == freshOut.str());
+
+   // Clear twice, then destroy
+   reused.clear();
+   reused.clear();
+   TEST_ASSERT(reused.nSample() == 0);
+}
+
 TEST_BEGIN(AverageTest)
 TEST_ADD(AverageTest, testReadParam)
 TEST_ADD(AverageTest, testSample)
 TEST_ADD(AverageTest, testSerialize)
 TEST_ADD(AverageTest, testSerializeFile)
 TEST_ADD(AverageTest, testSaveLoad)
+TEST_ADD(AverageTest, testClearReuse)
 TEST_END(AverageTest)
 
 #endif
