@@ -64,6 +64,25 @@ public:
    }
 
    /*
+   * Test of getLine for input that ends with a newline.
+   */
+   void testGetLineEnd() 
+   {
+      printMethod(TEST_FUNC);
+
+      std::istringstream in("first line\n\nthird line\n");
+      std::stringstream line;
+      TEST_ASSERT(getLine(in, line));
+      TEST_ASSERT(line.str() == "first line");
+      TEST_ASSERT(getLine(in, line));
+      TEST_ASSERT(line.str() == "");
+      TEST_ASSERT(getLine(in, line));
+      TEST_ASSERT(line.str() == "third line");
+      TEST_ASSERT(!getLine(in, line));
+      TEST_ASSERT(line.str() == "");
+   }
+
+   /*
    * Test of getNextLine for string argument.
    */
    void testGetNextLine1() 
@@ -151,6 +170,7 @@ public:
 TEST_BEGIN(ioUtilTest)
 TEST_ADD(ioUtilTest, testRStrip)
 TEST_ADD(ioUtilTest, testGetLine)
+TEST_ADD(ioUtilTest, testGetLineEnd)
 TEST_ADD(ioUtilTest, testGetNextLine1)
 TEST_ADD(ioUtilTest, testGetNextLine2)
 TEST_ADD(ioUtilTest, testCheckString)
