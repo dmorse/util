@@ -165,7 +165,7 @@ namespace Util
    */
    template <typename Type, int Capacity>
    void FArrayParam<Type, Capacity>::bcastValue()
-   {  bcast<Type>(ioCommunicator(), *arrayPtr_, Capacity, 0); }
+   {  bcast<Type>(this->ioCommunicator(), arrayPtr_->cArray(), Capacity, 0); }
    #endif
 
 } 
