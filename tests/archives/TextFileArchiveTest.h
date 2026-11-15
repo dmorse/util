@@ -26,6 +26,7 @@ public:
    void testOArchiveConstructor1();
    void testOArchiveConstructor2();
    void testPack();
+   void testPackChar();
 
 };
 
@@ -154,10 +155,62 @@ void TextFileArchiveTest::testPack()
 
 }
 
+/*
+* Characters, including whitespace characters, after other values.
+*/
+void TextFileArchiveTest::testPackChar()
+{
+   printMethod(TEST_FUNC);
+   TextFileOArchive  v;
+   openOutputFile("tmp/TextTestPackChar", v.file());
+
+   int i1 = 13;
+   double d1 = 2.5;
+   std::string s1 = " two  words ";
+   char c1[4] = {'Q', ' ', '\n', '\t'};
+
+   v << i1;
+   for (int k = 0; k < 4; ++k) {
+      v << c1[k];
+   }
+   v << d1;
+   v << c1[0];
+   v << s1;
+   v << c1[1];
+   v << i1;
+   v.file().close();
+
+   TextFileIArchive u;
+   openInputFile("tmp/TextTestPackChar", u.file());
+   int i2;
+   double d2;
+   std::string s2;
+   char c2;
+
+   u >> i2;
+   TEST_ASSERT(i2 == i1);
+   for (int k = 0; k < 4; ++k) {
+      u >> c2;
+      TEST_ASSERT(c2 == c1[k]);
+   }
+   u >> d2;
+   TEST_ASSERT(d2 == d1);
+   u >> c2;
+   TEST_ASSERT(c2 == c1[0]);
+   u >> s2;
+   TEST_ASSERT(s2 == s1);
+   u >> c2;
+   TEST_ASSERT(c2 == c1[1]);
+   u >> i2;
+   TEST_ASSERT(i2 == i1);
+   TEST_ASSERT(!u.file().fail());
+}
+
 TEST_BEGIN(TextFileArchiveTest)
 TEST_ADD(TextFileArchiveTest, testOArchiveConstructor1)
 TEST_ADD(TextFileArchiveTest, testOArchiveConstructor2)
 TEST_ADD(TextFileArchiveTest, testPack)
+TEST_ADD(TextFileArchiveTest, testPackChar)
 TEST_END(TextFileArchiveTest)
 
 #endif
