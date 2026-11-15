@@ -160,6 +160,15 @@ namespace Util
       template <typename T> 
       void unpack(T* array, int m, int n, int np);
 
+      /**
+      * Read the end of a record written by TextFileOArchive::pack().
+      *
+      * Reads spaces, tabs and carriage returns, and then the next
+      * character if it is a newline. Leaves any other character in
+      * the file. Does nothing if the file is not good().
+      */
+      void endRecord();
+
    private:
 
       /// Pointer to input text file.
@@ -234,7 +243,10 @@ namespace Util
    */
    template <typename T>
    inline void TextFileIArchive::unpack(T& data)
-   {  *filePtr_ >> data; }
+   {
+      *filePtr_ >> data;
+      endRecord();
+   }
 
    /*
    * Load a C array.
@@ -245,6 +257,7 @@ namespace Util
       for (int i=0; i < n; ++i) {
          *filePtr_ >> array[i];
       }
+      endRecord();
    }
 
    /*
@@ -258,6 +271,7 @@ namespace Util
          for (j = 0; j < n; ++j) {
             *filePtr_ >> array[i*np + j];
          }
+         endRecord();
       }
    }
 
@@ -266,7 +280,10 @@ namespace Util
    */
    template <>
    inline void TextFileIArchive::unpack(char& data)
-   {   filePtr_->get(data); }
+   {
+      filePtr_->get(data);
+      endRecord();
+   }
 
    /*
    * Load a C-array of characters.
