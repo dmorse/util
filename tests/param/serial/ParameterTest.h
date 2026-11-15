@@ -1415,6 +1415,18 @@ public:
       TEST_ASSERT(!presentPrm2->isRequired());
       TEST_ASSERT(presentPrm2->isActive());
 
+      // Values: read from the file, and loaded equal to read
+      double requiredRef[2][2] = {{36.8, 19.2}, {-0.2, 13.8}};
+      double presentRef[2][2] = {{-3.9, 44.8}, {1.2, -25.9}};
+      for (int i = 0; i < 2; ++i) {
+         for (int j = 0; j < 2; ++j) {
+            TEST_ASSERT(eq(requiredVal(i, j), requiredRef[i][j]));
+            TEST_ASSERT(eq(presentVal(i, j), presentRef[i][j]));
+            TEST_ASSERT(requiredVal2(i, j) == requiredVal(i, j));
+            TEST_ASSERT(presentVal2(i, j) == presentVal(i, j));
+         }
+      }
+
       if (verbose() > 0) {
          printEndl();
          absentPrm2->writeParam(std::cout);
@@ -1593,6 +1605,19 @@ public:
       TEST_ASSERT(requiredPrm2->isRequired());
       TEST_ASSERT(!presentPrm2->isRequired());
       TEST_ASSERT(presentPrm2->isActive());
+
+      // Values: read from the file (the omitted element of Present is
+      // zero), and loaded equal to read
+      double requiredRef[2][2] = {{36.8, 19.2}, {19.2, -3.8}};
+      double presentRef[2][2] = {{0.0, 1.2}, {1.2, 53.8}};
+      for (int i = 0; i < 2; ++i) {
+         for (int j = 0; j < 2; ++j) {
+            TEST_ASSERT(eq(requiredVal(i, j), requiredRef[i][j]));
+            TEST_ASSERT(eq(presentVal(i, j), presentRef[i][j]));
+            TEST_ASSERT(requiredVal2(i, j) == requiredVal(i, j));
+            TEST_ASSERT(presentVal2(i, j) == presentVal(i, j));
+         }
+      }
 
       if (verbose() > 0) {
          printEndl();
