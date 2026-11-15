@@ -14,6 +14,9 @@
 #include <util/param/DMatrixParam.h>
 #include <util/param/DSymmMatrixParam.h>
 
+#include <sstream>
+#include <string>
+
 using namespace Util;
 
 class ParameterTest : public UnitTest 
@@ -1605,6 +1608,39 @@ public:
       delete requiredPrm2;
       delete presentPrm2;
    }
+
+   void testDSymmMatrixParamDoubleReadBadElement()
+   {
+      printMethod(TEST_FUNC);
+      printEndl();
+      DMatrix<double> value;
+      value.allocate(2, 2);
+
+      // Indices out of range (as in 1-based input) and elements that
+      // cannot be read
+      const int nCase = 5;
+      std::string texts[nCase] = {"Required(\n  2  1  20.0\n)\n",
+                                  "Required(\n  1  2  20.0\n)\n",
+                                  "Required(\n  0 -1  20.0\n)\n",
+                                  "Required(\n  a  0  20.0\n)\n",
+                                  "Required(\n  0  1  abc\n)\n"};
+      std::string expected[nCase] = {"out of range", "out of range",
+                                     "out of range", "Error reading",
+                                     "Error reading"};
+      for (int k = 0; k < nCase; ++k) {
+         DSymmMatrixParam<double> param("Required", value, 2);
+         std::istringstream in(texts[k]);
+         std::string message;
+         try {
+            param.readParam(in);
+         } catch (Exception& e) {
+            message = e.message();
+         }
+         Label::clear();
+         TEST_ASSERT(message.find(expected[k]) != std::string::npos);
+      }
+   }
+
    #if 0
    #endif
 
@@ -1675,6 +1711,7 @@ TEST_ADD(ParameterTest, testDSymmMatrixParamDoubleRead)
 TEST_ADD(ParameterTest, testDSymmMatrixParamDoubleRead2)
 #ifndef UTIL_MPI
 TEST_ADD(ParameterTest, testDSymmMatrixParamDoubleReadSaveLoad)
+TEST_ADD(ParameterTest, testDSymmMatrixParamDoubleReadBadElement)
 #endif
 TEST_END(ParameterTest)
 
