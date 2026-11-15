@@ -32,6 +32,7 @@ public:
    void testPack();
    void testPackArray();
    void testSerializeObject();
+   void testPackString();
 
 };
 
@@ -364,6 +365,38 @@ void MemoryArchiveTest::testSerializeObject()
 
 }
 
+/*
+* Strings that contain null characters, followed by an int.
+*/
+void MemoryArchiveTest::testPackString()
+{
+   printMethod(TEST_FUNC);
+   std::string s1[3];
+   s1[0] = "";
+   s1[1] = std::string("a\0b", 3);
+   s1[2] = std::string("ab\0", 3);
+   int i1 = 13;
+
+   MemoryOArchive v;
+   v.allocate(capacity);
+   for (int k = 0; k < 3; ++k) {
+      v << s1[k];
+   }
+   v << i1;
+
+   MemoryIArchive u;
+   u = v;
+   std::string s2;
+   int i2 = 0;
+   for (int k = 0; k < 3; ++k) {
+      u >> s2;
+      TEST_ASSERT(s2 == s1[k]);
+   }
+   u >> i2;
+   TEST_ASSERT(i2 == i1);
+   TEST_ASSERT(u.cursor() == u.end());
+}
+
 TEST_BEGIN(MemoryArchiveTest)
 TEST_ADD(MemoryArchiveTest, testOArchiveConstructor)
 TEST_ADD(MemoryArchiveTest, testOArchiveAllocate)
@@ -373,6 +406,7 @@ TEST_ADD(MemoryArchiveTest, testAssign)
 TEST_ADD(MemoryArchiveTest, testPack)
 TEST_ADD(MemoryArchiveTest, testPackArray)
 TEST_ADD(MemoryArchiveTest, testSerializeObject)
+TEST_ADD(MemoryArchiveTest, testPackString)
 TEST_END(MemoryArchiveTest)
 
 #endif
