@@ -5,6 +5,7 @@
 #include <test/UnitTestRunner.h>
 
 #include <util/accumulators/AutoCorr.h>
+#include <util/accumulators/AutoCorrelation.tpp>
 #include <util/archives/MemoryOArchive.h>
 #include <util/archives/MemoryIArchive.h>
 #include <util/archives/MemoryCounter.h>
@@ -13,6 +14,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <cmath>
 
 using namespace Util;
@@ -36,6 +38,7 @@ public:
    void testSerializeFile();
    void testSaveLoad(); 
    void testCorrTime();
+   void testAutoCorrelationClear();
 
 };
 
@@ -182,6 +185,38 @@ void AutoCorrTest::testCorrTime()
    TEST_ASSERT(std::abs(accumulator_.corrTime() - sum) < 1.0E-8);
 }
 
+/*
+* After clear(), an AutoCorrelation must give the results of a new one.
+*/
+void AutoCorrTest::testAutoCorrelationClear()
+{
+   printMethod(TEST_FUNC);
+
+   AutoCorrelation<double, double> used, fresh;
+   used.setParam(8, 10, 2);
+   fresh.setParam(8, 10, 2);
+
+   // Sample enough values to create several descendant stages
+   int i;
+   for (i = 0; i < 1000; ++i) {
+      used.sample(std::sin(0.3*double(i)));
+   }
+   used.clear();
+
+   double x;
+   for (i = 0; i < 64; ++i) {
+      x = std::cos(0.7*double(i));
+      used.sample(x);
+      fresh.sample(x);
+   }
+   TEST_ASSERT(used.nSample() == fresh.nSample());
+   TEST_ASSERT(used.maxDelay() == fresh.maxDelay());
+   std::ostringstream usedOut, freshOut;
+   used.output(usedOut);
+   fresh.output(freshOut);
+   TEST_ASSERT(usedOut.str() == freshOut.str());
+}
+
 TEST_BEGIN(AutoCorrTest)
 TEST_ADD(AutoCorrTest, testReadParam)
 TEST_ADD(AutoCorrTest, testSample)
@@ -189,6 +224,7 @@ TEST_ADD(AutoCorrTest, testSerialize)
 TEST_ADD(AutoCorrTest, testSerializeFile)
 TEST_ADD(AutoCorrTest, testSaveLoad)
 TEST_ADD(AutoCorrTest, testCorrTime)
+TEST_ADD(AutoCorrTest, testAutoCorrelationClear)
 TEST_END(AutoCorrTest)
 
 #endif
