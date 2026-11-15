@@ -6,9 +6,36 @@
 */
 
 #include "Rational.h"
+#ifdef UTIL_MPI
+#include <util/mpi/MpiStructBuilder.h>
+#endif
 
 namespace Util
 {
+
+   #ifdef UTIL_MPI
+   /*
+   * Initialize MPI Datatype.
+   */
+   MPI::Datatype MpiTraits<Rational>::type = MPI::BYTE;
+   bool MpiTraits<Rational>::hasType = false;
+
+   /*
+   * Commit MPI Datatype.
+   */
+   void Rational::commitMpiType()
+   {
+      if (!MpiTraits<Rational>::hasType) {
+         MpiStructBuilder builder;
+         Rational object;
+         builder.setBase(&object);
+         builder.addMember(&object.num_, MPI::INT);
+         builder.addMember(&object.den_, MPI::INT);
+         builder.commit(MpiTraits<Rational>::type);
+         MpiTraits<Rational>::hasType = true;
+      }
+   }
+   #endif
 
    /*
    * Output stream inserter for a Rational.
