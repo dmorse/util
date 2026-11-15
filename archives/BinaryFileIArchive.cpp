@@ -62,14 +62,14 @@ namespace Util
    void serialize(BinaryFileIArchive& ar, std::string& data, 
                   const unsigned int version)
    {
-      static std::vector<char> charvec;
       size_t size;
       ar.unpack(size);
-      if (size > charvec.capacity()) {
-         charvec.reserve(size + 8);
-      }
+      // The saved size includes the terminating null character
+      UTIL_CHECK(size > 0);
+      std::vector<char> charvec(size);
       ar.unpack(&charvec[0], size);
-      data = &charvec[0];
+      UTIL_CHECK(charvec[size - 1] == '\0');
+      data.assign(&charvec[0], size - 1);
    }
 
 
