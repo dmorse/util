@@ -103,6 +103,8 @@ namespace Util
       /**
       * Set actual number of sequences in ensemble.
       *
+      * A change of the number of sequences clears the accumulator.
+      *
       * \pre readParam() or setParam() must have been called previously
       * \pre nEnsemble <= ensembleCapacity
       *
@@ -281,7 +283,10 @@ namespace Util
       if (nEnsemble > ensembleCapacity_) {
          UTIL_THROW("nEnsemble > ensembleCapacity_");      
       }
-      nEnsemble_ = nEnsemble;
+      if (nEnsemble != nEnsemble_) {
+         clear();
+         nEnsemble_ = nEnsemble;
+      }
    }
 
    /* 
