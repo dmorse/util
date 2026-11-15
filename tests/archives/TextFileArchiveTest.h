@@ -27,6 +27,7 @@ public:
    void testOArchiveConstructor2();
    void testPack();
    void testPackChar();
+   void testPackCharArray();
 
 };
 
@@ -95,6 +96,67 @@ void TextFileArchiveTest::testPackChar()
    u >> i2;
    TEST_ASSERT(i2 == i1);
    TEST_ASSERT(!u.file().fail());
+}
+
+/*
+* Arrays of characters, including whitespace characters.
+*/
+void TextFileArchiveTest::testPackCharArray()
+{
+   printMethod(TEST_FUNC);
+   TextFileOArchive  v;
+   openOutputFile("tmp/TextTestPackCharArray", v.file());
+
+   int i1 = 13;
+   char b1[4] = {'A', ' ', '\n', 'Z'};
+   char m1[2][3] = {{'a', 'b', 'x'}, {'\t', 'd', 'x'}};
+   v.pack(b1, 4);
+   v.pack(m1[0], 2, 2, 3);
+   v << i1;
+   v.file().close();
+
+   TextFileIArchive u;
+   openInputFile("tmp/TextTestPackCharArray", u.file());
+   int i2 = 0;
+   char b2[5] = {'#', '#', '#', '#', '#'};
+   char m2[2][3] = {{'#', '#', '#'}, {'#', '#', '#'}};
+   u.unpack(b2, 4);
+   u.unpack(m2[0], 2, 2, 3);
+   u >> i2;
+   TEST_ASSERT(!u.file().fail());
+
+   for (int j = 0; j < 4; ++j) {
+      TEST_ASSERT(b2[j] == b1[j]);
+   }
+   TEST_ASSERT(b2[4] == '#');
+   for (int i = 0; i < 2; ++i) {
+      for (int j = 0; j < 2; ++j) {
+         TEST_ASSERT(m2[i][j] == m1[i][j]);
+      }
+      TEST_ASSERT(m2[i][2] == '#');
+   }
+   TEST_ASSERT(i2 == i1);
+
+   // Arrays without separators, as written by hand
+   std::ofstream out;
+   openOutputFile("tmp/TextTestPackCharArray2", out);
+   out << "ABC\nab\ncd\n7\n";
+   out.close();
+   TextFileIArchive w;
+   openInputFile("tmp/TextTestPackCharArray2", w.file());
+   int i3 = 0;
+   char b3[4] = {'#', '#', '#', '#'};
+   char m3[2][3] = {{'#', '#', '#'}, {'#', '#', '#'}};
+   w.unpack(b3, 3);
+   w.unpack(m3[0], 2, 2, 3);
+   w >> i3;
+   TEST_ASSERT(!w.file().fail());
+   TEST_ASSERT(b3[0] == 'A' && b3[1] == 'B' && b3[2] == 'C');
+   TEST_ASSERT(b3[3] == '#');
+   TEST_ASSERT(m3[0][0] == 'a' && m3[0][1] == 'b');
+   TEST_ASSERT(m3[1][0] == 'c' && m3[1][1] == 'd');
+   TEST_ASSERT(m3[0][2] == '#' && m3[1][2] == '#');
+   TEST_ASSERT(i3 == 7);
 }
 
 void TextFileArchiveTest::testPack()
@@ -211,6 +273,7 @@ TEST_ADD(TextFileArchiveTest, testOArchiveConstructor1)
 TEST_ADD(TextFileArchiveTest, testOArchiveConstructor2)
 TEST_ADD(TextFileArchiveTest, testPack)
 TEST_ADD(TextFileArchiveTest, testPackChar)
+TEST_ADD(TextFileArchiveTest, testPackCharArray)
 TEST_END(TextFileArchiveTest)
 
 #endif
