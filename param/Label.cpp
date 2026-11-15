@@ -127,7 +127,12 @@ namespace Util
    {
       UTIL_CHECK(label.string_.size() > 0);
 
-      if (in.eof()) {
+      // End-of-file means that the label is absent only if the buffer
+      // is clear. A string already in the buffer, such as a closing
+      // bracket that is the last character of the file and that was
+      // read by a failed attempt to match an optional label, must
+      // still be compared to the expected label.
+      if (Label::isClear_ && in.eof()) {
          if (label.isRequired()) {
             Log::file() << "End-of-file before reading required Label" 
                         << std::endl;
