@@ -178,7 +178,7 @@ namespace Util
    */
    template <class Type>
    void DArrayParam<Type>::bcastValue()
-   {  bcast<Type>(ioCommunicator(), *arrayPtr_, n(), 0); }
+   {  bcast<Type>(this->ioCommunicator(), *arrayPtr_, n(), 0); }
    #endif
 
 } 

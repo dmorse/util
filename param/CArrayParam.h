@@ -116,7 +116,7 @@ namespace Util
    */
    template <class Type>
    void CArrayParam<Type>::bcastValue()
-   {  bcast<Type>(ioCommunicator(), value_, n(), 0); }
+   {  bcast<Type>(this->ioCommunicator(), value_, n(), 0); }
    #endif
 
 } 

@@ -250,7 +250,7 @@ namespace Util
             UTIL_THROW("Error: Logical size n() > DMatrix<Type>::capacity2()");
          }
       }
-      bcast<Type>(ioCommunicator(), *matrixPtr_, n(), n(), 0); 
+      bcast<Type>(this->ioCommunicator(), *matrixPtr_, n(), n(), 0);
    }
    #endif
 

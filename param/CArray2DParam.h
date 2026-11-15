@@ -155,7 +155,7 @@ namespace Util
    */
    template <class Type>
    void CArray2DParam<Type>::bcastValue()
-   {  bcast<Type>(ioCommunicator(), ptr_, m()*np_, 0); }
+   {  bcast<Type>(this->ioCommunicator(), ptr_, m()*np_, 0); }
    #endif
 
    /*
