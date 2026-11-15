@@ -28,6 +28,7 @@
 #include "GridArrayTest.h"
 
 #include "ListTest.h"
+#include "ListArrayTest.h"
 
 TEST_COMPOSITE_BEGIN(ContainersTestComposite)
 
@@ -55,6 +56,7 @@ TEST_COMPOSITE_ADD_UNIT(DRaggedMatrixTest)
 TEST_COMPOSITE_ADD_UNIT(GridArrayTest)
 
 TEST_COMPOSITE_ADD_UNIT(ListTest)
+TEST_COMPOSITE_ADD_UNIT(ListArrayTest)
 
 TEST_COMPOSITE_END
 
