@@ -17,7 +17,7 @@ int main()
    #endif
 
    MiscTestComposite test;
-   test.run();
+   int failures = test.run();
 
    #if 0
    TEST_RUNNER(ioUtilTest) test2;
@@ -34,4 +34,5 @@ int main()
    MPI::Finalize();
    #endif
 
+   return (failures != 0) ? 1 : 0;
 }

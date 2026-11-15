@@ -2,6 +2,7 @@
 int main()
 {
    SpaceTestComposite runner;
-   runner.run();
+   int failures = runner.run();
+   return (failures != 0) ? 1 : 0;
 }
 

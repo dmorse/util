@@ -16,11 +16,11 @@ int main()
    #endif
 
    ParamTestComposite runner;
-   runner.run();
+   int failures = runner.run();
 
    #ifdef UTIL_MPI
    MPI::Finalize();
    #endif
 
-
+   return (failures != 0) ? 1 : 0;
 }
