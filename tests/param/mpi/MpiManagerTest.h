@@ -133,6 +133,35 @@ public:
    }
 
    /**
+   * Call readObjectOptional after the last object of a file.
+   */
+   void testFactoryReadObjectOptionalEnd()
+   {
+      printMethod(TEST_FUNC);
+
+      AFactory    factory;
+      AManager    manager;
+      std::string className;
+      A*          ptr = 0;
+      bool        isEnd = false;
+
+      manager.setIoCommunicator(communicator());
+
+      std::ifstream in;
+      if (manager.isIoProcessor()) {
+         in.open("in/Factory");
+      }
+      ptr = factory.readObject(in, manager, className, isEnd);
+      TEST_ASSERT(ptr->className() == "B");
+      delete ptr;
+
+      // No label is left: every processor must return a null pointer
+      ptr = factory.readObjectOptional(in, manager, className, isEnd);
+      TEST_ASSERT(ptr == 0);
+      TEST_ASSERT(Label::isClear());
+   }
+
+   /**
    * Read single file in/Manager.
    */
    void testManager1() 
@@ -225,6 +254,7 @@ TEST_BEGIN(MpiManagerTest)
 TEST_ADD(MpiManagerTest, testFactory)
 TEST_ADD(MpiManagerTest, testFactoryReadObject)
 TEST_ADD(MpiManagerTest, testFactoryReadObjectOptional)
+TEST_ADD(MpiManagerTest, testFactoryReadObjectOptionalEnd)
 TEST_ADD(MpiManagerTest, testManager1)
 TEST_ADD(MpiManagerTest, testManager2)
 TEST_ADD(MpiManagerTest, testManager3)
