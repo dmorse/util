@@ -35,6 +35,7 @@ public:
 
    void testPushPop();
    void testPushPopEmpty();
+   void testClear();
 
 };
 
@@ -145,9 +146,33 @@ void GStackTest::testPushPopEmpty()
    TEST_ASSERT(Memory::total() == memory_);
 }
 
+void GStackTest::testClear()
+{
+   printMethod(TEST_FUNC);
+
+   stack().reserve(4);
+   stack().push(array()[1]);
+   stack().push(array()[2]);
+   stack().push(array()[3]);
+   stack().clear();
+   TEST_ASSERT(stack().size() == 0);
+   TEST_ASSERT(stack().capacity() == 4);
+   TEST_ASSERT(stack().isValid());
+
+   stack().push(array()[4]);
+   TEST_ASSERT(stack().size() == 1);
+   TEST_ASSERT(stack().isValid());
+   TEST_ASSERT(&stack().pop() == &array()[4]);
+
+   delete arrayPtr;
+   delete parrayPtr;
+   TEST_ASSERT(Memory::total() == memory_);
+}
+
 TEST_BEGIN(GStackTest)
 TEST_ADD(GStackTest, testPushPop)
 TEST_ADD(GStackTest, testPushPopEmpty)
+TEST_ADD(GStackTest, testClear)
 TEST_END(GStackTest)
 
 #endif
