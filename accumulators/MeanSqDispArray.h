@@ -366,9 +366,9 @@ namespace Util
    inline double 
    MeanSqDispArray<int>::sqDiff(const int& data1, const int& data2) 
    {
-      int diff; 
-      diff = data1 - data2;
-      return double(diff*diff);
+      // Convert first: data1 - data2 or its square can overflow an int
+      double diff = double(data1) - double(data2);
+      return diff*diff;
    }
 
    /**
