@@ -63,6 +63,31 @@ public:
       TEST_ASSERT(r[2].den() == 1);
    }
 
+   void testCopyConstructor()
+   {
+      printMethod(TEST_FUNC);
+
+      DArray<Rational> coeffs;
+      coeffs.allocate(2);
+      coeffs[0] = Rational(2,3);
+      coeffs[1] = Rational(3,-7);
+      Polynomial<Rational> r(coeffs);
+      Polynomial<Rational> s(r);
+      TEST_ASSERT(s == r);
+      TEST_ASSERT(s.capacity() == 2);
+
+      // Copy a zero polynomial with zero capacity
+      DArray<Rational> empty;
+      Polynomial<Rational> z(empty);
+      TEST_ASSERT(z.capacity() == 0);
+      Polynomial<Rational> t(z);
+      TEST_ASSERT(t.size() == 0);
+      TEST_ASSERT(t(Rational(2)) == 0);
+      t += Rational(3);
+      TEST_ASSERT(t.degree() == 0);
+      TEST_ASSERT(t[0] == 3);
+   }
+
    void testAssignment1()
    {
       printMethod(TEST_FUNC);
@@ -407,6 +432,7 @@ TEST_BEGIN(PolynomialTest)
 TEST_ADD(PolynomialTest, testDefaultConstructor)
 TEST_ADD(PolynomialTest, testConstantConstructor)
 TEST_ADD(PolynomialTest, testArrayConstructor)
+TEST_ADD(PolynomialTest, testCopyConstructor)
 TEST_ADD(PolynomialTest, testAssignment1)
 TEST_ADD(PolynomialTest, testAssignment2)
 TEST_ADD(PolynomialTest, testEquality)
