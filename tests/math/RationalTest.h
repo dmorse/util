@@ -8,6 +8,7 @@
 #include <util/misc/Memory.h>
 
 #include <fstream>
+#include <sstream>
 
 using namespace Util;
 
@@ -281,6 +282,32 @@ public:
       TEST_ASSERT(a.num() == 3);
       TEST_ASSERT(a.den() == 1);
    }
+
+   void testStreamExtractorReduce()
+   {
+      printMethod(TEST_FUNC);
+      Rational a;
+      std::istringstream in("2/4  0/2  -2/6  6/3");
+
+      in >> a;
+      TEST_ASSERT(a.num() == 1);
+      TEST_ASSERT(a.den() == 2);
+      TEST_ASSERT(a == Rational(1, 2));
+
+      in >> a;
+      TEST_ASSERT(a.num() == 0);
+      TEST_ASSERT(a.den() == 1);
+      TEST_ASSERT(a == 0);
+
+      in >> a;
+      TEST_ASSERT(a.num() == -1);
+      TEST_ASSERT(a.den() == 3);
+
+      in >> a;
+      TEST_ASSERT(a.num() == 2);
+      TEST_ASSERT(a.den() == 1);
+      TEST_ASSERT(a == 2);
+   }
    #endif
 
 };
@@ -308,6 +335,7 @@ TEST_ADD(RationalTest, testStreamInserter)
 #endif
 #ifdef UTIL_CXX11
 TEST_ADD(RationalTest, testStreamExtractor)
+TEST_ADD(RationalTest, testStreamExtractorReduce)
 #endif
 TEST_END(RationalTest)
 
