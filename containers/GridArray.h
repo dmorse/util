@@ -8,6 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+#include <util/space/IntVector.h>
 #include <util/misc/Memory.h>
 #include <util/global.h>
 
