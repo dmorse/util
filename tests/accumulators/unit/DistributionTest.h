@@ -6,6 +6,9 @@
 
 #include <util/accumulators/Distribution.h>
 #include <util/accumulators/IntDistribution.h>
+#include <util/accumulators/RadialDistribution.h>
+#include <util/archives/BinaryFileIArchive.h>
+#include <util/archives/BinaryFileOArchive.h>
 
 #include <cmath>
 #include <sstream>
@@ -20,6 +23,7 @@ public:
 
    void testBinIndex();
    void testAssign();
+   void testRadialSaveLoad();
 
    template <class T>
    std::string outputString(T& distribution)
@@ -74,9 +78,38 @@ void DistributionTest::testAssign()
    TEST_ASSERT(outputString(intOtherSize) == outputString(intSource));
 }
 
+/*
+* RadialDistribution::load() must read the archive written by save().
+*/
+void DistributionTest::testRadialSaveLoad()
+{
+   printMethod(TEST_FUNC);
+
+   RadialDistribution source;
+   source.setParam(2.0, 4);
+   source.setNorm(1.5);
+   source.beginSnapshot();
+   source.sample(0.3);
+   source.sample(1.1);
+
+   BinaryFileOArchive u;
+   openOutputFile("tmp/DistributionTestRadialSaveLoad", u.file());
+   source.save(u);
+   u.file().close();
+
+   RadialDistribution clone;
+   BinaryFileIArchive v;
+   openInputFile("tmp/DistributionTestRadialSaveLoad", v.file());
+   clone.load(v);
+   v.file().close();
+
+   TEST_ASSERT(outputString(clone) == outputString(source));
+}
+
 TEST_BEGIN(DistributionTest)
 TEST_ADD(DistributionTest, testBinIndex)
 TEST_ADD(DistributionTest, testAssign)
+TEST_ADD(DistributionTest, testRadialSaveLoad)
 TEST_END(DistributionTest)
 
 #endif
