@@ -39,6 +39,7 @@ public:
    void testSaveLoad(); 
    void testCorrTime();
    void testAutoCorrelationClear();
+   void testAutoCorrelationLoad();
 
 };
 
@@ -217,6 +218,48 @@ void AutoCorrTest::testAutoCorrelationClear()
    TEST_ASSERT(usedOut.str() == freshOut.str());
 }
 
+/*
+* Loading an AutoCorrelation from an archive must replace its stages.
+*/
+void AutoCorrTest::testAutoCorrelationLoad()
+{
+   printMethod(TEST_FUNC);
+
+   // Save an AutoCorrelation with one value, and thus no child stage
+   AutoCorrelation<double, double> source;
+   source.setParam(8, 3, 2);
+   source.sample(1.0);
+   MemoryOArchive u;
+   u.allocate(memorySize(source));
+   u << source;
+
+   // Load it into an AutoCorrelation with 4 stages
+   AutoCorrelation<double, double> used;
+   used.setParam(8, 3, 2);
+   int i;
+   for (i = 0; i < 1000; ++i) {
+      used.sample(std::sin(0.3*double(i)));
+   }
+   MemoryIArchive v;
+   v = u;
+   v >> used;
+   TEST_ASSERT(used.nSample() == 1);
+   TEST_ASSERT(used.maxDelay() == source.maxDelay());
+
+   // Sample more values
+   double x;
+   for (i = 0; i < 64; ++i) {
+      x = std::cos(0.7*double(i));
+      source.sample(x);
+      used.sample(x);
+   }
+   TEST_ASSERT(used.maxDelay() == source.maxDelay());
+   std::ostringstream usedOut, sourceOut;
+   used.output(usedOut);
+   source.output(sourceOut);
+   TEST_ASSERT(usedOut.str() == sourceOut.str());
+}
+
 TEST_BEGIN(AutoCorrTest)
 TEST_ADD(AutoCorrTest, testReadParam)
 TEST_ADD(AutoCorrTest, testSample)
@@ -225,6 +268,7 @@ TEST_ADD(AutoCorrTest, testSerializeFile)
 TEST_ADD(AutoCorrTest, testSaveLoad)
 TEST_ADD(AutoCorrTest, testCorrTime)
 TEST_ADD(AutoCorrTest, testAutoCorrelationClear)
+TEST_ADD(AutoCorrTest, testAutoCorrelationLoad)
 TEST_END(AutoCorrTest)
 
 #endif
