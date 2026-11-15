@@ -36,6 +36,7 @@ public:
    void testSaveLoad();
    void testClearReuse();
    void testLoadUsed();
+   void testNearlyConstant();
 
 };
 
@@ -242,6 +243,49 @@ void AverageTest::testLoadUsed()
    TEST_ASSERT(used3.blockingError() == few.blockingError());
 }
 
+/*
+* Series with a standard deviation that is small compared to the mean.
+*/
+void AverageTest::testNearlyConstant()
+{
+   printMethod(TEST_FUNC);
+
+   // Constant series: all variances and errors are zero
+   Average constant;
+   int i;
+   for (i = 0; i < 1000; ++i) {
+      constant.sample(43.038536);
+   }
+   TEST_ASSERT(constant.variance() == 0.0);
+   TEST_ASSERT(constant.stdDeviation() == 0.0);
+   TEST_ASSERT(constant.error() == 0.0);
+   TEST_ASSERT(constant.blockingError() == 0.0);
+
+   // Mean 774, standard deviation 7e-6: compare with two-pass values
+   Average ave;
+   const int n = 1000;
+   double d[n];
+   double mean = 0.0;
+   for (i = 0; i < n; ++i) {
+      ave.sample(774.0 + 1.0E-5*std::sin(1.3*i));
+      d[i] = (774.0 + 1.0E-5*std::sin(1.3*i)) - 774.0; // exact
+      mean += d[i];
+   }
+   mean /= double(n);
+   double variance = 0.0;
+   for (i = 0; i < n; ++i) {
+      variance += (d[i] - mean)*(d[i] - mean);
+   }
+   variance /= double(n);
+   double error = std::sqrt(variance/double(n - 1));
+   TEST_ASSERT(std::abs(ave.average() - 774.0 - mean) < 1.0E-12);
+   TEST_ASSERT(std::abs(ave.variance()/variance - 1.0) < 1.0E-6);
+   TEST_ASSERT(std::abs(ave.error()/error - 1.0) < 1.0E-6);
+   double blockingError = ave.blockingError();
+   TEST_ASSERT(blockingError > 0.0);
+   TEST_ASSERT(blockingError < 1.0E-5);
+}
+
 TEST_BEGIN(AverageTest)
 TEST_ADD(AverageTest, testReadParam)
 TEST_ADD(AverageTest, testSample)
@@ -250,6 +294,7 @@ TEST_ADD(AverageTest, testSerializeFile)
 TEST_ADD(AverageTest, testSaveLoad)
 TEST_ADD(AverageTest, testClearReuse)
 TEST_ADD(AverageTest, testLoadUsed)
+TEST_ADD(AverageTest, testNearlyConstant)
 TEST_END(AverageTest)
 
 #endif
