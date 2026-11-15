@@ -9,6 +9,8 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
+#include <string>
 
 using namespace Util;
 
@@ -114,6 +116,20 @@ public:
       delete param;
    }
 
+   void testBeginReadEndOfFile() {
+      printMethod(TEST_FUNC);
+      // An optional block is absent if the input ends before its label
+      const int nCase = 3;
+      std::string texts[nCase] = {"", "\n", "  \n  "};
+      for (int k = 0; k < nCase; ++k) {
+         Begin param("ClassName", false);
+         std::istringstream in(texts[k]);
+         param.readParam(in);
+         TEST_ASSERT(!param.isActive());
+         Label::clear();
+      }
+   }
+
    void testEndWrite() {
       printMethod(TEST_FUNC);
       End* param;
@@ -146,6 +162,7 @@ TEST_ADD(BeginEndTest, testBeginWrite)
 TEST_ADD(BeginEndTest, testBeginRead1)
 TEST_ADD(BeginEndTest, testBeginRead2)
 TEST_ADD(BeginEndTest, testBeginRead3)
+TEST_ADD(BeginEndTest, testBeginReadEndOfFile)
 TEST_ADD(BeginEndTest, testEndWrite)
 TEST_ADD(BeginEndTest, testEndRead)
 TEST_END(BeginEndTest)
