@@ -2,7 +2,10 @@
 #define IO_UTIL_TEST_H
 
 #include <util/misc/ioUtil.h>
+#include <util/misc/FileMaster.h>
 #include <util/global.h>
+
+#include <cstdio>
 
 #ifdef UTIL_MPI
 #ifndef TEST_MPI
@@ -165,6 +168,32 @@ public:
       TEST_ASSERT(!flag);
    }
 
+   /*
+   * Test of FileMaster restart files with a root prefix and a 
+   * directory id prefix.
+   */
+   void testRestartFile() 
+   {
+      printMethod(TEST_FUNC);
+
+      FileMaster fileMaster;
+      fileMaster.setRootPrefix(filePrefix() + "out/");
+      fileMaster.setDirectoryId(0);
+
+      std::ofstream out;
+      fileMaster.openRestartOFile("restart", out);
+      out << 13 << std::endl;
+      out.close();
+
+      std::ifstream in;
+      fileMaster.openRestartIFile("restart", in);
+      int i = 0;
+      in >> i;
+      in.close();
+      TEST_ASSERT(i == 13);
+      std::remove((filePrefix() + "out/0/restart").c_str());
+   }
+
 };
 
 TEST_BEGIN(ioUtilTest)
@@ -174,6 +203,7 @@ TEST_ADD(ioUtilTest, testGetLineEnd)
 TEST_ADD(ioUtilTest, testGetNextLine1)
 TEST_ADD(ioUtilTest, testGetNextLine2)
 TEST_ADD(ioUtilTest, testCheckString)
+TEST_ADD(ioUtilTest, testRestartFile)
 TEST_END(ioUtilTest)
 
 #endif
