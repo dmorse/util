@@ -275,6 +275,22 @@ public:
       }
    }
 
+   void testBcastFArray()
+   {
+      printMethod(TEST_FUNC);
+      // Capacity larger than the maximum number of builder members
+      typedef FArray<double, 25> Array;
+      Array::commitMpiType();
+      Array value;
+      for (int i = 0; i < 25; ++i) {
+         value[i] = (mpiRank() == 0) ? 0.5*i : -1.0;
+      }
+      bcast<Array>(communicator(), value, 0);
+      for (int i = 0; i < 25; ++i) {
+         TEST_ASSERT(eq(value[i], 0.5*i));
+      }
+   }
+
    void testBcastInt() 
    {
       printMethod(TEST_FUNC);
@@ -471,6 +487,7 @@ TEST_ADD(MpiSendRecvTest, testSendRecvDArrayBool)
 TEST_ADD(MpiSendRecvTest, testSendRecvCArrayBool)
 TEST_ADD(MpiSendRecvTest, testSendRecvFArray)
 TEST_ADD(MpiSendRecvTest, testSendRecvPair)
+TEST_ADD(MpiSendRecvTest, testBcastFArray)
 TEST_ADD(MpiSendRecvTest, testBcastInt)
 TEST_ADD(MpiSendRecvTest, testBcastVector)
 TEST_ADD(MpiSendRecvTest, testBcastIntVector)
