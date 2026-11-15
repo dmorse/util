@@ -6,6 +6,7 @@
 #include <util/misc/Memory.h>
 #include <util/containers/FArray.h>
 #include <util/containers/Pair.h>
+#include <util/math/Rational.h>
 #include <util/space/Vector.h>
 #include <util/space/IntVector.h>
 
@@ -471,6 +472,20 @@ public:
       }
    }
 
+   void testBcastRational()
+   {
+      printMethod(TEST_FUNC);
+      Rational::commitMpiType();
+      Rational value[2];
+      if (mpiRank() == 0) {
+         value[0] = Rational(2, 3);
+         value[1] = Rational(-5, 7);
+      }
+      bcast<Rational>(communicator(), value, 2, 0);
+      TEST_ASSERT(value[0].num() == 2 && value[0].den() == 3);
+      TEST_ASSERT(value[1].num() == -5 && value[1].den() == 7);
+   }
+
    void testMemoryMax()
    {
       printMethod(TEST_FUNC);
@@ -522,6 +537,7 @@ TEST_ADD(MpiSendRecvTest, testBcastDArrayBool)
 TEST_ADD(MpiSendRecvTest, testSendRecvFArray)
 TEST_ADD(MpiSendRecvTest, testSendRecvPair)
 TEST_ADD(MpiSendRecvTest, testBcastFArray)
+TEST_ADD(MpiSendRecvTest, testBcastRational)
 TEST_ADD(MpiSendRecvTest, testMemoryMax)
 TEST_END(MpiSendRecvTest)
 
