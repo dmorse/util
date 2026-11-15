@@ -36,6 +36,7 @@ public:
    void testPushPop();
    void testPushPopEmpty();
    void testClear();
+   void testAssign();
 
 };
 
@@ -169,10 +170,41 @@ void GStackTest::testClear()
    TEST_ASSERT(Memory::total() == memory_);
 }
 
+void GStackTest::testAssign()
+{
+   printMethod(TEST_FUNC);
+   {
+      GStack<Data> other;
+      other.reserve(4);
+      other.push(array()[1]);
+      other.push(array()[2]);
+
+      // Assign to a stack with more elements
+      stack().reserve(4);
+      stack().push(array()[5]);
+      stack().push(array()[6]);
+      stack().push(array()[7]);
+      stack() = other;
+      TEST_ASSERT(stack().size() == 2);
+      TEST_ASSERT(stack().capacity() == 4);
+      TEST_ASSERT(stack().isValid());
+      TEST_ASSERT(&stack().pop() == &array()[2]);
+      TEST_ASSERT(&stack().pop() == &array()[1]);
+
+      // The other stack is unchanged
+      TEST_ASSERT(other.size() == 2);
+      TEST_ASSERT(&other.peek() == &array()[2]);
+   }
+   delete arrayPtr;
+   delete parrayPtr;
+   TEST_ASSERT(Memory::total() == memory_);
+}
+
 TEST_BEGIN(GStackTest)
 TEST_ADD(GStackTest, testPushPop)
 TEST_ADD(GStackTest, testPushPopEmpty)
 TEST_ADD(GStackTest, testClear)
+TEST_ADD(GStackTest, testAssign)
 TEST_END(GStackTest)
 
 #endif
