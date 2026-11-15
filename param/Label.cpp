@@ -6,6 +6,9 @@
 */
 
 #include "Label.h"
+#ifdef UTIL_MPI
+#include <util/mpi/MpiSendRecv.h>
+#endif
 
 #include <iomanip>
 
@@ -52,6 +55,17 @@ namespace Util
          }
       }
    }
+
+   #ifdef UTIL_MPI
+   /*
+   * Broadcast the buffer from processor 0 and set isClear (static).
+   */
+   void Label::bcast(MPI::Intracomm& communicator)
+   {
+      Util::bcast<std::string>(communicator, buffer_, 0);
+      isClear_ = buffer_.empty();
+   }
+   #endif
 
    // Non-static member functions
 

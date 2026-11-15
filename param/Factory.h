@@ -277,7 +277,7 @@ namespace Util
       #ifdef UTIL_MPI
       // Broadcast the full string to all processors.
       if (paramFileIo_.hasIoCommunicator()) {
-         bcast<std::string>(paramFileIo_.ioCommunicator(), Label::buffer(), 0);
+         Label::bcast(paramFileIo_.ioCommunicator());
       }
       // Hereafter, each processor independently processes the same string.
       #endif
