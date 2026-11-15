@@ -107,6 +107,18 @@ namespace Util
       */ 
       static std::string buffer();
 
+      #ifdef UTIL_MPI
+      /**
+      * Broadcast the input buffer from processor 0 of a communicator.
+      *
+      * Copies the buffer of processor 0 to the other processors, which
+      * must all call this function, and sets isClear accordingly.
+      *
+      * \param communicator MPI communicator
+      */
+      static void bcast(MPI::Intracomm& communicator);
+      #endif
+
       /**
       * Is the input buffer clear?
       */
