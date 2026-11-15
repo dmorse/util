@@ -87,6 +87,52 @@ public:
    }
 
    /**
+   * Read an object of a class unknown to the first factory.
+   */
+   void testFactoryReadObjectOptional()
+   {
+      printMethod(TEST_FUNC);
+
+      AFactory       factory;
+      CustomAFactory customFactory;
+      AManager       manager;
+      std::string    className;
+      A*             ptr = 0;
+      bool           isEnd = false;
+
+      manager.setIoCommunicator(communicator());
+
+      std::ifstream in;
+      if (manager.isIoProcessor()) {
+         in.open("in/FactoryOptional");
+      }
+
+      // AFactory does not know class D: it leaves "D{" in the buffer
+      ptr = factory.readObjectOptional(in, manager, className, isEnd);
+      TEST_ASSERT(ptr == 0);
+      TEST_ASSERT(className == "D");
+      TEST_ASSERT(!isEnd);
+      TEST_ASSERT(Label::buffer() == "D{");
+      TEST_ASSERT(!Label::isClear());
+      TEST_ASSERT(!Label::isMatched());
+
+      // CustomAFactory creates the D object from the buffer
+      ptr = customFactory.readObjectOptional(in, manager, className, isEnd);
+      TEST_ASSERT(ptr != 0);
+      TEST_ASSERT(ptr->className() == "D");
+      TEST_ASSERT(Label::isClear());
+      TEST_ASSERT(Label::isMatched());
+      delete ptr;
+
+      // The closing bracket of the enclosing block stays in the buffer
+      ptr = factory.readObjectOptional(in, manager, className, isEnd);
+      TEST_ASSERT(ptr == 0);
+      TEST_ASSERT(isEnd);
+      TEST_ASSERT(Label::buffer() == "}");
+      Label::clear();
+   }
+
+   /**
    * Read single file in/Manager.
    */
    void testManager1() 
@@ -178,6 +224,7 @@ public:
 TEST_BEGIN(MpiManagerTest)
 TEST_ADD(MpiManagerTest, testFactory)
 TEST_ADD(MpiManagerTest, testFactoryReadObject)
+TEST_ADD(MpiManagerTest, testFactoryReadObjectOptional)
 TEST_ADD(MpiManagerTest, testManager1)
 TEST_ADD(MpiManagerTest, testManager2)
 TEST_ADD(MpiManagerTest, testManager3)
