@@ -80,8 +80,13 @@ namespace Util
       nReject_  = other.nReject_;
 
       // Allocate histogram if necessary
+      if (histogram_.isAllocated() && histogram_.capacity() != nBin_) {
+         histogram_.deallocate();
+      }
       if (nBin_ > 0) {
-         histogram_.allocate(nBin_);
+         if (!histogram_.isAllocated()) {
+            histogram_.allocate(nBin_);
+         }
          for (int i=0; i < nBin_; ++i) {
             histogram_[i] = other.histogram_[i];
          }
