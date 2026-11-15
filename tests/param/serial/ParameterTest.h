@@ -1048,6 +1048,71 @@ public:
       delete requiredPrm;
    }
 
+   void testEmptyArrayParams()
+   {
+      printMethod(TEST_FUNC);
+      BracketPolicy::set(BracketPolicy::Forbidden);
+
+      // Read optional arrays with no elements or rows, each followed
+      // by a parameter
+      FSArray<int, 4> value1;
+      double matrix1[2][2];
+      int next1 = 0;
+      int last1 = 0;
+      Parameter* arrayPrm1
+         = new FSArrayParam<int, 4>("Values", value1, 0, false);
+      Parameter* nextPrm1 = new ScalarParam<int>("Next", next1);
+      Parameter* matrixPrm1
+         = new CArray2DParam<double>("Matrix", matrix1[0], 0, 2, 2, false);
+      Parameter* lastPrm1 = new ScalarParam<int>("Last", last1);
+      std::istringstream in1("Values\nNext  13\nMatrix\nLast  17\n");
+      arrayPrm1->readParam(in1);
+      nextPrm1->readParam(in1);
+      matrixPrm1->readParam(in1);
+      lastPrm1->readParam(in1);
+      TEST_ASSERT(arrayPrm1->isActive());
+      TEST_ASSERT(value1.size() == 0);
+      TEST_ASSERT(next1 == 13);
+      TEST_ASSERT(matrixPrm1->isActive());
+      TEST_ASSERT(last1 == 17);
+
+      // Write all, and read the output
+      std::ostringstream out;
+      arrayPrm1->writeParam(out);
+      nextPrm1->writeParam(out);
+      matrixPrm1->writeParam(out);
+      lastPrm1->writeParam(out);
+      FSArray<int, 4> value2;
+      double matrix2[2][2];
+      int next2 = 0;
+      int last2 = 0;
+      Parameter* arrayPrm2
+         = new FSArrayParam<int, 4>("Values", value2, 0, false);
+      Parameter* nextPrm2 = new ScalarParam<int>("Next", next2);
+      Parameter* matrixPrm2
+         = new CArray2DParam<double>("Matrix", matrix2[0], 0, 2, 2, false);
+      Parameter* lastPrm2 = new ScalarParam<int>("Last", last2);
+      std::istringstream in2(out.str());
+      arrayPrm2->readParam(in2);
+      nextPrm2->readParam(in2);
+      matrixPrm2->readParam(in2);
+      lastPrm2->readParam(in2);
+      TEST_ASSERT(arrayPrm2->isActive());
+      TEST_ASSERT(value2.size() == 0);
+      TEST_ASSERT(next2 == 13);
+      TEST_ASSERT(matrixPrm2->isActive());
+      TEST_ASSERT(last2 == 17);
+
+      delete arrayPrm1;
+      delete nextPrm1;
+      delete matrixPrm1;
+      delete lastPrm1;
+      delete arrayPrm2;
+      delete nextPrm2;
+      delete matrixPrm2;
+      delete lastPrm2;
+   }
+
    void testFSArrayParamDoubleWrite() {
       printMethod(TEST_FUNC);
 
@@ -1692,6 +1757,7 @@ TEST_ADD(ParameterTest, testFArrayParamDoubleReadSaveLoad)
 #endif
 TEST_ADD(ParameterTest, testFSArrayParamIntWrite)
 TEST_ADD(ParameterTest, testFSArrayParamIntRead)
+TEST_ADD(ParameterTest, testEmptyArrayParams)
 TEST_ADD(ParameterTest, testFSArrayParamDoubleWrite)
 TEST_ADD(ParameterTest, testFSArrayParamDoubleRead)
 #ifndef UTIL_MPI
