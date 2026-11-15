@@ -76,7 +76,7 @@ namespace Util
    std::ostream& operator<<(std::ostream& out, const Vector &vector) 
    {
       for (int i=0; i < Dimension; ++i) {
-         out.setf(std::ios::scientific);
+         out.setf(std::ios::scientific, std::ios::floatfield);
          out.width(Vector::Width);
          out.precision(Vector::Precision);
          out << vector.elem_[i];
