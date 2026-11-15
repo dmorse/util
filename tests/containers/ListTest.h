@@ -43,6 +43,7 @@ public:
    void testInsert3();
    void testInsert4();
    void testInsert5();
+   void testIterator();
    void dumpList();
 
 };
@@ -430,6 +431,32 @@ void ListTest::testInsert5()
 }
 
 
+void ListTest::testIterator()
+{
+   printMethod(TEST_FUNC);
+   list.initialize(nodes, n);
+
+   list.pushBack(nodes[3]);
+   list.pushBack(nodes[5]);
+   list.pushBack(nodes[7]);
+
+   ListIterator<Data> iter;
+   list.begin(iter);
+   TEST_ASSERT(iter.isFront());
+   TEST_ASSERT(!iter.isBack());
+   TEST_ASSERT(*iter == nodes[3].data());
+   ++iter;
+   TEST_ASSERT(!iter.isFront());
+   TEST_ASSERT(!iter.isBack());
+   TEST_ASSERT(*iter == nodes[5].data());
+   ++iter;
+   TEST_ASSERT(!iter.isFront());
+   TEST_ASSERT(iter.isBack());
+   TEST_ASSERT(*iter == nodes[7].data());
+   ++iter;
+   TEST_ASSERT(iter.isEnd());
+}
+
 /* 
 * Print integer indices of nodes in a linked list.
 */
@@ -463,6 +490,7 @@ TEST_ADD(ListTest, testInsert2)
 TEST_ADD(ListTest, testInsert3)
 TEST_ADD(ListTest, testInsert4)
 TEST_ADD(ListTest, testInsert5)
+TEST_ADD(ListTest, testIterator)
 TEST_END(ListTest)
 
 
