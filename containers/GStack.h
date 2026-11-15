@@ -287,7 +287,12 @@ namespace Util
    */
    template <typename Data>
    inline void GStack<Data>::clear()
-   {  size_ = 0; }
+   {
+      for (int i = 0; i < size_; ++i) {
+         ptrs_[i] = 0;
+      }
+      size_ = 0;
+   }
 
    /*
    * Push an element onto the GStack.
