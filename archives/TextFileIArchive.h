@@ -287,11 +287,32 @@ namespace Util
 
    /*
    * Load a C-array of characters.
+   *
+   * TextFileOArchive::pack() writes each character followed by two
+   * spaces, and a newline after the last one.
    */
    template <>
    inline void TextFileIArchive::unpack(char* array, int n)
    {
-      filePtr_->get(array, n+1,'\0');
+      for (int i = 0; i < n; ++i) {
+         filePtr_->get(array[i]);
+         // Skip the two spaces that pack() writes, if present
+         for (int j = 0; j < 2 && filePtr_->peek() == ' '; ++j) {
+            filePtr_->get();
+         }
+      }
+      endRecord();
+   }
+
+   /*
+   * Load a 2D C-array of characters, one row per record.
+   */
+   template <>
+   inline void TextFileIArchive::unpack(char* array, int m, int n, int np)
+   {
+      for (int i = 0; i < m; ++i) {
+         unpack(array + i*np, n);
+      }
    }
 
    // Explicit serialize functions for primitive types
