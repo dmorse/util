@@ -45,6 +45,7 @@ namespace Util
       // Assign the additional members
       norm_        = other.norm_;
       nSnapshot_   = other.nSnapshot_;
+      outputIntegral_ = other.outputIntegral_;
 
       return *this;
    }
