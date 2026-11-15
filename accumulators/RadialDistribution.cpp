@@ -143,7 +143,7 @@ namespace Util
       integral  = 0.0;
       for (int i=0; i < nBin_; ++i) {
          r    = binWidth_*(double(i) + 0.5);
-         dV   = prefactor*double(3*i*i + 3*i + 1);
+         dV   = prefactor*(3.0*double(i)*double(i + 1) + 1.0);
          hist = double(histogram_[i])/double(nSnapshot_);
          rho  = hist/(dV*norm_);
          out << Dbl(r, 18, 8) << Dbl(rho, 18, 8);
