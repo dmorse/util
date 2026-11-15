@@ -30,6 +30,7 @@ public:
    void testOArchiveConstructor1();
    void testOArchiveConstructor2();
    void testPack();
+   void testPackString();
 
 };
 
@@ -155,10 +156,43 @@ void BinaryFileArchiveTest::testPack()
    }
 }
 
+/*
+* Strings that contain null characters, followed by an int.
+*/
+void BinaryFileArchiveTest::testPackString()
+{
+   printMethod(TEST_FUNC);
+   std::string s1[3];
+   s1[0] = "";
+   s1[1] = std::string("a\0b", 3);
+   s1[2] = std::string("ab\0", 3);
+   int i1 = 13;
+
+   BinaryFileOArchive v;
+   openOutputFile("tmp/BinaryTestPackString", v.file());
+   for (int k = 0; k < 3; ++k) {
+      v << s1[k];
+   }
+   v << i1;
+   v.file().close();
+
+   BinaryFileIArchive u;
+   openInputFile("tmp/BinaryTestPackString", u.file());
+   std::string s2;
+   int i2 = 0;
+   for (int k = 0; k < 3; ++k) {
+      u >> s2;
+      TEST_ASSERT(s2 == s1[k]);
+   }
+   u >> i2;
+   TEST_ASSERT(i2 == i1);
+}
+
 TEST_BEGIN(BinaryFileArchiveTest)
 TEST_ADD(BinaryFileArchiveTest, testOArchiveConstructor1)
 TEST_ADD(BinaryFileArchiveTest, testOArchiveConstructor2)
 TEST_ADD(BinaryFileArchiveTest, testPack)
+TEST_ADD(BinaryFileArchiveTest, testPackString)
 TEST_END(BinaryFileArchiveTest)
 
 #endif
