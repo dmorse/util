@@ -15,6 +15,7 @@
 #include <util/space/IntVector.h>
 
 #include <complex>
+#include <cstring>
 #include <string>
 #include <vector>
 
@@ -310,10 +311,10 @@ namespace Util
       if (cursor_ + sizeof(data) > end_) {
          UTIL_THROW("Attempted read past end of packed block");
       }
-      T* ptr = (T *)cursor_;
-      data = *ptr;
-      ++ptr;
-      cursor_ = (Byte *)ptr;
+      // Copy bytes, because cursor_ need not be aligned for type T.
+      // The cast to void* avoids -Wclass-memaccess warnings for classes.
+      std::memcpy(static_cast<void*>(&data), cursor_, sizeof(T));
+      cursor_ += sizeof(T);
    }
 
    /*
@@ -325,12 +326,8 @@ namespace Util
       if (cursor_ + n*sizeof(T) > end_) {
          UTIL_THROW("Attempted read past end of data");
       }
-      T* ptr = (T *)cursor_;
-      for (int i=0; i < n; ++i) {
-         array[i] = *ptr;
-         ++ptr;
-      }
-      cursor_ = (Byte *)ptr;
+      std::memcpy(static_cast<void*>(array), cursor_, n*sizeof(T));
+      cursor_ += n*sizeof(T);
    }
 
    /*
@@ -342,15 +339,10 @@ namespace Util
       if (cursor_ + m*n*sizeof(T) > end_) {
          UTIL_THROW("Attempted read past end of data");
       }
-      int i, j;
-      T* ptr = (T *)cursor_;
-      for (i = 0; i < m; ++i) {
-         for (j = 0; j < n; ++j) {
-            array[i*np + j] = *ptr;
-            ++ptr;
-         }
+      for (int i = 0; i < m; ++i) {
+         std::memcpy(static_cast<void*>(array + i*np), cursor_, n*sizeof(T));
+         cursor_ += n*sizeof(T);
       }
-      cursor_ = (Byte *)ptr;
    }
 
    // Explicit specializations of serialize function
