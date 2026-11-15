@@ -28,6 +28,7 @@ public:
    void testPack();
    void testPackChar();
    void testPackCharArray();
+   void testPackDoubleFixed();
 
 };
 
@@ -268,12 +269,46 @@ void TextFileArchiveTest::testPackCharArray()
    TEST_ASSERT(i3 == 7);
 }
 
+/*
+* Doubles saved to a file in fixed format.
+*/
+void TextFileArchiveTest::testPackDoubleFixed()
+{
+   printMethod(TEST_FUNC);
+   TextFileOArchive  v;
+   openOutputFile("tmp/TextTestPackDoubleFixed", v.file());
+   v.file() << std::fixed;
+
+   int i1 = 13;
+   double d1 = 1.0e-20;
+   double b1[2] = {2.5, -0.125};
+   v << d1;
+   v.pack(b1, 2);
+   v << i1;
+   v.file().close();
+
+   TextFileIArchive u;
+   openInputFile("tmp/TextTestPackDoubleFixed", u.file());
+   int i2 = 0;
+   double d2 = 0.0;
+   double b2[2] = {0.0, 0.0};
+   u >> d2;
+   u.unpack(b2, 2);
+   u >> i2;
+   TEST_ASSERT(!u.file().fail());
+   TEST_ASSERT(d2 == d1);
+   TEST_ASSERT(b2[0] == b1[0]);
+   TEST_ASSERT(b2[1] == b1[1]);
+   TEST_ASSERT(i2 == i1);
+}
+
 TEST_BEGIN(TextFileArchiveTest)
 TEST_ADD(TextFileArchiveTest, testOArchiveConstructor1)
 TEST_ADD(TextFileArchiveTest, testOArchiveConstructor2)
 TEST_ADD(TextFileArchiveTest, testPack)
 TEST_ADD(TextFileArchiveTest, testPackChar)
 TEST_ADD(TextFileArchiveTest, testPackCharArray)
+TEST_ADD(TextFileArchiveTest, testPackDoubleFixed)
 TEST_END(TextFileArchiveTest)
 
 #endif

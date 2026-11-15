@@ -7,6 +7,7 @@
 #include <util/space/Tensor.h>
 
 #include <fstream>
+#include <sstream>
 
 using namespace Util;
 
@@ -298,6 +299,24 @@ public:
       std::cout << v << std::endl ;
    }
 
+   /*
+   * Output to a stream in fixed format can be read back.
+   */
+   void testWriteFixed() {
+      printMethod(TEST_FUNC);
+
+      double a[3][3] = {{1.5, -2.25, 0.125}, 
+                        {3.0, 0.5, -1.0}, 
+                        {0.0, 4.0, 2.75}};
+      Tensor v(a);
+      std::stringstream s;
+      s << std::fixed << v;
+      Tensor u;
+      s >> u;
+      TEST_ASSERT(!s.fail());
+      TEST_ASSERT(u == v);
+   }
+
    void testZero() {
       printMethod(TEST_FUNC);
 
@@ -359,6 +378,7 @@ TEST_ADD(TensorTest, testSymmetrizeOther)
 TEST_ADD(TensorTest, testTransposeSelf)
 TEST_ADD(TensorTest, testTransposeOther)
 TEST_ADD(TensorTest, testReadWrite)
+TEST_ADD(TensorTest, testWriteFixed)
 TEST_ADD(TensorTest, testZero)
 TEST_ADD(TensorTest, testIdentity)
 TEST_END(TensorTest)
