@@ -10,6 +10,8 @@
 #define TEST_MPI
 #endif
 
+#include <util/math/Rational.h>
+
 #include <test/UnitTest.h>
 #include <test/UnitTestRunner.h>
 
@@ -276,6 +278,20 @@ public:
       }
    }
 
+   void testBcastRational()
+   {
+      printMethod(TEST_FUNC);
+      Rational::commitMpiType();
+      Rational value[2];
+      if (mpiRank() == 0) {
+         value[0] = Rational(2, 3);
+         value[1] = Rational(-5, 7);
+      }
+      bcast<Rational>(communicator(), value, 2, 0);
+      TEST_ASSERT(value[0].num() == 2 && value[0].den() == 3);
+      TEST_ASSERT(value[1].num() == -5 && value[1].den() == 7);
+   }
+
    void testBcastCArrayInt() 
    {
       printMethod(TEST_FUNC);
@@ -424,6 +440,7 @@ TEST_ADD(MpiSendRecvTest, testSendRecvCArrayBool)
 TEST_ADD(MpiSendRecvTest, testBcastInt)
 TEST_ADD(MpiSendRecvTest, testBcastVector)
 TEST_ADD(MpiSendRecvTest, testBcastIntVector)
+TEST_ADD(MpiSendRecvTest, testBcastRational)
 TEST_ADD(MpiSendRecvTest, testBcastCArrayInt)
 TEST_ADD(MpiSendRecvTest, testBcast2DCArrayInt)
 TEST_ADD(MpiSendRecvTest, testBcastDArrayInt)
