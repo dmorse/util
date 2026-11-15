@@ -147,6 +147,25 @@ namespace Util
 
    };
 
+   #ifdef UTIL_MPI
+   /**
+   * Partial specialization of MpiTraits for FArray<Data, Capacity>.
+   */
+   template <typename Data, int Capacity>
+   class MpiTraits< FArray<Data, Capacity> >
+   {
+   public:
+      static MPI::Datatype type;   ///< MPI Datatype
+      static bool hasType;         ///< Is the MPI type initialized?
+   };
+
+   template <typename Data, int Capacity>
+   MPI::Datatype MpiTraits< FArray<Data, Capacity> >::type = MPI::BYTE;
+
+   template <typename Data, int Capacity>
+   bool MpiTraits< FArray<Data, Capacity> >::hasType = false;
+   #endif
+
    /*
    * Constructor.
    */
