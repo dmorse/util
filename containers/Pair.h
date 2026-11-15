@@ -62,6 +62,23 @@ namespace Util
 
    #ifdef UTIL_MPI
 
+   /**
+   * Partial specialization of MpiTraits for Pair<Data>.
+   */
+   template <typename Data>
+   class MpiTraits< Pair<Data> >
+   {
+   public:
+      static MPI::Datatype type;   ///< MPI Datatype
+      static bool hasType;         ///< Is the MPI type initialized?
+   };
+
+   template <typename Data>
+   MPI::Datatype MpiTraits< Pair<Data> >::type = MPI::BYTE;
+
+   template <typename Data>
+   bool MpiTraits< Pair<Data> >::hasType = false;
+
    /*
    * Commit associated MPI Datatype.
    */
