@@ -78,6 +78,8 @@ namespace Util
    */
    void Average::loadParameters(Serializable::IArchive &ar)
    {
+      // Delete the previous stage hierarchy, which the archive replaces
+      clear();
       AverageStage::serialize(ar, 0);
       ar & blockSum_;
       ar & iBlock_;

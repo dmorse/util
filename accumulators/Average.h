@@ -251,6 +251,10 @@ namespace Util
    template <class Archive>
    void Average::serialize(Archive& ar, const unsigned int version)
    {
+      if (Archive::is_loading()) {
+         // Delete the previous stage hierarchy, which the archive replaces
+         clear();
+      }
       AverageStage::serialize(ar, version);
       ar & blockSum_;
       ar & iBlock_;
