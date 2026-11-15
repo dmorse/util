@@ -8,6 +8,9 @@
 #include <test/UnitTest.h>
 #include <test/UnitTestRunner.h>
 
+#include <sstream>
+#include <string>
+
 using namespace Util;
 
 #include "../ParamTestClasses.h"
@@ -134,6 +137,38 @@ public:
       TEST_ASSERT(success);
    }
 
+   void testManagerBlankLine()
+   {
+      printMethod(TEST_FUNC);
+
+      // Long trailing white space after a closing bracket, an item on
+      // the line of the closing bracket of the previous item, and a
+      // manager on one line
+      std::string spaces(300, ' ');
+      const int nCase = 3;
+      std::string texts[nCase] = {
+         "AManager{\n  B{\n    m  1\n  }" + spaces + "\n\n"
+         "  C{\n    m  3\n  }\n\n}\n",
+         "AManager{\n  B{\n    m  1\n  }  C{ m  3 }\n}\n",
+         "AManager{  B{ m  1 }  C{ m  3 }  }\n"};
+      for (int k = 0; k < nCase; ++k) {
+         Label::clear();
+         AManager manager;
+         std::istringstream in(texts[k]);
+         bool thrown = false;
+         try {
+            manager.readParam(in);
+         } catch (Exception& e) {
+            thrown = true;
+         }
+         Label::clear();
+         TEST_ASSERT(!thrown);
+         TEST_ASSERT(manager.size() == 2);
+         TEST_ASSERT(manager[0].className() == "B");
+         TEST_ASSERT(manager[1].className() == "C");
+      }
+   }
+
 };
 
 TEST_BEGIN(ManagerTest)
@@ -145,6 +180,7 @@ TEST_ADD(ManagerTest, testManagerSubfactory)
 #ifndef UTIL_MPI
 TEST_ADD(ManagerTest, testManagerUnique1)
 TEST_ADD(ManagerTest, testManagerUnique2)
+TEST_ADD(ManagerTest, testManagerBlankLine)
 #endif
 TEST_END(ManagerTest)
 
