@@ -61,7 +61,7 @@ namespace Util
       long int maxGlobal;
       long int maxLocal = max_;
       communicator.Allreduce(&maxLocal, &maxGlobal, 1, 
-		             MPI::LONG_INT, MPI::MAX);
+		             MPI::LONG, MPI::MAX);
       return maxGlobal;
    }
    #endif
