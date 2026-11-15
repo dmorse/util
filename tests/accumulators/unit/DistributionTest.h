@@ -24,6 +24,7 @@ public:
    void testBinIndex();
    void testAssign();
    void testRadialSaveLoad();
+   void testRadialAssign();
 
    template <class T>
    std::string outputString(T& distribution)
@@ -106,10 +107,31 @@ void DistributionTest::testRadialSaveLoad()
    TEST_ASSERT(outputString(clone) == outputString(source));
 }
 
+/*
+* Assignment must copy the outputIntegral flag of a RadialDistribution.
+*/
+void DistributionTest::testRadialAssign()
+{
+   printMethod(TEST_FUNC);
+
+   RadialDistribution source;
+   source.setParam(2.0, 4);
+   source.setNorm(1.5);
+   source.setOutputIntegral(true);
+   source.beginSnapshot();
+   source.sample(0.3);
+   source.sample(1.1);
+
+   RadialDistribution copy;
+   copy = source;
+   TEST_ASSERT(outputString(copy) == outputString(source));
+}
+
 TEST_BEGIN(DistributionTest)
 TEST_ADD(DistributionTest, testBinIndex)
 TEST_ADD(DistributionTest, testAssign)
 TEST_ADD(DistributionTest, testRadialSaveLoad)
+TEST_ADD(DistributionTest, testRadialAssign)
 TEST_END(DistributionTest)
 
 #endif
