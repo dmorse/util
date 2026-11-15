@@ -257,10 +257,10 @@ namespace Util
    FileMaster::openRestartOFile(const std::string& name, std::ofstream& out,
                                 std::ios_base::openmode mode) const
    {
-      // Construct filename = outputPrefix_ + name
+      // Construct filename = rootPrefix_ + directoryIdPrefix_ + name
       std::string filename(rootPrefix_);
       if (hasDirectoryId_) {
-         filename = directoryIdPrefix_;
+         filename += directoryIdPrefix_;
       }
       filename += name;
       open(filename, out, mode);
