@@ -120,13 +120,16 @@ public:
       in >> label0;
       in >> label1;
       printEndl();
+      bool success = false;
       try {
          in >> label3;
       } catch (Util::Exception& e) {
+         success = true;
          std::cout << "Caught expected Exception" << std::endl;
          Label::clear();
       }
       in.close();
+      TEST_ASSERT(success);
    }
    #endif
 
