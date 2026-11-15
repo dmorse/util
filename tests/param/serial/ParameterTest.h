@@ -1695,7 +1695,7 @@ TEST_ADD(ParameterTest, testFSArrayParamIntRead)
 TEST_ADD(ParameterTest, testFSArrayParamDoubleWrite)
 TEST_ADD(ParameterTest, testFSArrayParamDoubleRead)
 #ifndef UTIL_MPI
-TEST_ADD(ParameterTest, testFArrayParamDoubleReadSaveLoad)
+TEST_ADD(ParameterTest, testFSArrayParamDoubleReadSaveLoad)
 #endif
 TEST_ADD(ParameterTest, testCArray2DParamDoubleWrite)
 #ifndef UTIL_MPI
