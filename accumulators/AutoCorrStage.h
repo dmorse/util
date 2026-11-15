@@ -223,6 +223,14 @@ namespace Util
       virtual void registerDescendant(AutoCorrStage<Data, Product>* ptr);
 
       /**
+      * Destroy all descendant stages.
+      *
+      * A root stage that keeps a list of its descendants overrides this
+      * function to also reset that list.
+      */
+      virtual void clearDescendants();
+
+      /**
       * Serialize private data members, and descendants.
       *
       * \param ar      archive

@@ -112,6 +112,7 @@ namespace Util
          }
          buffer_.clear();
       }
+      clearDescendants();
    }
 
    /*
@@ -384,6 +385,18 @@ namespace Util
    void
    AutoCorrStage<Data, Product>::registerDescendant(AutoCorrStage<Data, Product>* ptr)
    {}
+
+   /*
+   * Destroy all descendant stages.
+   */
+   template <typename Data, typename Product>
+   void AutoCorrStage<Data, Product>::clearDescendants()
+   {
+      if (childPtr_) {
+         delete childPtr_;  // The child deletes its own descendants
+         childPtr_ = 0;
+      }
+   }
 
 }
 #endif
