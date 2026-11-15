@@ -215,6 +215,71 @@ public:
   
    }
 
+   /*
+   * Objects with the same seed give the same Gaussian sequence, also
+   * when another object draws in between, and setSeed() restarts it.
+   */
+   void testGaussianSequence()
+   {
+      printMethod(TEST_FUNC);
+
+      const int n = 5;
+      double x[n];
+      random->setSeed(42);
+      for (int i = 0; i < n; ++i) {
+         x[i] = random->gaussian();
+      }
+
+      // Same seed, with an odd number of draws by a third object
+      Random other;
+      Random third;
+      other.setSeed(42);
+      third.setSeed(7);
+      for (int i = 0; i < n; ++i) {
+         TEST_ASSERT(other.gaussian() == x[i]);
+         third.gaussian();
+      }
+
+      // Reseed after an odd number of draws
+      random->setSeed(42);
+      for (int i = 0; i < n; ++i) {
+         TEST_ASSERT(random->gaussian() == x[i]);
+      }
+   }
+
+   /*
+   * Loading a saved state discards a Gaussian value stored in the
+   * loading object. (The saved object here holds no stored value.)
+   */
+   void testGaussianLoad()
+   {
+      printMethod(TEST_FUNC);
+
+      random->setSeed(42);
+      BinaryFileOArchive oar;
+      openOutputFile("out/gaussian", oar.file());
+      oar << *random;
+      random->save(oar);
+      oar.file().close();
+      double x0 = random->gaussian();
+      random->gaussian();
+
+      // Objects that hold a stored value (one draw) before loading
+      BinaryFileIArchive iar;
+      openInputFile("out/gaussian", iar.file());
+      Random copy1;
+      copy1.setSeed(7);
+      copy1.gaussian();
+      iar >> copy1;
+      TEST_ASSERT(copy1.gaussian() == x0);
+      Random copy2;
+      copy2.setSeed(7);
+      copy2.gaussian();
+      copy2.load(iar);
+      TEST_ASSERT(copy2.gaussian() == x0);
+      iar.file().close();
+   }
+
 };
 
 TEST_BEGIN(RandomTest)
@@ -224,6 +289,8 @@ TEST_ADD(RandomTest, testGetInteger)
 TEST_ADD(RandomTest, testGaussian)
 TEST_ADD(RandomTest, testUnitVector)
 TEST_ADD(RandomTest, testBinarySerialize)
+TEST_ADD(RandomTest, testGaussianSequence)
+TEST_ADD(RandomTest, testGaussianLoad)
 TEST_END(RandomTest)
 
 
