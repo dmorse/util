@@ -35,6 +35,7 @@ public:
    void testSerializeFile();
    void testSaveLoad();
    void testClearReuse();
+   void testLoadUsed();
 
 };
 
@@ -190,6 +191,57 @@ void AverageTest::testClearReuse()
    TEST_ASSERT(reused.nSample() == 0);
 }
 
+/*
+* Loading an Average from an archive must replace all of its stages.
+*/
+void AverageTest::testLoadUsed()
+{
+   printMethod(TEST_FUNC);
+
+   readData();
+
+   // Saved states: the test data (1000 values), and 8 values, too few
+   // for any stage to have the 16 values used by blockingError()
+   Average few;
+   for (int i = 0; i < 8; ++i) {
+      few.sample(std::sin(0.37*i));
+   }
+   BinaryFileOArchive u;
+   openOutputFile("tmp/AverageTestLoadUsed", u.file());
+   accumulator_.save(u);
+   few.save(u);
+   u.file().close();
+
+   // Average objects with more values, and more stages
+   Average used1, used2, used3;
+   for (int i = 0; i < 5000; ++i) {
+      used1.sample(double(i % 7));
+      used2.sample(double(i % 7));
+      used3.sample(double(i % 7));
+   }
+
+   // Load the saved states with load() and with operator >>
+   BinaryFileIArchive v1;
+   openInputFile("tmp/AverageTestLoadUsed", v1.file());
+   used1.load(v1);
+   used3.load(v1);
+   v1.file().close();
+   BinaryFileIArchive v2;
+   openInputFile("tmp/AverageTestLoadUsed", v2.file());
+   v2 >> used2;
+   v2.file().close();
+
+   // The output lists every stage
+   std::ostringstream out, out1, out2;
+   accumulator_.output(out);
+   used1.output(out1);
+   used2.output(out2);
+   TEST_ASSERT(out1.str() == out.str());
+   TEST_ASSERT(out2.str() == out.str());
+   TEST_ASSERT(used3.nSample() == 8);
+   TEST_ASSERT(used3.blockingError() == few.blockingError());
+}
+
 TEST_BEGIN(AverageTest)
 TEST_ADD(AverageTest, testReadParam)
 TEST_ADD(AverageTest, testSample)
@@ -197,6 +249,7 @@ TEST_ADD(AverageTest, testSerialize)
 TEST_ADD(AverageTest, testSerializeFile)
 TEST_ADD(AverageTest, testSaveLoad)
 TEST_ADD(AverageTest, testClearReuse)
+TEST_ADD(AverageTest, testLoadUsed)
 TEST_END(AverageTest)
 
 #endif
