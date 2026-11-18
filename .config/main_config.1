@@ -56,16 +56,10 @@ BIN_DIR=$(ROOT_DIR)/bin
 #UTIL_DEBUG=1
 
 # Defining UTIL_CXX11 enables the use of features of the C++11 standard.
-# Use of C++11 is disabled (commented out) by default. If C++11 is 
-# disabled, the code uses only syntax and features defined in the older 
-# 1998 C++ standard.
-#UTIL_CXX11=1
+# The code requires C++11 (e.g., nullptr), so this is enabled by default:
+# without it, the compiler is invoked with the 1998 C++ standard.
+UTIL_CXX11=1
 
-# Comment: Thus far, very little of the code uses features of C++11.
-# When compiled with the UTIL_CXXX11 undefined, equivalent replacements 
-# from C++ 1998 are used in these few cases.  There is thus no harm in 
-# leaving UTIL_CXX11 undefined.
- 
 # Comment After setup, the above definitions of UTIL_MPI and UTIL_DEBUG 
 # may be uncommented or commented out invoking the "configure" script 
 # from the build directory that contains this file, thus enabling or 
