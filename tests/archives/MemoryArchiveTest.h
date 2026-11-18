@@ -10,6 +10,7 @@
 #include "SerializeTestClass.h"
 
 #include <complex>
+#include <vector>
 
 using namespace Util;
 
@@ -29,6 +30,7 @@ public:
    void testIArchiveConstructor();
    void testIArchiveAllocate();
    void testAssign();
+   void testPackVector();
    void testPack();
    void testPackArray();
    void testSerializeObject();
@@ -91,6 +93,40 @@ void MemoryArchiveTest::testAssign()
    TEST_ASSERT(u.end() == v.begin() );
    TEST_ASSERT(u.isAllocated() );
 } 
+
+/*
+* A std::vector, with its size computed by MemoryCounter.
+*/
+void MemoryArchiveTest::testPackVector()
+{
+   printMethod(TEST_FUNC);
+   std::vector<int> x1(3);
+   x1[0] = 4;
+   x1[1] = -5;
+   x1[2] = 6;
+   int i1 = 13;
+
+   MemoryCounter w;
+   w << x1;
+   size_t size = sizeof(size_t) + 3*sizeof(int);
+   TEST_ASSERT(w.size() == size);
+   TEST_ASSERT(memorySize(x1) == (int)size);
+
+   MemoryOArchive v;
+   v.allocate(capacity);
+   v << x1;
+   TEST_ASSERT(v.cursor() == v.begin() + size);
+   v << i1;
+
+   MemoryIArchive u;
+   u = v;
+   std::vector<int> x2;
+   int i2 = 0;
+   u >> x2;
+   u >> i2;
+   TEST_ASSERT(x2 == x1);
+   TEST_ASSERT(i2 == i1);
+}
 
 void MemoryArchiveTest::testPack()
 {
@@ -403,6 +439,7 @@ TEST_ADD(MemoryArchiveTest, testOArchiveAllocate)
 TEST_ADD(MemoryArchiveTest, testIArchiveConstructor)
 TEST_ADD(MemoryArchiveTest, testIArchiveAllocate)
 TEST_ADD(MemoryArchiveTest, testAssign)
+TEST_ADD(MemoryArchiveTest, testPackVector)
 TEST_ADD(MemoryArchiveTest, testPack)
 TEST_ADD(MemoryArchiveTest, testPackArray)
 TEST_ADD(MemoryArchiveTest, testSerializeObject)
