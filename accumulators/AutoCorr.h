@@ -368,7 +368,6 @@ namespace Util
 
       // Calculate average sampled values
       ave   = sum_/double(nSample_);
-      ave  /= double(nSample_);
       aveSq = product(ave, ave);
 
       // Calculate variance sampled values

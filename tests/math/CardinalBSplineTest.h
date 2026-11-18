@@ -110,6 +110,18 @@ public:
 
    }
 
+   void testDegreeZero()
+   {
+      printMethod(TEST_FUNC);
+      CardinalBSpline s0(0);
+
+      // B_0(x) = 1 for 0 < x < 1, and 0 otherwise
+      TEST_ASSERT(std::fabs(s0(0.3) - 1.0) < 1.0E-10);
+      TEST_ASSERT(std::fabs(s0(-0.3)) < 1.0E-10);
+      TEST_ASSERT(std::fabs(s0(1.3)) < 1.0E-10);
+      TEST_ASSERT(std::fabs(computeSum(s0, 0.2786538012) - 1.0) < 1.0E-10);
+   }
+
    // Compute sum_i b(i + shift) over all integer i.
    double computeSum(CardinalBSpline b, double shift) 
    {
@@ -127,6 +139,7 @@ TEST_ADD(CardinalBSplineTest, testConstructor)
 TEST_ADD(CardinalBSplineTest, testPolynomial)
 TEST_ADD(CardinalBSplineTest, testEvaluate)
 TEST_ADD(CardinalBSplineTest, testSum)
+TEST_ADD(CardinalBSplineTest, testDegreeZero)
 TEST_END(CardinalBSplineTest)
 
 #endif

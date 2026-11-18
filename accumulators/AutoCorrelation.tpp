@@ -79,5 +79,16 @@ namespace Util
                   ::registerDescendant(AutoCorrStage<Data, Product>* ptr)
    {  descendants_.append(ptr); }
 
+   /*
+   * Destroy all descendant stages, and reset the list of descendants.
+   */
+   template <typename Data, typename Product>
+   void AutoCorrelation<Data, Product>::clearDescendants()
+   {
+      AutoCorrStage<Data, Product>::clearDescendants();
+      descendants_.clear();
+      descendants_.append(this);
+   }
+
 }
 #endif

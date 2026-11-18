@@ -112,6 +112,7 @@ namespace Util
          }
          buffer_.clear();
       }
+      clearDescendants();
    }
 
    /*
@@ -197,6 +198,11 @@ namespace Util
       ar & nBlockSample_;
 
       // Constructor sets rootPtr_, stageInterval_ and stageId_
+
+      // Destroy any descendants, which the archive replaces
+      if (Archive::is_loading()) {
+         clearDescendants();
+      }
 
       // Does this stage have a child?
       int hasChild;
@@ -384,6 +390,18 @@ namespace Util
    void
    AutoCorrStage<Data, Product>::registerDescendant(AutoCorrStage<Data, Product>* ptr)
    {}
+
+   /*
+   * Destroy all descendant stages.
+   */
+   template <typename Data, typename Product>
+   void AutoCorrStage<Data, Product>::clearDescendants()
+   {
+      if (childPtr_) {
+         delete childPtr_;  // The child deletes its own descendants
+         childPtr_ = 0;
+      }
+   }
 
 }
 #endif

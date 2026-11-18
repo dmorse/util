@@ -91,6 +91,11 @@ namespace Util
       */
       virtual void registerDescendant(AutoCorrStage<Data, Product>* ptr);
 
+      /**
+      * Destroy all descendant stages, and reset the list of descendants.
+      */
+      virtual void clearDescendants();
+
    private:
 
       // Pointers to descendant AutoCorrStage objects

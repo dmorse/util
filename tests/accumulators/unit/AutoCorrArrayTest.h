@@ -13,6 +13,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 using namespace Util;
 
@@ -35,6 +36,7 @@ public:
    void testSerialize();
    void testSerializeFile() ;
    void testSaveLoad();
+   void testSetNEnsemble();
 
 };
 
@@ -163,6 +165,50 @@ void AutoCorrArrayTest::testSaveLoad()
    clone.output(std::cout);
 }
 
+/*
+* A change of nEnsemble must clear the accumulator.
+*/
+void AutoCorrArrayTest::testSetNEnsemble()
+{
+   printMethod(TEST_FUNC);
+
+   DArray<double> data;
+   data.allocate(4);
+   int i, j;
+
+   // Sample 3 values of 4 sequences, then 2 values of 2 sequences
+   for (j = 0; j < 4; ++j) {
+      data[j] = 10.0;
+   }
+   for (i = 0; i < 3; ++i) {
+      accumulator_.sample(data);
+   }
+   accumulator_.setNEnsemble(2);
+   for (j = 0; j < 4; ++j) {
+      data[j] = 1.0;
+   }
+   for (i = 0; i < 2; ++i) {
+      accumulator_.sample(data);
+   }
+   TEST_ASSERT(accumulator_.nSample() == 2);
+   TEST_ASSERT(accumulator_.average() == 1.0);
+
+   // Return to 4 sequences: results as for a new accumulator
+   accumulator_.setNEnsemble(4);
+   AutoCorrArray<double, double> fresh;
+   fresh.setParam(4, 25);
+   for (i = 0; i < 5; ++i) {
+      for (j = 0; j < 4; ++j) {
+         data[j] = double(i + j);
+      }
+      accumulator_.sample(data);
+      fresh.sample(data);
+   }
+   std::ostringstream out, freshOut;
+   accumulator_.output(out);
+   fresh.output(freshOut);
+   TEST_ASSERT(out.str() == freshOut.str());
+}
 
 TEST_BEGIN(AutoCorrArrayTest)
 TEST_ADD(AutoCorrArrayTest, testReadParam)
@@ -170,6 +216,7 @@ TEST_ADD(AutoCorrArrayTest, testSample)
 TEST_ADD(AutoCorrArrayTest, testSerialize)
 TEST_ADD(AutoCorrArrayTest, testSerializeFile)
 TEST_ADD(AutoCorrArrayTest, testSaveLoad)
+TEST_ADD(AutoCorrArrayTest, testSetNEnsemble)
 TEST_END(AutoCorrArrayTest)
 
 #endif

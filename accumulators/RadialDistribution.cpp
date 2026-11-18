@@ -45,6 +45,7 @@ namespace Util
       // Assign the additional members
       norm_        = other.norm_;
       nSnapshot_   = other.nSnapshot_;
+      outputIntegral_ = other.outputIntegral_;
 
       return *this;
    }
@@ -80,7 +81,7 @@ namespace Util
    */
    void RadialDistribution::loadParameters(Serializable::IArchive &ar)
    {
-      min_ = 0.0;
+      ar & min_;   // Saved by Distribution::serialize, always 0.0
       loadParameter<double>(ar, "max",  max_);
       loadParameter<int>(ar, "nBin", nBin_);
       ar & nSample_;   
@@ -142,7 +143,7 @@ namespace Util
       integral  = 0.0;
       for (int i=0; i < nBin_; ++i) {
          r    = binWidth_*(double(i) + 0.5);
-         dV   = prefactor*double(3*i*i + 3*i + 1);
+         dV   = prefactor*(3.0*double(i)*double(i + 1) + 1.0);
          hist = double(histogram_[i])/double(nSnapshot_);
          rho  = hist/(dV*norm_);
          out << Dbl(r, 18, 8) << Dbl(rho, 18, 8);

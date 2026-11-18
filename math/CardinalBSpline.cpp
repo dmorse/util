@@ -110,11 +110,11 @@ namespace Util
             }
          }
 
-         // Convert polynomials coefficients from Rational to double.
-         for (n = 0; n <= degree_; ++n) {
-            floatPolynomials_[n] = exactPolynomials[n];
-         }
+      }
 
+      // Convert polynomials coefficients from Rational to double.
+      for (int n = 0; n <= degree_; ++n) {
+         floatPolynomials_[n] = exactPolynomials[n];
       }
 
    }

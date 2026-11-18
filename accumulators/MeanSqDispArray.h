@@ -100,6 +100,8 @@ namespace Util
       /**
       * Set actual number of sequences in ensemble.
       *
+      * A change of the number of sequences clears the accumulator.
+      *
       * \pre readParameters() or setParam() must have been called previously
       * \pre nEnsemble <= ensembleCapacity
       *
@@ -246,7 +248,10 @@ namespace Util
          UTIL_THROW("No memory has been allocated: ensembleCapacity_ == 0"); 
       if (nEnsemble > ensembleCapacity_) 
          UTIL_THROW("nEnsemble > ensembleCapacity_");
-      nEnsemble_ = nEnsemble;
+      if (nEnsemble != nEnsemble_) {
+         clear();
+         nEnsemble_ = nEnsemble;
+      }
    }
 
    /*
@@ -366,9 +371,9 @@ namespace Util
    inline double 
    MeanSqDispArray<int>::sqDiff(const int& data1, const int& data2) 
    {
-      int diff; 
-      diff = data1 - data2;
-      return double(diff*diff);
+      // Convert first: data1 - data2 or its square can overflow an int
+      double diff = double(data1) - double(data2);
+      return diff*diff;
    }
 
    /**
