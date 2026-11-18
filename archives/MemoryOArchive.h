@@ -15,6 +15,7 @@
 #include <util/space/IntVector.h>
 
 #include <complex>
+#include <cstring>
 #include <string>
 #include <vector>
 
@@ -305,10 +306,9 @@ namespace Util
       if (cursor_ + sizeof(data) > endAllocated_) {
          UTIL_THROW("Attempted write past end of allocated block");
       }
-      T* ptr = (T *)cursor_;
-      *ptr = data;
-      ++ptr;
-      cursor_ = (Byte *)ptr;
+      // Copy bytes, because cursor_ need not be aligned for type T
+      std::memcpy(cursor_, &data, sizeof(T));
+      cursor_ += sizeof(T);
    }
 
    /*
@@ -323,12 +323,8 @@ namespace Util
       if (cursor_ + n*sizeof(T) > endAllocated_) {
          UTIL_THROW("Attempted write past end of allocated block");
       }
-      T* ptr = (T *)cursor_;
-      for (int i=0; i < n; ++i) {
-         *ptr = array[i];
-         ++ptr;
-      }
-      cursor_ = (Byte *)ptr;
+      std::memcpy(cursor_, array, n*sizeof(T));
+      cursor_ += n*sizeof(T);
    }
 
    /*
@@ -343,15 +339,10 @@ namespace Util
       if (cursor_ + m*n*sizeof(T) > endAllocated_) {
          UTIL_THROW("Attempted write past end of allocated block");
       }
-      int i, j;
-      T* ptr = (T *)cursor_;
-      for (i=0; i < m; ++i) {
-         for (j=0; j < n; ++j) {
-            *ptr = array[i*np + j];
-            ++ptr;
-         }
+      for (int i=0; i < m; ++i) {
+         std::memcpy(cursor_, array + i*np, n*sizeof(T));
+         cursor_ += n*sizeof(T);
       }
-      cursor_ = (Byte *)ptr;
    }
 
    // Explicit serialize functions for primitive types
