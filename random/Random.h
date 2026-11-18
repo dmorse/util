@@ -125,6 +125,11 @@ namespace Util
       /**
       * Return a Gaussian random number with zero average and unit variance.
       *
+      * Values are generated in pairs. The second value of a pair is
+      * stored in this object and returned by the next call, unless
+      * setSeed() is called or the state is loaded first, which
+      * discards it.
+      *
       * \return Gaussian distributed random number.
       */
       double gaussian(void);
@@ -187,6 +192,12 @@ namespace Util
 
       /// Has a seed been set by readParam() or setSeed()?
       bool isInitialized_;
+
+      /// Is a second Gaussian deviate stored in gaussian_?
+      bool hasGaussian_;
+
+      /// Second Gaussian deviate of the last pair (see gaussian()).
+      double gaussian_;
    
       /**
       * Initialize random number generator.
@@ -286,6 +297,9 @@ namespace Util
    {
       ar & engine_;
       ar & seed_;
+      if (Archive::is_loading()) {
+         hasGaussian_ = false;
+      }
    }
 
 } 
