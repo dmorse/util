@@ -24,6 +24,7 @@ quiet: $(TEST)
 	@cd $(SRC_DIR)/util/tests; $(MAKE) -s clean-outputs
 
 clean:
+	rm -f Test
 	cd mpi; $(MAKE) clean
 	cd serial; $(MAKE) clean
 

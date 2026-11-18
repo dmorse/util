@@ -33,6 +33,7 @@ ifeq ($(BLD_DIR),$(SRC_DIR))
 	cd archives; $(MAKE) clean
 	cd containers; $(MAKE) clean
 	cd format; $(MAKE) clean
+	cd math; $(MAKE) clean
 	cd misc; $(MAKE) clean
 	cd param; $(MAKE) clean
 	cd random; $(MAKE) clean
