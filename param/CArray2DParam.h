@@ -169,7 +169,8 @@ namespace Util
          Label space("");
          int i, j;
   
-         if (hasBrackets()) {
+         // Write the label alone if there are brackets or no rows
+         if (hasBrackets() || m() == 0) {
             out << indent() << Parameter::label_ << std::endl;
          } 
          for (i = 0; i < m(); ++i) {
