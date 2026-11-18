@@ -14,8 +14,9 @@ int main()
    IntVector::commitMpiType();
 
    MpiParamTestComposite runner;
-   runner.run();
+   int failures = runner.run();
 
    MPI::Finalize();
+   return (failures != 0) ? 1 : 0;
 }
 #endif

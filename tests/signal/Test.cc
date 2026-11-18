@@ -9,13 +9,14 @@ int main()
    #endif
 
    TEST_RUNNER(MethodFunctorTest) test1;
-   test1.run();
+   int failures = test1.run();
 
    TEST_RUNNER(SignalTest) test2;
-   test2.run();
+   failures += test2.run();
 
    #ifdef UTIL_MPI
    MPI::Finalize();
    #endif
 
+   return (failures != 0) ? 1 : 0;
 }
