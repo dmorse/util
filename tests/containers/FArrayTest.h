@@ -8,6 +8,8 @@
 #include <util/archives/MemoryOArchive.h>
 #include <util/archives/MemoryIArchive.h>
 #include <util/archives/MemoryCounter.h>
+#include <util/archives/BinaryFileOArchive.h>
+#include <util/archives/BinaryFileIArchive.h>
 
 #include <complex>
 
@@ -123,8 +125,8 @@ void FArrayTest::testSerializeMemory()
    FArray<Data, Capacity> v;
 
    for (int i=0; i < Capacity; i++ ) {
-      real(v[i]) = (i+1)*10 ;
-      imag(v[i]) = (i+1)*10 + 0.1;
+      v[i].real((i+1)*10);
+      v[i].imag((i+1)*10 + 0.1);
    }
    int size = memorySize(v);
   
@@ -178,8 +180,8 @@ void FArrayTest::testSerializeMemory()
 
    // Clear values of u and i2
    for (int i=0; i < Capacity; i++ ) {
-      real(u[i]) = 0.0;
-      imag(u[i]) = 0.0;
+      u[i].real(0.0);
+      u[i].imag(0.0);
    }
    i2 = 0;
 
@@ -213,8 +215,8 @@ void FArrayTest::testSerializeFile()
    FArray<Data, Capacity> v;
 
    for (int i=0; i < Capacity; i++ ) {
-      real(v[i]) = (i+1)*10 ;
-      imag(v[i]) = (i+1)*10 + 0.1;
+      v[i].real((i+1)*10);
+      v[i].imag((i+1)*10 + 0.1);
    }
   
    int i1 = 13;
@@ -248,8 +250,8 @@ void FArrayTest::testSerializeFile()
 
    // Clear values of u and i2
    for (int i=0; i < Capacity; i++ ) {
-      real(u[i]) = 0.0;
-      imag(u[i]) = 0.0;
+      u[i].real(0.0);
+      u[i].imag(0.0);
    }
    i2 = 0;
 
@@ -271,6 +273,7 @@ TEST_BEGIN(FArrayTest)
 TEST_ADD(FArrayTest, testConstructor)
 TEST_ADD(FArrayTest, testCopyConstructor)
 TEST_ADD(FArrayTest, testAssignment)
+TEST_ADD(FArrayTest, testSubscript)
 TEST_ADD(FArrayTest, testIterator)
 TEST_ADD(FArrayTest, testSerializeMemory)
 TEST_ADD(FArrayTest, testSerializeFile)

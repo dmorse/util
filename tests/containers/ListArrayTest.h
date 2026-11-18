@@ -39,7 +39,10 @@ void ListArrayTest::testAllocate()
    listArray.allocate(capacity, nList);
 
    for (int i=0; i < capacity; i++) {
-      TEST_ASSERT(listArray[i].id() == i);
+      listArray[i] = i;
+   }
+   for (int i=0; i < capacity; i++) {
+      TEST_ASSERT(listArray.node(i).data() == i);
       TEST_ASSERT(&(listArray.node(i).data()) == &(listArray[i]));
    }
    TEST_ASSERT(listArray.isValid() );

@@ -28,7 +28,6 @@ public:
   
    void testInitialize();
    void testPushBack();
-   void testPushBack2();
    void testPushFront();
    void testPopBack();
    void testInsertNext1();

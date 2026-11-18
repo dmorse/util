@@ -165,6 +165,7 @@ public:
 TEST_BEGIN(LabelTest)
 TEST_ADD(LabelTest, testLabelConstructor1)
 TEST_ADD(LabelTest, testLabelConstructor2)
+TEST_ADD(LabelTest, testLabelConstructor3)
 TEST_ADD(LabelTest, testExtractor1)
 TEST_ADD(LabelTest, testExtractor2)
 #ifndef UTIL_MPI
