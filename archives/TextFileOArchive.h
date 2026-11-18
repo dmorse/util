@@ -221,7 +221,7 @@ namespace Util
    template <>
    inline void TextFileOArchive::pack(const double& data)
    {  
-      filePtr_->setf(std::ios::scientific);
+      filePtr_->setf(std::ios::scientific, std::ios::floatfield);
       filePtr_->width(25);
       filePtr_->precision(17);
       *filePtr_ << data << std::endl; 
@@ -260,7 +260,7 @@ namespace Util
    template <>
    inline void TextFileOArchive::pack(const double* array, int n)
    {
-      filePtr_->setf(std::ios::scientific);
+      filePtr_->setf(std::ios::scientific, std::ios::floatfield);
       filePtr_->precision(16);
       for (int i=0; i < n; ++i) {
         filePtr_->width(25);

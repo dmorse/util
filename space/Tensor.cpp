@@ -102,7 +102,7 @@ namespace Util
    std::ostream& operator<<(std::ostream& out, const Tensor &tensor)
    {
       for (int i=0; i < DimensionSq; ++i) {
-         out.setf(std::ios::scientific);
+         out.setf(std::ios::scientific, std::ios::floatfield);
          out.width(Tensor::Width);
          out.precision(Tensor::Precision);
          out << tensor.elem_[i];
