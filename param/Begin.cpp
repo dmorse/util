@@ -38,8 +38,10 @@ namespace Util
          // If this parameter is required and the label string
          // doesn't match, an Exception will be thrown by the
          // operator >> for a Label, terminating this function.
+         // Test isMatched rather than isClear: the buffer is also
+         // clear if no string was left to read at the end of the file.
 
-         if (Label::isClear()) {
+         if (Label::isMatched()) {
             // If the label string matches
             isActive_ = true;
             if (ParamComponent::echo()) {

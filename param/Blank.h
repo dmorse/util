@@ -39,6 +39,10 @@ namespace Util
       /**
       * Read a blank line
       *
+      * Skips white space of any length up to and including the end of
+      * the current line. Text that is not white space is not consumed,
+      * so that it is read as the next item of the parameter file.
+      *
       * \param in input stream
       */
       virtual void readParam(std::istream &in);

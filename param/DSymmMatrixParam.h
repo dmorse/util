@@ -8,6 +8,7 @@
 * Distributed under the terms of the GNU General Public License.
 */
 
+#include <util/misc/Log.h>
 #include <util/param/MatrixParam.h>
 #include <util/containers/DMatrix.h>
 #include <util/format/Int.h>
@@ -181,6 +182,19 @@ namespace Util
          } else {
             stream >> i; 
             in >> j >> value;
+            // Check the input before i and j are used as indices: the
+            // container bounds checks are compiled out unless UTIL_DEBUG
+            if (stream.fail() || in.fail()) {
+               Log::file() << "Error reading an element of matrix "
+                           << this->label() << "\n";
+               UTIL_THROW("Error reading a symmetric matrix element");
+            }
+            if (i < 0 || i >= n() || j < 0 || j >= n()) {
+               Log::file() << "Element (" << i << ", " << j
+                           << ") of matrix " << this->label() << " with "
+                           << n() << " rows (indices start at 0)\n";
+               UTIL_THROW("Symmetric matrix element index out of range");
+            }
             UTIL_CHECK(flags(i,j) == 0);
             (*matrixPtr_)(i, j) = value;
             flags(i, j) = 1;

@@ -56,6 +56,10 @@ namespace Util
       }
       UTIL_CHECK(a.den_  > 0);
 
+      // Store the reduced form, as the constructors do: operator ==
+      // compares numerators and denominators
+      a.reduce();
+
       return in;
    }
    #endif

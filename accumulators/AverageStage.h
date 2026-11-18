@@ -169,10 +169,14 @@ namespace Util
 
       // Private member variables
 
-      /// Sum of all sampled values.
+      /// Value subtracted before the sums are taken: the first sampled
+      /// value, or the average of the values loaded from an archive.
+      double shift_;
+
+      /// Sum of (value - shift_) over all sampled values.
       double sum_;
 
-      /// Sum of squares of all sampled values.
+      /// Sum of (value - shift_)^2 over all sampled values.
       double sumSq_;
 
       /// Sum of sampled values in the current block.
@@ -255,13 +259,24 @@ namespace Util
    template <class Archive>
    void AverageStage::serialize(Archive& ar, const unsigned int version)
    {
-      ar & sum_;
-      ar & sumSq_;
+      // The archive holds the sums of the sampled values themselves,
+      // not of value - shift_, and does not contain shift_.
+      double sum = sum_ + double(nSample_)*shift_;
+      double sumSq = sumSq_ + shift_*(2.0*sum_ + double(nSample_)*shift_);
+      ar & sum;
+      ar & sumSq;
       ar & blockSum_;
       ar & nSample_;
       ar & nBlockSample_;
       ar & stageInterval_;
       ar & blockFactor_;
+      if (Archive::is_loading()) {
+         // Take the loaded sums relative to their average. Values
+         // sampled before saving keep the rounding errors of the raw sums.
+         shift_ = (nSample_ > 0) ? sum/double(nSample_) : 0.0;
+         sum_ = sum - double(nSample_)*shift_;
+         sumSq_ = sumSq - double(nSample_)*shift_*shift_;
+      }
 
       // Does this stage have a child?
       int hasChild;

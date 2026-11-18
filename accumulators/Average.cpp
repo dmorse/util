@@ -44,6 +44,11 @@ namespace Util
       blockSum_ = 0;
       iBlock_   = 0;
       AverageStage::clear();
+
+      // AverageStage::clear() deleted all descendant stages. Keep only
+      // this object, the first "descendant", as the constructor does.
+      descendants_.clear();
+      descendants_.push_back(this);
    }
 
    /*
@@ -73,6 +78,8 @@ namespace Util
    */
    void Average::loadParameters(Serializable::IArchive &ar)
    {
+      // Delete the previous stage hierarchy, which the archive replaces
+      clear();
       AverageStage::serialize(ar, 0);
       ar & blockSum_;
       ar & iBlock_;

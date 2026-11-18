@@ -7,6 +7,9 @@
 
 #include "Blank.h"
 
+#include <cctype>
+#include <istream>
+
 namespace Util
 {
 
@@ -23,8 +26,20 @@ namespace Util
    void Blank::readParam(std::istream &in)
    {
       if (isIoProcessor()) {
-         char buf[255];
-         in.getline(buf,255);
+
+         // Skip white space up to and including the end of the current
+         // line, of any length. Stop before any other character: such
+         // text belongs to the next item and is left in the stream.
+         int c = in.peek();
+         while (c != std::istream::traits_type::eof() && c != '\n'
+                && std::isspace(c)) {
+            in.get();
+            c = in.peek();
+         }
+         if (c == '\n') {
+            in.get();
+         }
+
          if (ParamComponent::echo()) {
             writeParam(Log::file());
          }
