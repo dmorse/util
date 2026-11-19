@@ -167,7 +167,19 @@ namespace Util
    */
    template <typename Type, int Capacity>
    void FSArrayParam<Type, Capacity>::bcastValue()
-   {  bcast<Type>(ioCommunicator(), *arrayPtr_, Capacity, 0); }
+   {
+      // Give the arrays of the receiving processors logical size n()
+      if (!this->isIoProcessor()) {
+         arrayPtr_->clear();
+         for (int i = 0; i < n(); ++i) {
+            arrayPtr_->append(Type());
+         }
+      }
+      UTIL_CHECK(arrayPtr_->size() == n());
+      if (n() > 0) {
+         bcast<Type>(this->ioCommunicator(), &(*arrayPtr_)[0], n(), 0);
+      }
+   }
    #endif
 
 } 

@@ -7,6 +7,7 @@
 #include <util/param/CArrayParam.h>
 #include <util/param/DArrayParam.h>
 #include <util/param/FArrayParam.h>
+#include <util/param/FSArrayParam.h>
 #include <util/param/CArray2DParam.h>
 #include <util/param/DMatrixParam.h>
 
@@ -896,6 +897,29 @@ public:
       delete presentPrm2;
    }
 
+   void testFSArrayParamDoubleRead()
+   {
+      printMethod(TEST_FUNC);
+      FSArray<double, 4> requiredVal;
+      if (mpiRank() != 0) {
+         requiredVal.append(-1.0); // size differs from that on rank 0
+      }
+      Parameter *requiredPrm;
+      requiredPrm = new FSArrayParam<double, 4>("Required", requiredVal, 3);
+      requiredPrm->setIoCommunicator(communicator());
+      std::ifstream in;
+      if (mpiRank() == 0) {
+         openInputFile("in/ArrayParamDouble", in);
+      }
+      requiredPrm->readParam(in);
+      if (mpiRank() == 0) in.close();
+      TEST_ASSERT(requiredVal.size() == 3);
+      TEST_ASSERT(eq(requiredVal[0], 36.8));
+      TEST_ASSERT(eq(requiredVal[1], 19.2));
+      TEST_ASSERT(eq(requiredVal[2], 97.092049861));
+      delete requiredPrm;
+   }
+
    void testCArray2DParamDoubleReadSaveLoad() 
    {
       printMethod(TEST_FUNC);
@@ -1145,6 +1169,7 @@ TEST_ADD(MpiParameterTest, testDArrayParamDoubleReadSaveLoad)
 TEST_ADD(MpiParameterTest, testFArrayParamIntRead)
 TEST_ADD(MpiParameterTest, testFArrayParamDoubleRead)
 TEST_ADD(MpiParameterTest, testFArrayParamDoubleReadSaveLoad)
+TEST_ADD(MpiParameterTest, testFSArrayParamDoubleRead)
 TEST_ADD(MpiParameterTest, testCArray2DParamDoubleReadSaveLoad)
 TEST_ADD(MpiParameterTest, testDMatrixParamDoubleRead)
 TEST_ADD(MpiParameterTest, testDMatrixParamDoubleReadSaveLoad)
