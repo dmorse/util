@@ -747,6 +747,48 @@ public:
       delete presentPrm2;
    }
 
+   void testDArrayParamDoubleLoadUnallocated()
+   {
+      printMethod(TEST_FUNC);
+
+      // Read a DArray on processor 0 and save it to an archive
+      DArray<double> requiredVal;
+      requiredVal.allocate(3);
+      Parameter *requiredPrm;
+      requiredPrm = new DArrayParam<double>("Required", requiredVal, 3);
+      requiredPrm->setIoCommunicator(communicator());
+      std::ifstream in;
+      if (mpiRank() == 0) {
+         openInputFile("in/ArrayParamDouble", in);
+      }
+      requiredPrm->readParam(in);
+      if (mpiRank() == 0) {
+         in.close();
+         Serializable::OArchive oar;
+         openOutputFile("out/binary", oar.file());
+         requiredPrm->save(oar);
+         oar.file().close();
+      }
+
+      // Load into a DArray that is not allocated on any processor
+      DArray<double> requiredVal2;
+      Parameter *requiredPrm2;
+      requiredPrm2 = new DArrayParam<double>("Required", requiredVal2, 3);
+      requiredPrm2->setIoCommunicator(communicator());
+      Serializable::IArchive iar;
+      if (mpiRank() == 0) openInputFile("out/binary", iar.file());
+      requiredPrm2->load(iar);
+      if (mpiRank() == 0) iar.file().close();
+      TEST_ASSERT(requiredVal2.isAllocated());
+      TEST_ASSERT(requiredVal2.capacity() == 3);
+      for (int i = 0; i < 3; ++i) {
+         TEST_ASSERT(requiredVal2[i] == requiredVal[i]);
+      }
+
+      delete requiredPrm;
+      delete requiredPrm2;
+   }
+
    void testFArrayParamIntRead() {
       printMethod(TEST_FUNC);
       FArray<int, 3> requiredVal;
@@ -1166,6 +1208,7 @@ TEST_ADD(MpiParameterTest, testCArrayParamDoubleReadSaveLoad)
 TEST_ADD(MpiParameterTest, testDArrayParamIntRead)
 TEST_ADD(MpiParameterTest, testDArrayParamDoubleRead)
 TEST_ADD(MpiParameterTest, testDArrayParamDoubleReadSaveLoad)
+TEST_ADD(MpiParameterTest, testDArrayParamDoubleLoadUnallocated)
 TEST_ADD(MpiParameterTest, testFArrayParamIntRead)
 TEST_ADD(MpiParameterTest, testFArrayParamDoubleRead)
 TEST_ADD(MpiParameterTest, testFArrayParamDoubleReadSaveLoad)
