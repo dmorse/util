@@ -3,6 +3,7 @@
 
 #include <util/global.h>
 #include <util/mpi/MpiSendRecv.h>
+#include <util/misc/Memory.h>
 #include <util/space/Vector.h>
 #include <util/space/IntVector.h>
 
@@ -471,6 +472,31 @@ public:
       }
    }
 
+   void testMemoryMax()
+   {
+      printMethod(TEST_FUNC);
+
+      // Allocate more memory on processors of higher rank
+      double* ptr = 0;
+      int n = 100000*(mpiRank() + 1);
+      Memory::allocate(ptr, n);
+      long localMax = Memory::max();
+      long globalMax = Memory::max(communicator());
+      Memory::deallocate(ptr, n);
+
+      // Maximum of the local maxima, from broadcasts
+      long expected = 0;
+      for (int rank = 0; rank < communicator().Get_size(); ++rank) {
+         long value = localMax;
+         bcast<long>(communicator(), value, rank);
+         if (value > expected) expected = value;
+      }
+      TEST_ASSERT(globalMax == expected);
+      if (mpiRank() == 0 && communicator().Get_size() > 1) {
+         TEST_ASSERT(globalMax > localMax);
+      }
+   }
+
 };
 
 TEST_BEGIN(MpiSendRecvTest)
@@ -497,6 +523,7 @@ TEST_ADD(MpiSendRecvTest, testBcastDArrayInt)
 TEST_ADD(MpiSendRecvTest, testBcastBool)
 TEST_ADD(MpiSendRecvTest, testBcastString)
 TEST_ADD(MpiSendRecvTest, testBcastDArrayBool)
+TEST_ADD(MpiSendRecvTest, testMemoryMax)
 TEST_END(MpiSendRecvTest)
 
 #endif
