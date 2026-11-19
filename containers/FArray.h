@@ -147,6 +147,25 @@ namespace Util
 
    };
 
+   #ifdef UTIL_MPI
+   /**
+   * Partial specialization of MpiTraits for FArray<Data, Capacity>.
+   */
+   template <typename Data, int Capacity>
+   class MpiTraits< FArray<Data, Capacity> >
+   {
+   public:
+      static MPI::Datatype type;   ///< MPI Datatype
+      static bool hasType;         ///< Is the MPI type initialized?
+   };
+
+   template <typename Data, int Capacity>
+   MPI::Datatype MpiTraits< FArray<Data, Capacity> >::type = MPI::BYTE;
+
+   template <typename Data, int Capacity>
+   bool MpiTraits< FArray<Data, Capacity> >::hasType = false;
+   #endif
+
    /*
    * Constructor.
    */
@@ -295,10 +314,10 @@ namespace Util
          MpiStructBuilder       builder;
          FArray<Data, Capacity> object;
    
+         // One member with Capacity elements (a builder can hold at
+         // most MpiStructBuilder::MaxNBlock members)
          builder.setBase(&object);
-         for (int i = 0; i < Capacity; ++i) {
-            builder.addMember(&(object.data_[i]), MpiTraits<Data>::type);
-         }
+         builder.addMember(object.data_, MpiTraits<Data>::type, Capacity);
          builder.commit(MpiTraits< FArray<Data, Capacity> >::type);
          MpiTraits< FArray<Data, Capacity> >::hasType = true;
       }
