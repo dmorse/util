@@ -11,7 +11,7 @@
 #include <util/global.h>
 #include <util/param/ParamComposite.h>  // base class
 #include <util/accumulators/Average.h>  // member template argument
-#include <util/containers/FArray.h>     // member template
+#include <util/containers/DArray.h>     // member template
 
 #include <vector>
 
@@ -142,7 +142,7 @@ namespace Util
    private:
 
       /// Array of average accumulators, one per tensor component.
-      FArray<Average, Dimension*Dimension> accumulators_;
+      DArray<Average> accumulators_;
 
       /// Number of sampled values per output block.
       int nSamplePerBlock_;

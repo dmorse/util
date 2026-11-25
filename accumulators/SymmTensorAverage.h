@@ -11,12 +11,12 @@
 #include <util/global.h>
 #include <util/param/ParamComposite.h>  // base class
 #include <util/accumulators/Average.h>  // member template argument
-#include <util/containers/FArray.h>     // member template
-//#include <util/space/Tensor.h>     
+#include <util/containers/DArray.h>     // member template
 
 namespace Util
 {
 
+   // Forward declaration
    class Tensor;
 
    /**
@@ -138,7 +138,8 @@ namespace Util
    
    private:
 
-      FArray<Average, Dimension*(Dimension+1)/2 > accumulators_;
+      // Array of accumulators, one per distinct tensor element.
+      DArray< Average > accumulators_;
 
       /// Number of sampled values per output block.
       int nSamplePerBlock_;
@@ -147,10 +148,10 @@ namespace Util
       int iBlock_;
 
       /// Private and not implemented to prohibit copying.
-      SymmTensorAverage(const SymmTensorAverage& other);
+      SymmTensorAverage(SymmTensorAverage const & other);
 
       /// Private and not implemented to prohibit assignment.
-      SymmTensorAverage& operator = (const SymmTensorAverage& other);
+      SymmTensorAverage& operator = (SymmTensorAverage const & other);
 
    };
 

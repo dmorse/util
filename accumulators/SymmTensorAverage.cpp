@@ -22,6 +22,7 @@ namespace Util
       iBlock_(0)
    {
       setClassName("SymmTensorAverage");
+      accumulators_.allocate(Dimension * (Dimension + 1) / 2);
       int i, j, k;
       k = 0;
       for (i = 0; i < Dimension; ++i) {

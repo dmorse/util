@@ -24,6 +24,7 @@ namespace Util
       iBlock_(0)
    {
       setClassName("TensorAverage");
+      accumulators_.allocate(Dimension*Dimension);
       int i, j, k;
       k = 0;
       for (i = 0; i < Dimension; ++i) {
