@@ -16,20 +16,21 @@ namespace Util
 {
 
    /**
-   * Statically allocated pointer array.
+   * Fixed size, stack allocated pointer array.
    *
-   * A FPArray is a statically allocated array that actually holds pointers
-   * to Data objects, but for which the [] operator returns a reference to 
-   * the associated object. It is implemented as a wrapper for a statically 
-   * allocated C array of Data* pointers. A FPArray is not responsible for
-   * destroying the associated Data objects.
+   * A FPArray is a fixed size array that holds pointers to Data objects,
+   * but for which the [] operator returns a reference to the associated 
+   * object (i.e., to the deferenced pointer). It is implemented as a 
+   * wrapper for a stack-allocated C array of Data* pointers. A FPArray 
+   * is not responsible for destroying the associated Data objects.
    *
    * The interface of an FPArray is identical to that of an FSArray.
    * An FPArray has both a capacity that is set at compile time, which is 
    * the physical size of the underlying C array, and a size, which is the 
    * number of contiguous elements (indexed from 0 to size-1) that contain 
    * valid pointers.  The size can only be increased only by the append() 
-   * method, which adds an element to the end of the array. 
+   * method, which takes a reference to an object as an argument, and adds 
+   * an element to the end of the array. 
    *
    * When compiled in debug mode, the operator [] checks that the index is 
    * less than the size and non-negative.
@@ -132,21 +133,27 @@ namespace Util
       
    // Method definitions
 
-   /**
+   /*
    * Constructor.
    */
-   template <typename Data, int Capacity>
-   inline FPArray<Data, Capacity>::FPArray()
-    : size_(0)
+   template <typename Data, int Capacity> inline 
+   FPArray<Data, Capacity>::FPArray() : 
+      #ifdef UTIL_CXX11
+      ptrs_{},
+      #endif
+      size_(0)
    {}
 
    /*
    * Copy constructor, copy all pointers.
    */
    template<typename Data, int Capacity>
-   FPArray<Data, Capacity>::FPArray(FPArray<Data, Capacity> const & other) 
+   FPArray<Data, Capacity>::FPArray(FPArray<Data, Capacity> const & other) :
+      #ifdef UTIL_CXX11
+      ptrs_{},
+      #endif
+      size_(0)
    {
-
       // Copy pointer values
       int i;
       for (i = 0; i < other.size_; ++i) {
@@ -160,17 +167,15 @@ namespace Util
             ptrs_[i] = 0;
          }
       }
-
    }
 
    /*
-   * Assignment, element by element.
+   * Assignment, copy all pointers.
    */
    template <typename Data, int Capacity>
    FPArray<Data, Capacity>& 
    FPArray<Data, Capacity>::operator=(FPArray<Data, Capacity> const & other) 
    {
-
       // Check for self assignment
       if (this == &other) return *this;
 
@@ -195,32 +200,31 @@ namespace Util
       return *this;
    }
  
-   /**
+   /*
    * Destructor.
    */
    template <typename Data, int Capacity>
    FPArray<Data, Capacity>::~FPArray()
    {}
 
-   /**
+   /*
    * Return physical capacity of array.
    */
-   template <typename Data, int Capacity>
-   inline int FPArray<Data, Capacity>::capacity() const
+   template <typename Data, int Capacity> inline 
+   int FPArray<Data, Capacity>::capacity() const
    { return Capacity; }
 
    /*
    * Return logical size of this array.
    */
-   template <typename Data, int Capacity>
-   inline int FPArray<Data, Capacity>::size() const
+   template <typename Data, int Capacity> inline 
+   int FPArray<Data, Capacity>::size() const
    { return size_; }
 
    /*
    * Set a PArrayIterator to the beginning of this Array.
    */
-   template <typename Data, int Capacity>
-   inline 
+   template <typename Data, int Capacity> inline 
    void FPArray<Data, Capacity>::begin(PArrayIterator<Data> &iterator)
    {
       iterator.setCurrent(const_cast<Data**>(ptrs_));
@@ -230,19 +234,16 @@ namespace Util
    /*
    * Set a PArrayIterator to the beginning of this Array.
    */
-   template <typename Data, int Capacity>
-   inline 
-   void FPArray<Data, Capacity>::begin(ConstPArrayIterator<Data> &iterator) const
+   template <typename Data, int Capacity> inline 
+   void FPArray<Data, Capacity>::begin(ConstPArrayIterator<Data> &iterator) 
+   const
    {
       iterator.setCurrent(const_cast<Data**>(ptrs_));
       iterator.setEnd(const_cast<Data**>(ptrs_ + size_));
    }
 
    /*
-   * Mimic C array subscripting.
-   *
-   * \param  i array index
-   * \return reference to element i
+   * Subscript operator (returns dereferenced value).
    */
    template <typename Data, int Capacity>
    inline Data& FPArray<Data, Capacity>::operator[] (int i)
@@ -253,13 +254,10 @@ namespace Util
    }
 
    /*
-   * Mimic C array subscripting.
-   *
-   * \param i array index
-   * \return const reference to element i
+   * Subscript operator (returns dereferenced value).
    */
-   template <typename Data, int Capacity>
-   inline Data const & FPArray<Data, Capacity>::operator[] (int i) const
+   template <typename Data, int Capacity> inline 
+   Data const & FPArray<Data, Capacity>::operator[] (int i) const
    {
       assert(i < size_);
       assert(i >= 0 );
@@ -268,8 +266,6 @@ namespace Util
 
    /*
    * Append data to the end of the array.
-   *
-   * \param data Data to add to end of array.
    */
    template <typename Data, int Capacity>
    inline void FPArray<Data, Capacity>::append(Data &data) 

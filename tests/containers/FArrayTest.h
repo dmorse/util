@@ -37,7 +37,12 @@ void FArrayTest::testConstructor()
    printMethod(TEST_FUNC);
    FArray<int,3> v;
    TEST_ASSERT(v.capacity() == 3);
-} 
+   #ifdef UTIL_CXX11
+   for (int i = 0; i < 3; ++i) {
+      TEST_ASSERT(v[i] == 0); 
+   }
+   #endif
+}
 
 void FArrayTest::testCopyConstructor()
 {

@@ -136,7 +136,7 @@ namespace Util
       void resize(int n);
 
       /**
-      * Mimic C array subscripting.
+      * Subscript operator (return an element by const reference).
       *
       * \param  i array index
       * \return reference to element i
@@ -144,7 +144,7 @@ namespace Util
       Data& operator[] (int i);
 
       /**
-      * Mimic C array subscripting.
+      * Subscript operator (return an element by const reference).
       *
       * \param i array index
       * \return const reference to element i
@@ -152,12 +152,12 @@ namespace Util
       Data const & operator[] (int i) const;
 
       /**
-      * Return physical capacity of array.
+      * Return the physical capacity of this array.
       */
       int capacity() const;
 
       /**
-      * Return logical size of this array (i.e., current number of elements).
+      * Return the logical size of this array (number of elements).
       */
       int size() const;
 
@@ -174,12 +174,12 @@ namespace Util
       /// Logical size of array (number of elements used).
       int  size_;
 
-      /// Maxium size of array
+      /// Physical capacity (size of allocated array data_).
       int capacity_;
 
    }; // class GArray
 
-   // Method definitions
+   // Member function definitions
 
    /*
    * Default constructor.
@@ -202,9 +202,9 @@ namespace Util
       size_(0),
       capacity_(0)
    {
-      assert(other.size_ <= other.capacity_);
+      UTIL_ASSERT(other.size_ <= other.capacity_);
       if (other.isAllocated()) {
-         assert(other.capacity_ > 0);
+         UTIL_ASSERT(other.capacity_ > 0);
          // Allocate new array
          Memory::allocate<Data>(data_, other.capacity_);
          capacity_ = other.capacity_;
@@ -255,14 +255,14 @@ namespace Util
          UTIL_THROW("Cannot reserve with capacity <=0");
       }
       if (!isAllocated()) {
-         assert(capacity_ == 0);
-         assert(size_ == 0);
+         UTIL_ASSERT(capacity_ == 0);
+         UTIL_ASSERT(size_ == 0);
          Memory::allocate<Data>(data_, capacity);
          capacity_ = capacity;
          size_ = 0;
       } else if (capacity > capacity_) {
-         assert(capacity_ > 0);
-         assert(capacity_ >= size_);
+         UTIL_ASSERT(capacity_ > 0);
+         UTIL_ASSERT(capacity_ >= size_);
          Data* newPtr = nullptr;
          Memory::allocate<Data>(newPtr, capacity);
          if (size_ > 0) {
@@ -302,15 +302,15 @@ namespace Util
    template <typename Data>
    void GArray<Data>::append(Data const & data) 
    {
-      assert(size_ <= capacity_);
+      UTIL_ASSERT(size_ <= capacity_);
       if (size_ == capacity_) {
          if (capacity_ == 0) {
             UTIL_CHECK(!data_); 
             Memory::allocate<Data>(data_, 64);
             capacity_ = 64;
          } else {
-            assert(data_); 
-            assert(capacity_ > 0); 
+            UTIL_ASSERT(data_); 
+            UTIL_ASSERT(capacity_ > 0); 
             Data* newPtr = nullptr;
             Memory::allocate<Data>(newPtr, 2*capacity_);
             if (size_ > 0) {
@@ -326,7 +326,7 @@ namespace Util
       // Append new element
       data_[size_] = data;
       ++size_;
-      assert(size_ <= capacity_);
+      UTIL_ASSERT(size_ <= capacity_);
    }
 
    /*
@@ -350,7 +350,7 @@ namespace Util
             Data* newPtr = nullptr;
             Memory::allocate<Data>(newPtr, m);
             if (data_) {
-               assert(capacity_ > 0);
+               UTIL_ASSERT(capacity_ > 0);
                for (int i = 0; i < size_; ++i) {
                   newPtr[i] = data_[i];
                }
@@ -415,24 +415,24 @@ namespace Util
    }
 
    /*
-   * Mimic C array subscripting.
+   * Subscript operator (return an element by reference).
    */
-   template <typename Data>
-   inline Data& GArray<Data>::operator[] (int i)
+   template <typename Data> inline 
+   Data& GArray<Data>::operator[] (int i)
    {
-      assert(i >= 0);
-      assert(i < size_);
+      UTIL_ASSERT(i >= 0);
+      UTIL_ASSERT(i < size_);
       return data_[i];
    }
 
    /*
-   * Mimic C array subscripting.
+   * Subscript operator (return an element by const reference).
    */
-   template <typename Data>
-   inline Data const & GArray<Data>::operator[] (int i) const
+   template <typename Data> inline 
+   Data const & GArray<Data>::operator[] (int i) const
    {
-      assert(i >= 0);
-      assert(i < size_);
+      UTIL_ASSERT(i >= 0);
+      UTIL_ASSERT(i < size_);
       return data_[i];
    }
 

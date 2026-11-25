@@ -144,9 +144,12 @@ namespace Util
    /*
    * Constructor.
    */
-   template <typename Data, int Capacity>
-   inline FSArray<Data, Capacity>::FSArray()
-    : size_(0)
+   template <typename Data, int Capacity> inline 
+   FSArray<Data, Capacity>::FSArray() : 
+     #ifdef UTIL_CXX11
+     data_{},
+     #endif
+     size_(0)
    {}
 
    /*

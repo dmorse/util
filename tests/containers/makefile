@@ -1,22 +1,39 @@
 include ../../../config.mk
 include $(SRC_DIR)/util/sources.mk
-include $(SRC_DIR)/util/tests/containers/sources.mk
 include $(SRC_DIR)/util/patterns.mk
 
-TEST=util/tests/containers/Test
+SHORT_DIR=util/tests/containers
 
-all: $(util_tests_containers_OBJS) $(BLD_DIR)/$(TEST)
+TEST_DIR=$(SRC_DIR)/$(SHORT_DIR)
+TEST=$(BLD_DIR)/$(SHORT_DIR)/Test
+LOG_FILE=$(SHORT_DIR)/log
+
+all: $(TEST)
+
+run: $(TEST)
+	@$(TEST) $(TEST_DIR)
+	@echo "Finished running $(TEST)"
+	@cd $(TEST_DIR); $(MAKE) -s clean-outputs
+	
+run-quiet: $(TEST)
+	@$(TEST) $(TEST_DIR) > log
+	@echo `grep failed log` ", "\
+              `grep successful log` "in $(SHORT_DIR)" > count
+	@cat count
+	@cd $(TEST_DIR); $(MAKE) -s clean-outputs
 
 clean:
-	rm -f $(util_tests_containers_OBJS) $(util_tests_containers_OBJS:.o=.d)
-	rm -f $(BLD_DIR)/$(TEST)
+	rm -f $(TEST).o
+	rm -f $(TEST).d
+	rm -f $(TEST)
+	rm -f log
 	$(MAKE) clean-outputs
 
 clean-outputs:
 	@rm -f tmp/*
 
-.PHONY: all clean clean-outputs
+.PHONY: all run run-quiet clean clean-outputs
 
--include $(util_tests_containers_OBJS:.o=.d)
+-include $(TEST).d
 -include $(util_DEPS)
 

@@ -28,10 +28,6 @@ namespace Util
    class FMatrix : public Matrix<Data>
    {
 
-      using Matrix<Data>::data_;
-      using Matrix<Data>::capacity1_;
-      using Matrix<Data>::capacity2_;
-
    public:
 
       /**
@@ -68,6 +64,10 @@ namespace Util
       /// 1D fixed size C array that holds elements of 2D array.
       Data fixedArray_[M*N];
 
+      using Matrix<Data>::data_;
+      using Matrix<Data>::capacity1_;
+      using Matrix<Data>::capacity2_;
+
    };
 
    /*
@@ -75,7 +75,10 @@ namespace Util
    */
    template <typename Data, int M, int N>
    FMatrix<Data, M, N>::FMatrix()
-     : Matrix<Data>()
+    : Matrix<Data>()
+      #ifdef UTIL_CXX11
+      , fixedArray_{}
+      #endif
    {
       data_ = fixedArray_;
       capacity1_ = M;

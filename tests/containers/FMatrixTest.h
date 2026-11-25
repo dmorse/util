@@ -34,9 +34,16 @@ public:
 void FMatrixTest::testConstructor()
 {
    printMethod(TEST_FUNC);
-   FMatrix<int,2,2> v;
+   FMatrix<int,2,3> v;
    TEST_ASSERT(v.capacity1() == 2 );
-   TEST_ASSERT(v.capacity2() == 2 );
+   TEST_ASSERT(v.capacity2() == 3 );
+   #ifdef UTIL_CXX11
+   for (int i = 0; i < 2; ++i) {
+      for (int j = 0; j < 3; ++j) {
+         UTIL_ASSERT(v(i,j) == 0);
+      }
+   }
+   #endif
 } 
 
 void FMatrixTest::testSubscript()

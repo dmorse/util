@@ -4,7 +4,7 @@
 /*
 * Util Package - C++ Utilities for Scientific Computation
 *
-* Copyright 2010 - 2017, David Morse (morse012@um.edu) 
+* Copyright 2010 - 2017, David Morse (morse012@um.edu)
 * Distributed under the terms of the GNU General Public License.
 */
 
@@ -13,37 +13,34 @@
 #include <util/global.h>
 
 #ifdef UTIL_MPI
-#include <util/mpi/MpiTraits.h>   
-#include <util/mpi/MpiStructBuilder.h>   
-#endif 
+#include <util/mpi/MpiTraits.h>
+#include <util/mpi/MpiStructBuilder.h>
+#endif
 
 namespace Util
 {
 
    /**
-   * A fixed size (static) contiguous array template.
+   * A fixed size, stack-allocated array.
    *
-   * An FArray is a simple wraper for a fixed size C Array, with a
-   * capacity that is fixed at compile time. As in a C Array, or a
-   * DArray container, all of the elements are accessible. Unlike
-   * an FSArray, an FArray does not have logical size that is 
-   * distinct from its physical capacity.
+   * An FArray is a simple wraper for a fixed size, stack-allocated
+   * C Array, with a capacity that is fixed at compile time. 
    *
-   * When bounds checking is on (i.e., when NDEBUG is not defined),
-   * the operator [] checks that the index is non-negative and less
+   * When bounds checking is on (i.e., when NDEBUG is not defined), the
+   * subscript operator [] checks that the index is non-negative and less
    * than the Capacity.
    *
-   * Advice: Use an FArray if you know exactly how many elements will 
-   * be needed at compile time. Use an FSArray when you need a small 
-   * statically allocated array for which the maximum capacity needed
-   * is known at compile time, but the logical size may be less than 
-   * the capacity. Use a DArray if you need a large, dynamically 
-   * allocated array that must be allocated after instantiation.
+   * Advice: Use an FArray for a small array if you know exactly how many
+   * elements will be needed at compile time. Use an FSArray when you need
+   * a small stack-allocated array for which a maximum capacity is known
+   * at compile time, but the logical size may be less than the capacity.
+   * Use a DArray or a GArray if you need an array whose size is not known
+   * at compile time.
    *
    * \ingroup Array_Module
    */
    template <typename Data, int Capacity>
-   class FArray 
+   class FArray
    {
 
    public:
@@ -59,13 +56,13 @@ namespace Util
       *\param other the FArray to be copied.
       */
       FArray(FArray<Data, Capacity> const & other);
-   
+
       // Default destructor is okay.
 
       /**
       * Assignment, element by element.
       *
-      * \param other  the RHS FArray 
+      * \param other  the RHS FArray
       */
       FArray<Data, Capacity>& operator = (FArray<Data, Capacity> const & other);
 
@@ -76,20 +73,22 @@ namespace Util
 
       /**
       * Return number of elements in this FArray.
+      *
+      * For an FArray, size and capacity are equal.
       */
       int capacity() const;
 
       /**
       * Set an ArrayIterator to the beginning of this Array.
       *
-      * \param iterator ArrayIterator, initialized on output. 
+      * \param iterator ArrayIterator, initialized on output.
       */
       void begin(ArrayIterator<Data> &iterator);
 
       /**
       * Set a ConstArrayIterator to the beginning of this Array.
       *
-      * \param iterator ConstArrayIterator, initialized on output. 
+      * \param iterator ConstArrayIterator, initialized on output.
       */
       void begin(ConstArrayIterator<Data> &iterator) const;
 
@@ -122,7 +121,7 @@ namespace Util
       /**
       * Serialize a FArray to/from an Archive.
       *
-      * \param ar        archive 
+      * \param ar        archive
       * \param version   archive version id
       */
       template <class Archive>
@@ -166,11 +165,16 @@ namespace Util
    bool MpiTraits< FArray<Data, Capacity> >::hasType = false;
    #endif
 
+   // Member functions
+
    /*
    * Constructor.
    */
-   template <typename Data, int Capacity>
+   template <typename Data, int Capacity> inline
    FArray<Data, Capacity>::FArray()
+   #ifdef UTIL_CXX11
+    : data_{}
+   #endif
    {}
 
    /*
@@ -179,7 +183,10 @@ namespace Util
    *\param other the FArray to be copied.
    */
    template <typename Data, int Capacity>
-   FArray<Data, Capacity>::FArray(FArray<Data, Capacity> const & other) 
+   FArray<Data, Capacity>::FArray(FArray<Data, Capacity> const & other)
+   #ifdef UTIL_CXX11
+    : data_{}
+   #endif
    {
       for (int i = 0; i < Capacity; ++i) {
          data_[i] = other.data_[i];
@@ -190,16 +197,11 @@ namespace Util
 
    /*
    * Assignment, element by element.
-   *
-   * Capacity of LHS FArray must be >= size of RHS FArray.
-   *
-   * \param other the RHS FArray 
    */
    template <typename Data, int Capacity>
-   FArray<Data, Capacity>& 
-   FArray<Data, Capacity>::operator=(FArray<Data, Capacity> const & other) 
+   FArray<Data, Capacity>&
+   FArray<Data, Capacity>::operator=(FArray<Data, Capacity> const & other)
    {
-
       // Check for self assignment
       if (this == &other) return *this;
 
@@ -213,22 +215,21 @@ namespace Util
    /*
    * Return number of elements in this FArray.
    */
-   template <typename Data, int Capacity>
-   inline int FArray<Data, Capacity>::size() const
+   template <typename Data, int Capacity> inline
+   int FArray<Data, Capacity>::size() const
    {  return Capacity; }
 
    /*
    * Return number of elements in this FArray.
    */
-   template <typename Data, int Capacity>
-   inline int FArray<Data, Capacity>::capacity() const
+   template <typename Data, int Capacity> inline
+   int FArray<Data, Capacity>::capacity() const
    { return Capacity; }
 
    /*
    * Set an ArrayIterator to the beginning of this Array.
    */
-   template <typename Data, int Capacity>
-   inline 
+   template <typename Data, int Capacity> inline
    void FArray<Data, Capacity>::begin(ArrayIterator<Data> &iterator)
    {
       iterator.setCurrent(data_);
@@ -239,8 +240,8 @@ namespace Util
    * Set a ConstArrayIterator to the beginning of this Array.
    */
    template <typename Data, int Capacity>
-   inline 
-   void FArray<Data, Capacity>::begin(ConstArrayIterator<Data> &iterator) 
+   inline
+   void FArray<Data, Capacity>::begin(ConstArrayIterator<Data> &iterator)
    const
    {
       iterator.setCurrent(data_);
@@ -248,32 +249,32 @@ namespace Util
    }
 
    /*
-   * Mimic C array subscripting.
+   * Subscript operator (returns an element).
    */
-   template <typename Data, int Capacity>
-   inline Data& FArray<Data, Capacity>::operator[] (int i)
+   template <typename Data, int Capacity> inline
+   Data& FArray<Data, Capacity>::operator[] (int i)
    {
-      assert(i < Capacity);
-      assert(i >= 0);
+      UTIL_ASSERT(i < Capacity);
+      UTIL_ASSERT(i >= 0);
       return data_[i];
    }
 
    /*
-   * Mimic C array subscripting.
+   * Subscript operator (returns an element by const reference).
    */
-   template <typename Data, int Capacity>
-   inline Data const & FArray<Data, Capacity>::operator[] (int i) const
+   template <typename Data, int Capacity> inline
+   Data const & FArray<Data, Capacity>::operator[] (int i) const
    {
-      assert(i < Capacity);
-      assert(i >= 0 );
+      UTIL_ASSERT(i < Capacity);
+      UTIL_ASSERT(i >= 0 );
       return data_[i];
    }
 
    /*
    * Return pointer to underlying C array.
    */
-   template <typename Data, int Capacity>
-   inline Data* FArray<Data, Capacity>::cArray()
+   template <typename Data, int Capacity> inline
+   Data* FArray<Data, Capacity>::cArray()
    {  return data_; }
 
    /*
@@ -288,7 +289,7 @@ namespace Util
    */
    template <typename Data, int Capacity>
    template <class Archive>
-   void FArray<Data, Capacity>::serialize(Archive& ar, 
+   void FArray<Data, Capacity>::serialize(Archive& ar,
                                           const unsigned int version)
    {
       for (int i = 0; i < Capacity; ++i) {
@@ -308,12 +309,12 @@ namespace Util
    * Commit associated MPI Datatype.
    */
    template <typename Data, int Capacity>
-   void FArray<Data, Capacity>::commitMpiType() 
+   void FArray<Data, Capacity>::commitMpiType()
    {
       if (!MpiTraits< FArray<Data, Capacity > >::hasType) {
          MpiStructBuilder       builder;
          FArray<Data, Capacity> object;
-   
+
          // One member with Capacity elements (a builder can hold at
          // most MpiStructBuilder::MaxNBlock members)
          builder.setBase(&object);
@@ -322,6 +323,7 @@ namespace Util
          MpiTraits< FArray<Data, Capacity> >::hasType = true;
       }
    }
-   #endif 
-} 
+   #endif
+
+}
 #endif
