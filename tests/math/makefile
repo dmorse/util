@@ -1,18 +1,7 @@
 include ../../../config.mk
-include $(SRC_DIR)/util/sources.mk
-include $(SRC_DIR)/util/tests/math/sources.mk
-include $(SRC_DIR)/util/patterns.mk
+SHORT_DIR=util/tests/math
+include $(SRC_DIR)/util/tests/mfile.mk
 
-TEST=util/tests/math/Test
-
-all: $(util_tests_math_OBJS) $(BLD_DIR)/$(TEST)
-
-clean:
-	rm -f $(util_tests_math_OBJS) $(util_tests_math_OBJS:.o=.d)
-	rm -f $(BLD_DIR)/$(TEST) 
-
-.PHONY: all clean
-
--include $(util_tests_math_OBJS:.o=.d)
--include $(util_DEPS)
+clean-outputs:
+	rm -f log count
 

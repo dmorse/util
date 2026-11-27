@@ -16,7 +16,7 @@
 LIBS=$(util_LIB)
 
 # Arguments for MAKEDEP
-MAKEDEP_ARGS=$(CPPFLAGS) $(INCLUDES)
+MAKEDEP_ARGS=$(INCLUDES) $(CPPFLAGS)
 MAKEDEP_ARGS+= -A$(BLD_DIR)/config.mk
 MAKEDEP_ARGS+= -S$(SRC_DIR)
 MAKEDEP_ARGS+= -B$(BLD_DIR)
@@ -27,17 +27,6 @@ MAKEDEP_ARGS+= -B$(BLD_DIR)
 # Rule to compile *.cpp class source files in src/util
 $(BLD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@SDIR=$$(dirname "$@"); if [ ! -d "$$SDIR" ]; then mkdir -p "$$SDIR"; fi
-	$(CXX) $(CPPFLAGS) $(INCLUDES) $(CXXFLAGS) -c -o $@ $<
+	$(CXX) $(INCLUDES) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
 	$(MAKEDEP) $(MAKEDEP_CMD) $(MAKEDEP_ARGS) $<
-
-# Rule to compile *.cc test programs in src/util/tests
-$(BLD_DIR)/util/tests/%.o: $(SRC_DIR)/util/tests/%.cc 
-	$(CXX) $(CPPFLAGS) $(INCLUDES) $(CXXFLAGS) -c -o $@ $<
-ifdef MAKEDEP
-	$(MAKEDEP) $(MAKEDEP_CMD) $(MAKEDEP_ARGS) $<
-endif
-
-# Rule to link *.cc test programs in src/util/tests
-$(BLD_DIR)/util/tests/%: $(BLD_DIR)/util/tests/%.o $(LIBS)
-	$(CXX) $(LDFLAGS) -o $@ $< $(LIBS)
 
