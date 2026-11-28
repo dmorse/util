@@ -1,33 +1,38 @@
 include ../../config.mk
 include $(SRC_DIR)/util/sources.mk
-include $(SRC_DIR)/util/tests/sources.mk
 include $(SRC_DIR)/util/patterns.mk
 
-TEST=$(BLD_DIR)/util/tests/Test
+SHORT_DIR=util/tests
+TEST_DIR=$(SRC_DIR)/$(SHORT_DIR)
+TEST=$(BLD_DIR)/$(SHORT_DIR)/Test
 
-all: $(util_tests_EXES)
+.PHONY: all run run-quiet clean clean-outputs
+
+all: $(TEST)
+
+$(TEST): $(TEST).o $(LIBS)
+	$(CXX) $(LDFLAGS) -o $@ $< $(LIBS)
 
 run: $(TEST)
 	@echo "BLD_DIR is $(BLD_DIR)"
 	@echo "SRC_DIR is $(SRC_DIR)"
-	$(TEST) $(SRC_DIR)/util/tests/ 
+	$(TEST) $(TEST_DIR)/ 
 	@echo "Finished running $(TEST)"
-	@cd $(SRC_DIR)/util/tests; $(MAKE) -s clean-outputs
+	@cd $(TEST_DIR); $(MAKE) -s clean-outputs
 	
 run-quiet: $(TEST)
-	@$(TEST) $(SRC_DIR)/util/tests/ > log
+	@$(TEST) $(TEST_DIR)/ > log
 	@echo `grep failed log` ", "\
-              `grep successful log` "in util/tests/log" > count
+              `grep successful log` "in $(SHORT_DIR)/log" > count
 	@cat count
-	@cd $(SRC_DIR)/util/tests; $(MAKE) -s clean-outputs
+	@cd $(TEST_DIR); $(MAKE) -s clean-outputs
 	
 
 clean:
-	rm -f $(util_tests_EXES) 
-	rm -f $(util_tests_OBJS) 
-	rm -f $(util_tests_OBJS:.o=.d)
+	rm -f $(TEST)
+	rm -f $(TEST).o
+	rm -f $(TEST).d
 	rm -f log count
-	cd $(SRC_DIR)/util/tests; $(MAKE) clean-outputs
 ifeq ($(BLD_DIR),$(SRC_DIR))
 	cd accumulators/unit; $(MAKE) clean
 	cd archives; $(MAKE) clean
@@ -44,15 +49,13 @@ ifeq ($(BLD_DIR),$(SRC_DIR))
 endif
 
 clean-outputs:
+	rm -f log count
 	@cd accumulators/unit; $(MAKE) clean-outputs
 	@cd archives; $(MAKE) clean-outputs
 	@cd containers; $(MAKE) clean-outputs
 	@cd param/serial; $(MAKE) clean-outputs
 	@cd random; $(MAKE) clean-outputs
 
-.PHONY: all run run-quiet clean clean-outputs
 
-.SECONDARY:$(util_tests_OBJS)
-
--include $(util_tests_OBJS:.o=.d)
+-include $(TEST).d
 -include $(util_DEPS)
